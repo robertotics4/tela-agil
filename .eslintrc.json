@@ -27,6 +27,8 @@
     "rules": {
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "warn",
+      "react/jsx-props-no-spreading": "off",
+      "react/prop-types": "off",
       "no-use-before-define": "off",
       "prettier/prettier": "error",
       "react/jsx-filename-extension": [

@@ -8,7 +8,7 @@ export default createGlobalStyle`
   }
 
   body {
-    background: #E5E5E5;
+    background: #e5e5e5;
     color: #444444;
     -webkit-font-smoothing: antialiased;
   }
@@ -24,5 +24,12 @@ export default createGlobalStyle`
 
   button {
     cursor: pointer;
+  }
+
+  input {
+    &:focus {
+      border: none;
+      outline: none;
+    }
   }
 `;
