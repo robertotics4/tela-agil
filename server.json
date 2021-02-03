@@ -1,0 +1,21 @@
+{
+  "autenticacao": {
+      "Perfis": [
+        {
+          "Id": 0,
+          "Codigo": 3,
+          "Nome": "Comum",
+          "Abreviacao": "Comum",
+          "IdSistema": 0,
+          "PodeExcluir": false,
+          "PodeEditar": false,
+          "MensagemMotivoNaoPermitirOperacoes": null
+        }
+      ],
+      "IdSistema": 1481,
+      "IdUsuario": 151467,
+      "NomeUsuario": "Luis Roberto Oliveira Santos",
+      "MensagensDeErro": null,
+      "AutenticacaoUsuario": true
+  }
+}
