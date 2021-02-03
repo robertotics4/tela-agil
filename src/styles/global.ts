@@ -26,7 +26,7 @@ export default createGlobalStyle`
     cursor: pointer;
   }
 
-  input {
+  input, button {
     &:focus {
       border: none;
       outline: none;
