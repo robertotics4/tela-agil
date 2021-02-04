@@ -3,13 +3,14 @@ import { FiUser, FiLock } from 'react-icons/fi';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
+import { useHistory } from 'react-router-dom';
 
 import { useAuth } from '../../hooks/auth';
 import { useToast } from '../../hooks/toast';
 
 import getValidationErrors from '../../utils/getValidationErrors';
 
-import { Container, Content } from './styles';
+import { Container, Content, AnimationContainer } from './styles';
 
 import logoImg from '../../assets/logo.svg';
 
@@ -25,8 +26,9 @@ const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
 
   const { signIn } = useAuth();
-
   const { addToast } = useToast();
+
+  const history = useHistory();
 
   const handleSubmit = useCallback(
     async (data: SignInFormData) => {
@@ -46,6 +48,8 @@ const SignIn: React.FC = () => {
           username: data.username,
           password: data.password,
         });
+
+        history.push('/dashboard');
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
@@ -62,33 +66,35 @@ const SignIn: React.FC = () => {
         });
       }
     },
-    [signIn, addToast],
+    [signIn, addToast, history],
   );
 
   return (
     <Container>
       <Content>
-        <img src={logoImg} alt="Equatorial" />
+        <AnimationContainer>
+          <img src={logoImg} alt="Equatorial" />
 
-        <Form ref={formRef} onSubmit={handleSubmit}>
-          <Input
-            name="username"
-            icon={FiUser}
-            type="text"
-            placeholder="Usuário"
-            autoComplete="off"
-          />
+          <Form ref={formRef} onSubmit={handleSubmit}>
+            <Input
+              name="username"
+              icon={FiUser}
+              type="text"
+              placeholder="Usuário"
+              autoComplete="off"
+            />
 
-          <Input
-            name="password"
-            icon={FiLock}
-            type="password"
-            placeholder="Senha"
-            autoComplete="off"
-          />
+            <Input
+              name="password"
+              icon={FiLock}
+              type="password"
+              placeholder="Senha"
+              autoComplete="off"
+            />
 
-          <Button type="submit">Entrar</Button>
-        </Form>
+            <Button type="submit">Entrar</Button>
+          </Form>
+        </AnimationContainer>
       </Content>
     </Container>
   );
