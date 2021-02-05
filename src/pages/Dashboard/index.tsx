@@ -1,5 +1,16 @@
 import React from 'react';
 
-const Dashboard: React.FC = () => <h1>Dashboard</h1>;
+import { Container, Main } from './styles';
+
+import LeftBar from '../../components/LeftBar';
+
+const Dashboard: React.FC = () => {
+  return (
+    <Container>
+      <LeftBar />
+      <Main />
+    </Container>
+  );
+};
 
 export default Dashboard;

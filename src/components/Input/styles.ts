@@ -80,7 +80,7 @@ export const Error = styled(Tooltip)`
 
   span {
     background: #ff5353;
-    color: #e5e5e5;
+    color: #fff;
 
     &::before {
       border-color: #ff5353 transparent;
