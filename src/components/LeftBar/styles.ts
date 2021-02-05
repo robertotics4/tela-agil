@@ -44,9 +44,22 @@ export const UserMenu = styled.div`
 export const Logout = styled.div`
   display: flex;
   flex-direction: row;
+  align-items: center;
 
   width: 100%;
   margin-top: 16px;
+
+  cursor: pointer;
+
+  &:hover {
+    > svg {
+      color: #ffff00;
+    }
+
+    span {
+      color: #ffff00;
+    }
+  }
 
   > svg {
     color: rgba(255, 255, 255, 0.5);
@@ -88,7 +101,8 @@ export const WhiteButton = styled(Button)`
   color: #3c1491;
 
   &:hover {
-    background: ${shade(0.2, '#fff')};
+    /* background: ${shade(0.2, '#fff')}; */
+    background: #ffff00;
   }
 `;
 
