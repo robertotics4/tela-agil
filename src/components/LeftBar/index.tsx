@@ -3,7 +3,6 @@ import { FiPower } from 'react-icons/fi';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 
-import axios from 'axios';
 import {
   Container,
   UserMenu,
@@ -18,6 +17,7 @@ import CustomRadioGroup from '../CustomRadioGroup';
 
 import logoWhiteImg from '../../assets/logo-white.svg';
 import { useAuth } from '../../hooks/auth';
+import CustomRadio from '../CustomRadio';
 
 interface StartServiceFormData {
   stateCode: string;
@@ -50,17 +50,17 @@ const LeftBar: React.FC = () => {
       </UserMenu>
 
       <ServiceForm>
-        <Form ref={formRef} onSubmit={handleSubmit}>
-          <CustomRadioGroup
-            name="stateCode"
-            fieldLabel="Estado"
-            states={[
-              { name: 'Alagoas', code: '82' },
-              { name: 'Maranhão', code: '98' },
-              { name: 'Pará', code: '95' },
-              { name: 'Piauí', code: '86' },
-            ]}
-          />
+        <Form
+          ref={formRef}
+          initialData={{ stateCode: '82' }}
+          onSubmit={handleSubmit}
+        >
+          <CustomRadioGroup fieldLabel="Estado">
+            <CustomRadio id="radio1" name="state" value="82" label="Alagoas" />
+            <CustomRadio id="radio2" name="state" value="98" label="Maranhão" />
+            <CustomRadio id="radio3" name="state" value="95" label="Pará" />
+            <CustomRadio id="radio4" name="state" value="86" label="Piauí" />
+          </CustomRadioGroup>
 
           <OutlineInput
             name="contract"

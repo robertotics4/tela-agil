@@ -1944,13 +1944,6 @@
   dependencies:
     "@types/react" "^16"
 
-"@types/react-radio-group@^3.0.2":
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/@types/react-radio-group/-/react-radio-group-3.0.2.tgz#4c84a2aed1965eeb5b387dc4769bd0b8c76918e4"
-  integrity sha512-b5hVFpUYYq4OVfivs0GFSzDUuRvhKyxlXAyeduCYLN6lO5nV/C56ig/TYl3PqRnB37k863o7DZ2208fZCal3ug==
-  dependencies:
-    "@types/react" "*"
-
 "@types/react-router-dom@^5.1.7":
   version "5.1.7"
   resolved "https://registry.yarnpkg.com/@types/react-router-dom/-/react-router-dom-5.1.7.tgz#a126d9ea76079ffbbdb0d9225073eb5797ab7271"
@@ -9940,13 +9933,6 @@ react-is@^17.0.1:
   version "17.0.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.1.tgz#5b3531bd76a645a4c9fb6e693ed36419e3301339"
   integrity sha512-NAnt2iGDXohE5LI7uBnLnqvLQMtzhkiAOLXTmv+qnF9Ky7xAPcX8Up/xWIhxvLVGJvuLiNc4xQLtuqDRzb4fSA==
-
-react-radio-group@^3.0.3:
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/react-radio-group/-/react-radio-group-3.0.3.tgz#60bb29c7ad05d8b6f67cf443af0767ee2007cf98"
-  integrity sha512-MUNRRjZqQ2y+1K6rBuH0zO+gLVmCnWIcc5GnNwr9WNoUwZ9FUAKJ1UfsKXwYS93whR6/qrZKoVgiOltRkbzezw==
-  dependencies:
-    prop-types "^15.5.8"
 
 react-refresh@^0.8.3:
   version "0.8.3"
