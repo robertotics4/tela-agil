@@ -1,4 +1,7 @@
 import styled from 'styled-components';
+import { shade } from 'polished';
+
+import Button from '../Button';
 
 export const Container = styled.aside`
   display: flex;
@@ -26,6 +29,7 @@ export const UserMenu = styled.div`
   }
 
   > span {
+    width: 100%;
     font-size: 16px;
     color: #fff;
 
@@ -59,41 +63,49 @@ export const Logout = styled.div`
 export const ServiceForm = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
-  justify-content: center;
+  flex: 1;
 
   width: 100%;
   padding: 16px;
 
   form {
     width: 100%;
-    text-align: left;
 
-    div {
-      strong {
-        display: block;
-        font-size: 14px;
-        color: #fff;
-
-        margin-bottom: 16px;
-      }
-
-      label {
-        display: block;
-
-        input {
-          
-        }
-
-        span {
-          font-size: 16px;
-          color: #fff;
-
-          margin-left: 6px;
-        }
-      }
+    strong {
+      font-size: 14px;
+      color: #fff;
     }
   }
 `;
 
-export const Cronometro = styled.div``;
+export const WhiteButton = styled(Button)`
+  padding: 0 16px;
+  height: 40px;
+
+  background: #fff;
+  color: #3c1491;
+
+  &:hover {
+    background: ${shade(0.2, '#fff')};
+  }
+`;
+
+export const Cronometro = styled.div`
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  bottom: 24px;
+
+  line-height: 29px;
+
+  span {
+    font-size: 16px;
+    color: #fff;
+  }
+
+  h1 {
+    color: #fff;
+  }
+`;
