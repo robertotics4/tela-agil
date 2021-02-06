@@ -2,8 +2,13 @@ import React, { createContext, useCallback, useContext, useState } from 'react';
 
 import api from '../services/api';
 
+interface User {
+  id: string;
+  name: string;
+}
+
 interface AuthState {
-  user: object;
+  user: User;
 }
 
 interface SignInCredentials {
@@ -12,7 +17,7 @@ interface SignInCredentials {
 }
 
 interface AuthContextData {
-  user: object;
+  user: User;
   signIn(credentials: SignInCredentials): Promise<void>;
   signOut(): void;
 }
@@ -47,7 +52,7 @@ const AuthProvider: React.FC = ({ children }) => {
 
     const user = {
       id: IdUsuario.toString(),
-      username: NomeUsuario,
+      name: NomeUsuario,
     };
 
     localStorage.setItem('@TelaAgil:user', JSON.stringify(user));

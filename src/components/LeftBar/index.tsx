@@ -14,10 +14,10 @@ import {
 
 import OutlineInput from '../OutlineInput';
 import CustomRadioGroup from '../CustomRadioGroup';
+import RadioOptions from '../RadioOptions';
 
 import logoWhiteImg from '../../assets/logo-white.svg';
 import { useAuth } from '../../hooks/auth';
-import CustomRadio from '../CustomRadio';
 
 interface StartServiceFormData {
   stateCode: string;
@@ -26,7 +26,7 @@ interface StartServiceFormData {
 }
 
 const LeftBar: React.FC = () => {
-  const { signOut } = useAuth();
+  const { user, signOut } = useAuth();
   const formRef = useRef<FormHandles>(null);
 
   const handleSubmit = useCallback(async (data: StartServiceFormData) => {
@@ -40,7 +40,7 @@ const LeftBar: React.FC = () => {
 
         <span>
           Bem vindo,
-          <strong>ROBERTO OLIVEIRA</strong>
+          <strong>{user.name}</strong>
         </span>
 
         <Logout onClick={signOut}>
@@ -52,14 +52,19 @@ const LeftBar: React.FC = () => {
       <ServiceForm>
         <Form
           ref={formRef}
-          initialData={{ stateCode: '82' }}
           onSubmit={handleSubmit}
+          initialData={{ state: '82' }}
         >
           <CustomRadioGroup fieldLabel="Estado">
-            <CustomRadio id="radio1" name="state" value="82" label="Alagoas" />
-            <CustomRadio id="radio2" name="state" value="98" label="Maranhão" />
-            <CustomRadio id="radio3" name="state" value="95" label="Pará" />
-            <CustomRadio id="radio4" name="state" value="86" label="Piauí" />
+            <RadioOptions
+              name="state"
+              options={[
+                { id: 'radio1', value: '82', label: 'Alagoas' },
+                { id: 'radio2', value: '98', label: 'Maranhão' },
+                { id: 'radio3', value: '95', label: 'Pará' },
+                { id: 'radio4', value: '86', label: 'Piauí' },
+              ]}
+            />
           </CustomRadioGroup>
 
           <OutlineInput
