@@ -14,7 +14,7 @@ import {
 
 import OutlineInput from '../OutlineInput';
 import CustomRadioGroup from '../CustomRadioGroup';
-import RadioOptions from '../RadioOptions';
+import RadioOptions from '../CustomRadioGroup/RadioOptions';
 
 import logoWhiteImg from '../../assets/logo-white.svg';
 import { useAuth } from '../../hooks/auth';

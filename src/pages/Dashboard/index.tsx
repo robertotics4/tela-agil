@@ -1,8 +1,9 @@
 import React from 'react';
 
-import { Container, Main } from './styles';
+import { Container } from './styles';
 
 import LeftBar from '../../components/LeftBar';
+import Main from '../../components/Main';
 
 const Dashboard: React.FC = () => {
   return (
