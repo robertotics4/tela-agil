@@ -11,6 +11,11 @@ export const Container = styled.div`
   padding: 24px;
 
   background: #fff;
+  border-bottom: 1px solid #e7e5e5;
+
+  h2 {
+    font-size: 24px;
+  }
 
   button {
     display: flex;
@@ -19,6 +24,7 @@ export const Container = styled.div`
 
     padding: 9px 12px;
 
+    font-size: 16px;
     background: #fff;
     color: #3c1491;
     border-radius: 8px;
