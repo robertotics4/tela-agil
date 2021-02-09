@@ -8,8 +8,8 @@ const devConfig = {
   url: 'http://localhost:3333',
 };
 
-const api = axios.create({
+const authenticationApi = axios.create({
   baseURL: devConfig.url,
 });
 
-export default api;
+export default authenticationApi;

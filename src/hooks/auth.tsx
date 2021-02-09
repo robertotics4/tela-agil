@@ -1,6 +1,6 @@
 import React, { createContext, useCallback, useContext, useState } from 'react';
 
-import api from '../services/api';
+import authenticationApi from '../services/authenticationApi';
 
 interface User {
   id: string;
@@ -36,10 +36,10 @@ const AuthProvider: React.FC = ({ children }) => {
   });
 
   const signIn = useCallback(async ({ username, password }) => {
-    api.defaults.headers.Autorizacao =
+    authenticationApi.defaults.headers.Autorizacao =
       'yuS3txGkbzhzVvCOS1BbI3U4zRVC+ov58+TUdr7ocNuVwvVyP+95gNwMX+pwx/uR';
 
-    const response = await api.post(
+    const response = await authenticationApi.post(
       '/integracaoca/api/autenticacao/autenticar/',
       {
         Usuario: username,
@@ -54,9 +54,12 @@ const AuthProvider: React.FC = ({ children }) => {
 
     const { IdUsuario, NomeUsuario } = response.data;
 
+    const splittedName = NomeUsuario.split(' ');
+    const uppercaseName = `${splittedName[0]} ${splittedName[1]}`.toUpperCase();
+
     const user = {
       id: IdUsuario.toString(),
-      name: NomeUsuario,
+      name: uppercaseName,
     };
 
     localStorage.setItem('@TelaAgil:user', JSON.stringify(user));
