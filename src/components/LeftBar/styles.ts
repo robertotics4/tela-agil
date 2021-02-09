@@ -109,12 +109,15 @@ export const WhiteButton = styled(Button)`
 export const Cronometro = styled.div`
   display: flex;
   flex-direction: column;
-  position: absolute;
   bottom: 24px;
+
+  position: fixed;
+  z-index: 10;
 
   line-height: 29px;
 
   span {
+    margin-top: auto;
     font-size: 16px;
     color: #fff;
   }
