@@ -1,9 +1,6 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  grid-column: 1 / 2;
-  grid-row: 1 / 3;
-
   display: flex;
   flex-direction: column;
 
@@ -25,27 +22,19 @@ export const Content = styled.div`
     grid-template-columns: repeat(2, 1fr);
     grid-gap: 14px;
 
-    & + div {
-      margin-top: 32px;
-    }
-
     label {
       display: block;
 
       font-size: 12px;
       font-weight: bold;
-      line-height: 18px;
+      line-height: 16px;
       color: #000;
 
       p {
         font-size: 14px;
         font-weight: 400;
-        line-height: 18px;
+        line-height: 16px;
         color: #4f4f4f;
-      }
-
-      &:last-child {
-        grid-column: 1 / 3;
       }
     }
   }
