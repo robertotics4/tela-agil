@@ -25,6 +25,11 @@ const ClientData: React.FC = () => {
           </label>
 
           <label>
+            RG
+            <p>11.153.118-4</p>
+          </label>
+
+          <label>
             DATA DE NASCIMENTO
             <p>01/07/1957</p>
           </label>

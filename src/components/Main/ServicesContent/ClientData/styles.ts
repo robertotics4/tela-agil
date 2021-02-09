@@ -14,23 +14,31 @@ export const Content = styled.div`
   background: #fff;
   border: 1px solid #e7e5e5;
 
-  padding: 16px;
+  padding: 24px;
   margin-top: 8px;
 
   div {
-    display: flex;
-    flex-direction: row;
-  }
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 14px;
 
-  label {
-    font-size: 12px;
-    font-weight: bold;
-    color: #000;
+    label {
+      display: block;
+      margin: 0 8px;
 
-    p {
-      font-size: 14px;
-      color: #4f4f4f;
-      font-weight: 400;
+      font-size: 12px;
+      font-weight: bold;
+      color: #000;
+
+      p {
+        font-size: 14px;
+        color: #4f4f4f;
+        font-weight: 400;
+      }
+
+      &:last-child {
+        background: yellow;
+      }
     }
   }
 `;

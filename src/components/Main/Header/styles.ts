@@ -5,8 +5,8 @@ export const Container = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
 
-  max-height: 72px;
   width: 100%;
   padding: 24px;
 
