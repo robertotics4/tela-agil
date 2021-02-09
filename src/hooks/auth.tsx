@@ -36,17 +36,21 @@ const AuthProvider: React.FC = ({ children }) => {
   });
 
   const signIn = useCallback(async ({ username, password }) => {
-    // const response = await api.post('/autenticacao/autenticar', {
-    //   Usuario: username,
-    //   Senha: password,
-    //   EmpresaId: 101,
-    //   Navegador: '',
-    //   Dispositivo: '',
-    //   Ip: '',
-    //   Informacoes: null,
-    // });
+    api.defaults.headers.Autorizacao =
+      'yuS3txGkbzhzVvCOS1BbI3U4zRVC+ov58+TUdr7ocNuVwvVyP+95gNwMX+pwx/uR';
 
-    const response = await api.get('/autenticacao');
+    const response = await api.post(
+      '/integracaoca/api/autenticacao/autenticar/',
+      {
+        Usuario: username,
+        Senha: password,
+        EmpresaId: 101,
+        Navegador: '',
+        Dispositivo: '',
+        Ip: '',
+        Informacoes: null,
+      },
+    );
 
     const { IdUsuario, NomeUsuario } = response.data;
 
