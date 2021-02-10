@@ -18,20 +18,33 @@ import RadioOptions from '../CustomRadioGroup/RadioOptions';
 
 import logoWhiteImg from '../../assets/logo-white.svg';
 import { useAuth } from '../../hooks/auth';
+import { useCustomerService } from '../../hooks/customerService';
 
 interface StartServiceFormData {
-  stateCode: string;
+  state: string;
   contract: string;
   cpf: string;
 }
 
 const LeftBar: React.FC = () => {
   const { user, signOut } = useAuth();
+  const { getCustomer } = useCustomerService();
   const formRef = useRef<FormHandles>(null);
 
-  const handleSubmit = useCallback(async (data: StartServiceFormData) => {
-    console.log(data);
-  }, []);
+  const handleSubmit = useCallback(
+    async (data: StartServiceFormData) => {
+      try {
+        await getCustomer({
+          stateCode: data.state[0],
+          contract: data.contract,
+          cpf: data.cpf,
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    [getCustomer],
+  );
 
   return (
     <Container>

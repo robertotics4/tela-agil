@@ -28,7 +28,7 @@
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "warn",
       "react/jsx-props-no-spreading": "off",
-      "jsx-a11y/label-has-associated-control": "warn",
+      "jsx-a11y/label-has-associated-control": "off",
       "react/prop-types": "off",
       "no-use-before-define": "off",
       "no-unused-expressions": "off",

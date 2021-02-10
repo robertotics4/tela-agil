@@ -1,8 +1,29 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { format } from 'date-fns';
+import { useCustomerService } from '../../../../hooks/customerService';
 
 import { Container, Content } from './styles';
 
 const ClientData: React.FC = () => {
+  const { customer } = useCustomerService();
+
+  console.log(customer.contacts);
+
+  const formattedDayOfBirth = useMemo(() => {
+    return format(new Date(customer.dayOfBirth), 'dd/MM/yyyy');
+  }, [customer.dayOfBirth]);
+
+  const formattedAddress = useMemo(() => {
+    const { address } = customer;
+    return `${address.publicArea}, ${address.number} ${address.complement}, ${address.neighborhood}, ${address.city} - ${address.uf}, CEP: ${address.postalCode}. ${address.referencePoint}`;
+  }, [customer]);
+
+  // const formattedPhones = useMemo(() => {
+  //   const formattedPhone = customer.contacts.phones.map((item, index) => {
+
+  //   });
+  // }, [customer.contacts.phones]);
+
   return (
     <Container>
       <h3>Dados do cliente</h3>
@@ -11,78 +32,75 @@ const ClientData: React.FC = () => {
         <div>
           <label>
             NOME COMPLETO
-            <p>Maria Ferreira da Silva Campos</p>
+            <p>{customer.name}</p>
           </label>
 
           <label>
             FATURA POR E-MAIL
-            <p>Sim</p>
+            <p>{customer.emailInvoice ? 'Sim' : 'Não'}</p>
           </label>
 
           <label>
             CPF
-            <p>279.807.874-12</p>
+            <p>{customer.cpf}</p>
           </label>
 
           <label>
             RG
-            <p>11.153.118-4</p>
+            <p>{customer.rg}</p>
           </label>
 
           <label>
             DATA DE NASCIMENTO
-            <p>01/07/1957</p>
+            <p>{formattedDayOfBirth}</p>
           </label>
 
           <label>
             PN
-            <p>0065489</p>
+            <p>{customer.pn}</p>
           </label>
 
           <label>
             ENDEREÇO DO CLIENTE
-            <p>
-              Rua Campo Grande, nº 07, Centro, São Luís - MA, CEP: 65000-000.
-              Próximo à quadra velha atrás da avenida Vitorino Freire
-            </p>
+            <p>{formattedAddress}</p>
           </label>
         </div>
 
         <div>
           <label>
             PERFIL DO CLIENTE
-            <p>PF</p>
+            <p>{customer.profile}</p>
           </label>
 
           <label>
             TIPO DO PN
-            <p>VARJ</p>
+            <p>{customer.pnType}</p>
           </label>
 
           <label>
             CONTRATO(S) ATIVO(S)
-            <p>1</p>
+            <p>{customer.numberOfActiveContracts}</p>
           </label>
 
           <label>
             APTO A NEGOCIAR
-            <p>Sim</p>
+            <p>{customer.ableToNegotiate ? 'Sim' : 'Não'}</p>
           </label>
 
-          <label>
+          {/* <label>
             CELULAR
-            <p>(98) 99999-9999</p>
+            <p>{customer.cellPhone}</p>
           </label>
 
-          <label>
+           <label>
             FIXO
-            <p>(98) 3000-0000</p>
+            <p>{customer.phone}</p>
           </label>
 
           <label>
             E-MAIL
-            <p>mariaferreira.silva@gmail.com</p>
-          </label>
+            <p>{customer.email}</p>
+          </label> */}
         </div>
       </Content>
     </Container>
