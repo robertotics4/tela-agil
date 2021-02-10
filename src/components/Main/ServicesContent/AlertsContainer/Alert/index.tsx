@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiArrowRightCircle } from 'react-icons/fi';
+import { IoChevronForwardCircleOutline } from 'react-icons/io5';
 
 import { Container } from './styles';
 
@@ -15,7 +15,7 @@ const Alert: React.FC = () => {
         </p>
       </div>
 
-      <FiArrowRightCircle size={32} />
+      <IoChevronForwardCircleOutline size={32} />
     </Container>
   );
 };

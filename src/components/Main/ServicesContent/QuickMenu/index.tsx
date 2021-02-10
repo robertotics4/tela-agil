@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiZap } from 'react-icons/fi';
+import { BsLightningFill } from 'react-icons/bs';
 
 import { Container, Content } from './styles';
 
@@ -11,7 +11,7 @@ const QuickMenu: React.FC = () => {
       <Content>
         <div>
           <button type="button">
-            <FiZap color="#fff" size={20} />
+            <BsLightningFill color="#fff" size={20} />
           </button>
 
           <span>Falta de energia</span>
@@ -19,7 +19,7 @@ const QuickMenu: React.FC = () => {
 
         <div>
           <button type="button">
-            <FiZap color="#fff" size={20} />
+            <BsLightningFill color="#fff" size={20} />
           </button>
 
           <span>Falta de energia</span>
@@ -27,7 +27,7 @@ const QuickMenu: React.FC = () => {
 
         <div>
           <button type="button">
-            <FiZap color="#fff" size={20} />
+            <BsLightningFill color="#fff" size={20} />
           </button>
 
           <span>Falta de energia</span>
@@ -35,7 +35,7 @@ const QuickMenu: React.FC = () => {
 
         <div>
           <button type="button">
-            <FiZap color="#fff" size={20} />
+            <BsLightningFill color="#fff" size={20} />
           </button>
 
           <span>Falta de energia</span>
@@ -43,7 +43,7 @@ const QuickMenu: React.FC = () => {
 
         <div>
           <button type="button">
-            <FiZap color="#fff" size={20} />
+            <BsLightningFill color="#fff" size={20} />
           </button>
 
           <span>Falta de energia</span>
@@ -51,7 +51,7 @@ const QuickMenu: React.FC = () => {
 
         <div>
           <button type="button">
-            <FiZap color="#fff" size={20} />
+            <BsLightningFill color="#fff" size={20} />
           </button>
 
           <span>Falta de energia</span>
@@ -59,7 +59,7 @@ const QuickMenu: React.FC = () => {
 
         <div>
           <button type="button">
-            <FiZap color="#fff" size={20} />
+            <BsLightningFill color="#fff" size={20} />
           </button>
 
           <span>Falta de energia</span>
@@ -67,7 +67,7 @@ const QuickMenu: React.FC = () => {
 
         <div>
           <button type="button">
-            <FiZap color="#fff" size={20} />
+            <BsLightningFill color="#fff" size={20} />
           </button>
 
           <span>Falta de energia</span>

@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  grid-column: 1 / 3;
-  grid-row: 3 / 4;
-
   display: flex;
   flex-direction: column;
+
+  width: 100%;
+  margin-top: 24px;
 
   h3 {
     font-size: 16px;
