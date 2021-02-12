@@ -7,6 +7,7 @@ import { useHistory } from 'react-router-dom';
 
 import { useAuth } from '../../hooks/auth';
 import { useToast } from '../../hooks/toast';
+import { useLoading } from '../../hooks/loading';
 
 import getValidationErrors from '../../utils/getValidationErrors';
 
@@ -27,12 +28,15 @@ const SignIn: React.FC = () => {
 
   const { signIn } = useAuth();
   const { addToast } = useToast();
+  const { toggleLoading } = useLoading();
 
   const history = useHistory();
 
   const handleSubmit = useCallback(
     async (data: SignInFormData) => {
       try {
+        toggleLoading();
+
         formRef.current?.setErrors({});
 
         const schema = Yup.object().shape({
@@ -49,6 +53,8 @@ const SignIn: React.FC = () => {
           password: data.password,
         });
 
+        toggleLoading();
+
         history.push('/dashboard');
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
@@ -64,9 +70,11 @@ const SignIn: React.FC = () => {
           description:
             'Ocorreu um erro ao fazer o login, cheque as credenciais',
         });
+      } finally {
+        toggleLoading();
       }
     },
-    [signIn, addToast, history],
+    [signIn, addToast, history, toggleLoading],
   );
 
   return (
