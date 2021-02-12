@@ -24,7 +24,6 @@ import RadioOptions from '../CustomRadioGroup/RadioOptions';
 import logoWhiteImg from '../../assets/logo-white.svg';
 
 import { useAuth } from '../../hooks/auth';
-import { useToast } from '../../hooks/toast';
 import { useCustomerService } from '../../hooks/customerService';
 
 interface StartServiceFormData {
@@ -35,9 +34,13 @@ interface StartServiceFormData {
 
 const LeftBar: React.FC = () => {
   const { user, signOut } = useAuth();
-  const { addToast } = useToast();
 
-  const { getCustomer, customer, finishService } = useCustomerService();
+  const {
+    startService,
+    customer,
+    finishService,
+    serviceStarted,
+  } = useCustomerService();
 
   const formRef = useRef<FormHandles>(null);
 
@@ -59,7 +62,7 @@ const LeftBar: React.FC = () => {
           abortEarly: false,
         });
 
-        await getCustomer({
+        await startService({
           stateCode: data.state[0],
           contract: data.contract,
           cpf: data.cpf,
@@ -69,20 +72,10 @@ const LeftBar: React.FC = () => {
           const errors = getValidationErrors(err);
 
           formRef.current?.setErrors(errors);
-          return;
         }
-
-        addToast({
-          type: 'error',
-          title: 'Erro no atendimento',
-          description:
-            'Ocorreu um erro ao iniciar o atendimento, cheque as informações do cliente',
-        });
-
-        finishService();
       }
     },
-    [getCustomer, addToast, finishService],
+    [startService],
   );
 
   const handleFinishService = useCallback(() => {
@@ -138,7 +131,7 @@ const LeftBar: React.FC = () => {
             autoComplete="off"
           />
 
-          {customer ? (
+          {serviceStarted && customer ? (
             <FinishServiceButton type="button" onClick={handleFinishService}>
               Encerrar atendimento
             </FinishServiceButton>
@@ -148,7 +141,7 @@ const LeftBar: React.FC = () => {
             </StartServiceButton>
           )}
 
-          {customer && (
+          {serviceStarted && customer && (
             <Cronometro>
               <span>Tempo de atendimento:</span>
               <h1>00:01</h1>

@@ -8,13 +8,13 @@ import LeftBar from '../../components/LeftBar';
 import Main from '../../components/Main';
 
 const Dashboard: React.FC = () => {
-  const { customer } = useCustomerService();
+  const { customer, serviceStarted } = useCustomerService();
 
   return (
     <Container>
       <LeftBar />
 
-      {customer ? (
+      {serviceStarted && customer ? (
         <Main />
       ) : (
         <WaitingForService>

@@ -1,6 +1,8 @@
 import React, { createContext, useCallback, useContext, useState } from 'react';
 import customerDataApi from '../services/customerDataApi';
 
+import { useToast } from './toast';
+
 import Customer from '../types/Customer';
 
 import extractResponseData from '../utils/extractResponseData';
@@ -17,7 +19,9 @@ interface GetCustomerData {
 
 interface CustomerServiceContextData {
   customer: Customer;
+  serviceStarted: boolean;
   getCustomer(customerData: GetCustomerData): Promise<void>;
+  startService({ stateCode, contract, cpf }: GetCustomerData): Promise<void>;
   finishService(): void;
 }
 
@@ -26,19 +30,30 @@ const CustomerServiceContext = createContext<CustomerServiceContextData>(
 );
 
 const CustomerServiceProvider: React.FC = ({ children }) => {
-  const [data, setData] = useState<CustomerServiceState>(() => {
-    const customer = localStorage.getItem('@TelaAgil:customer');
+  const [serviceStarted, setServiceStarted] = useState(false);
+
+  const [
+    customerServiceData,
+    setCustomerServiceData,
+  ] = useState<CustomerServiceState>(() => {
+    const storagedCustomerServiceData = localStorage.getItem(
+      '@TelaAgil:customerServiceData',
+    );
 
     let mergedData;
 
-    if (customer) {
-      mergedData = { customer: JSON.parse(customer) };
+    if (storagedCustomerServiceData) {
+      mergedData = {
+        customer: JSON.parse(storagedCustomerServiceData),
+      };
 
       return mergedData;
     }
 
     return {} as CustomerServiceState;
   });
+
+  const { addToast } = useToast();
 
   const getCustomer = useCallback(
     async ({ stateCode, contract, cpf }: GetCustomerData) => {
@@ -54,21 +69,53 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
 
       const { customer } = extractResponseData(response);
 
-      localStorage.setItem('@TelaAgil:customer', JSON.stringify(customer));
+      localStorage.setItem(
+        '@TelaAgil:customerServiceData',
+        JSON.stringify(customer),
+      );
+
+      setCustomerServiceData({ customer });
     },
     [],
   );
 
+  const startService = useCallback(
+    async ({ stateCode, contract, cpf }: GetCustomerData) => {
+      try {
+        await getCustomer({
+          stateCode,
+          contract,
+          cpf,
+        });
+
+        setServiceStarted(true);
+      } catch {
+        addToast({
+          type: 'error',
+          title: 'Erro no atendimento',
+          description:
+            'Ocorreu um erro ao iniciar o atendimento, cheque as informações do cliente',
+        });
+      }
+    },
+    [getCustomer, addToast],
+  );
+
   const finishService = useCallback(() => {
-    localStorage.removeItem('@TelaAgil:customer');
-    setData({} as CustomerServiceContextData);
+    localStorage.removeItem('@TelaAgil:customerServiceData');
+
+    setCustomerServiceData({} as CustomerServiceContextData);
+
+    setServiceStarted(false);
   }, []);
 
   return (
     <CustomerServiceContext.Provider
       value={{
-        customer: data.customer,
+        customer: customerServiceData.customer,
+        serviceStarted,
         getCustomer,
+        startService,
         finishService,
       }}
     >
