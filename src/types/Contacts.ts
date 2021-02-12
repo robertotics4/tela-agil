@@ -1,9 +1,7 @@
-export interface Phone {
-  type: string;
-  number: string;
-}
-
 export interface Contacts {
-  phones: Phone[];
+  phones: {
+    landline: string[];
+    cellPhone: string[];
+  };
   email: string;
 }

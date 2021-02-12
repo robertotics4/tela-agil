@@ -1,15 +1,26 @@
 import React from 'react';
 
-import { Container } from './styles';
+import { Container, WaitingForService } from './styles';
+
+import { useCustomerService } from '../../hooks/customerService';
 
 import LeftBar from '../../components/LeftBar';
 import Main from '../../components/Main';
 
 const Dashboard: React.FC = () => {
+  const { customer } = useCustomerService();
+
   return (
     <Container>
       <LeftBar />
-      <Main />
+
+      {customer ? (
+        <Main />
+      ) : (
+        <WaitingForService>
+          <h2>Aguardando atendimento</h2>
+        </WaitingForService>
+      )}
     </Container>
   );
 };

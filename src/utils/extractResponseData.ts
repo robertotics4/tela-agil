@@ -2,7 +2,6 @@ import { AxiosResponse } from 'axios';
 import { parseISO } from 'date-fns';
 
 import Customer from '../types/Customer';
-import { Phone } from '../types/Contacts';
 
 interface ExtractedData {
   customer: Customer;
@@ -19,14 +18,19 @@ function extractResponseData(response: AxiosResponse): ExtractedData {
   const { endereco } = cliente[0];
   const { contatos } = cliente[0];
 
-  const phones: Phone[] = contatos.telefones.map((phone: ResponsePhone) => {
-    const mappedPhone: Phone = {
-      type: phone.tipoTelefone,
-      number: phone.numeroTelefone,
-    };
+  const landline = contatos.telefones
+    .filter(
+      (telefone: ResponsePhone) =>
+        telefone.numeroTelefone && telefone.tipoTelefone === 'R',
+    )
+    .map((telefone: ResponsePhone) => telefone.numeroTelefone);
 
-    return mappedPhone;
-  });
+  const cellPhone = contatos.telefones
+    .filter(
+      (telefone: ResponsePhone) =>
+        telefone.numeroTelefone && telefone.tipoTelefone === 'C',
+    )
+    .map((telefone: ResponsePhone) => telefone.numeroTelefone);
 
   const customer: Customer = {
     name: cliente[0].nome,
@@ -50,7 +54,10 @@ function extractResponseData(response: AxiosResponse): ExtractedData {
     numberOfActiveContracts: responseData.numeroContasContratosAtivas,
     ableToNegotiate: false, // hardCoded
     contacts: {
-      phones,
+      phones: {
+        landline,
+        cellPhone,
+      },
       email: contatos.email,
     },
   };

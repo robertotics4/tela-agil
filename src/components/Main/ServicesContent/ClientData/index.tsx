@@ -2,12 +2,12 @@ import React, { useMemo } from 'react';
 import { format } from 'date-fns';
 import { useCustomerService } from '../../../../hooks/customerService';
 
+import { phoneMask } from '../../../../utils/inputMasks';
+
 import { Container, Content } from './styles';
 
 const ClientData: React.FC = () => {
   const { customer } = useCustomerService();
-
-  console.log(customer.contacts);
 
   const formattedDayOfBirth = useMemo(() => {
     return format(new Date(customer.dayOfBirth), 'dd/MM/yyyy');
@@ -18,11 +18,33 @@ const ClientData: React.FC = () => {
     return `${address.publicArea}, ${address.number} ${address.complement}, ${address.neighborhood}, ${address.city} - ${address.uf}, CEP: ${address.postalCode}. ${address.referencePoint}`;
   }, [customer]);
 
-  // const formattedPhones = useMemo(() => {
-  //   const formattedPhone = customer.contacts.phones.map((item, index) => {
+  const formattedLandlines = useMemo(() => {
+    const landlines = customer.contacts.phones.landline.map((item, index) => {
+      item = phoneMask(item);
 
-  //   });
-  // }, [customer.contacts.phones]);
+      if (index > 0) {
+        return `/ ${item}`;
+      }
+
+      return item;
+    });
+
+    return landlines;
+  }, [customer.contacts.phones.landline]);
+
+  const formattedCellPhones = useMemo(() => {
+    const cellPhones = customer.contacts.phones.cellPhone.map((item, index) => {
+      item = phoneMask(item);
+
+      if (index > 0) {
+        return ` / ${item}`;
+      }
+
+      return item;
+    });
+
+    return cellPhones;
+  }, [customer.contacts.phones.cellPhone]);
 
   return (
     <Container>
@@ -87,20 +109,20 @@ const ClientData: React.FC = () => {
             <p>{customer.ableToNegotiate ? 'Sim' : 'Não'}</p>
           </label>
 
-          {/* <label>
+          <label>
             CELULAR
-            <p>{customer.cellPhone}</p>
+            <p>{formattedCellPhones}</p>
           </label>
 
-           <label>
+          <label>
             FIXO
-            <p>{customer.phone}</p>
+            <p>{formattedLandlines}</p>
           </label>
 
           <label>
             E-MAIL
-            <p>{customer.email}</p>
-          </label> */}
+            <p>{customer.contacts.email}</p>
+          </label>
         </div>
       </Content>
     </Container>

@@ -18,6 +18,7 @@ interface GetCustomerData {
 interface CustomerServiceContextData {
   customer: Customer;
   getCustomer(customerData: GetCustomerData): Promise<void>;
+  finishService(): void;
 }
 
 const CustomerServiceContext = createContext<CustomerServiceContextData>(
@@ -54,15 +55,22 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
       const { customer } = extractResponseData(response);
 
       localStorage.setItem('@TelaAgil:customer', JSON.stringify(customer));
-
-      setData({ customer });
     },
     [],
   );
 
+  const finishService = useCallback(() => {
+    localStorage.removeItem('@TelaAgil:customer');
+    setData({} as CustomerServiceContextData);
+  }, []);
+
   return (
     <CustomerServiceContext.Provider
-      value={{ customer: data.customer, getCustomer }}
+      value={{
+        customer: data.customer,
+        getCustomer,
+        finishService,
+      }}
     >
       {children}
     </CustomerServiceContext.Provider>

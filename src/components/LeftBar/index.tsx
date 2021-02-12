@@ -2,22 +2,29 @@ import React, { useCallback, useRef } from 'react';
 import { FiPower } from 'react-icons/fi';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
+import * as Yup from 'yup';
+
+import getValidationErrors from '../../utils/getValidationErrors';
 
 import {
   Container,
   UserMenu,
   Logout,
   ServiceForm,
-  WhiteButton,
+  StartServiceButton,
+  FinishServiceButton,
   Cronometro,
 } from './styles';
 
 import OutlineInput from '../OutlineInput';
+import OutlineInputMask from '../OutlineInputMask';
 import CustomRadioGroup from '../CustomRadioGroup';
 import RadioOptions from '../CustomRadioGroup/RadioOptions';
 
 import logoWhiteImg from '../../assets/logo-white.svg';
+
 import { useAuth } from '../../hooks/auth';
+import { useToast } from '../../hooks/toast';
 import { useCustomerService } from '../../hooks/customerService';
 
 interface StartServiceFormData {
@@ -28,23 +35,59 @@ interface StartServiceFormData {
 
 const LeftBar: React.FC = () => {
   const { user, signOut } = useAuth();
-  const { getCustomer } = useCustomerService();
+  const { addToast } = useToast();
+
+  const { getCustomer, customer, finishService } = useCustomerService();
+
   const formRef = useRef<FormHandles>(null);
 
   const handleSubmit = useCallback(
     async (data: StartServiceFormData) => {
       try {
+        formRef.current?.setErrors({});
+
+        const schema = Yup.object().shape({
+          contract: Yup.string().when('cpf', {
+            is: (val: string) => !val.length,
+            then: Yup.string().required('Conta contrato obrigatória'),
+            otherwise: Yup.string(),
+          }),
+          cpf: Yup.string(),
+        });
+
+        await schema.validate(data, {
+          abortEarly: false,
+        });
+
         await getCustomer({
           stateCode: data.state[0],
           contract: data.contract,
           cpf: data.cpf,
         });
       } catch (err) {
-        console.log(err);
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationErrors(err);
+
+          formRef.current?.setErrors(errors);
+          return;
+        }
+
+        addToast({
+          type: 'error',
+          title: 'Erro no atendimento',
+          description:
+            'Ocorreu um erro ao iniciar o atendimento, cheque as informações do cliente',
+        });
+
+        finishService();
       }
     },
-    [getCustomer],
+    [getCustomer, addToast, finishService],
   );
+
+  const handleFinishService = useCallback(() => {
+    finishService();
+  }, [finishService]);
 
   return (
     <Container>
@@ -87,19 +130,30 @@ const LeftBar: React.FC = () => {
             autoComplete="off"
           />
 
-          <OutlineInput
+          <OutlineInputMask
             name="cpf"
+            mask="999.999.999-99"
             type="text"
             placeholder="CPF ou CNPJ"
             autoComplete="off"
           />
 
-          <WhiteButton type="submit">Iniciar atendimento</WhiteButton>
+          {customer ? (
+            <FinishServiceButton type="button" onClick={handleFinishService}>
+              Encerrar atendimento
+            </FinishServiceButton>
+          ) : (
+            <StartServiceButton type="submit">
+              Iniciar atendimento
+            </StartServiceButton>
+          )}
 
-          <Cronometro>
-            <span>Tempo de atendimento:</span>
-            <h1>00:01</h1>
-          </Cronometro>
+          {customer && (
+            <Cronometro>
+              <span>Tempo de atendimento:</span>
+              <h1>00:01</h1>
+            </Cronometro>
+          )}
         </Form>
       </ServiceForm>
     </Container>

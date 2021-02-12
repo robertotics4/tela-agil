@@ -53,11 +53,13 @@ export const Logout = styled.div`
 
   &:hover {
     > svg {
-      color: #ffff00;
+      color: #fff;
+      text-shadow: 0 0 4px #fff;
     }
 
     span {
-      color: #ffff00;
+      color: #fff;
+      text-shadow: 0 0 4px #fff;
     }
   }
 
@@ -93,7 +95,7 @@ export const ServiceForm = styled.div`
   }
 `;
 
-export const WhiteButton = styled(Button)`
+export const StartServiceButton = styled(Button)`
   padding: 0 16px;
   height: 40px;
 
@@ -101,8 +103,19 @@ export const WhiteButton = styled(Button)`
   color: #3c1491;
 
   &:hover {
-    /* background: ${shade(0.2, '#fff')}; */
-    background: #ffff00;
+    background: ${shade(0.2, '#fff')};
+  }
+`;
+
+export const FinishServiceButton = styled(Button)`
+  padding: 0 16px;
+  height: 40px;
+
+  background: #ff5353;
+  color: #fff;
+
+  &:hover {
+    background: ${shade(0.2, '#FF5353')};
   }
 `;
 
