@@ -10,12 +10,17 @@ const ClientData: React.FC = () => {
   const { customer } = useCustomerService();
 
   const formattedDayOfBirth = useMemo(() => {
-    return format(new Date(customer.dayOfBirth), 'dd/MM/yyyy');
+    try {
+      const dayOfBirth = format(new Date(customer.dayOfBirth), 'dd/MM/yyyy');
+      return dayOfBirth;
+    } catch {
+      return '';
+    }
   }, [customer.dayOfBirth]);
 
   const formattedAddress = useMemo(() => {
     const { address } = customer;
-    return `${address.publicArea}, ${address.number} ${address.complement}, ${address.neighborhood}, ${address.city} - ${address.uf}, CEP: ${address.postalCode}. ${address.referencePoint}`;
+    return `${address.publicArea}, ${address.number}, ${address.neighborhood}, ${address.city} - ${address.uf}, CEP: ${address.postalCode}. ${address.referencePoint}`;
   }, [customer]);
 
   const formattedLandlines = useMemo(() => {

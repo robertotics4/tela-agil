@@ -70,7 +70,7 @@ const LeftBar: React.FC = () => {
         await startService({
           stateCode: data.state[0],
           contract: data.contract,
-          cpf: data.cpf,
+          cpf: data.cpf.replaceAll('-', '').replaceAll('.', ''),
         });
       } catch (err) {
         if (err instanceof Yup.ValidationError) {

@@ -1,7 +1,7 @@
 interface Address {
   publicArea: string;
   number: number;
-  complement: string;
+  complement?: string;
   neighborhood: string;
   city: string;
   uf: string;

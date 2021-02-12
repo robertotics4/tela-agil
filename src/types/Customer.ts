@@ -3,6 +3,7 @@ import { Contacts } from './Contacts';
 
 interface Customer {
   name: string;
+  surname: string;
   emailInvoice: boolean;
   cpf: string;
   rg: string;
