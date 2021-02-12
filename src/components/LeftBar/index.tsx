@@ -3,6 +3,7 @@ import { FiPower } from 'react-icons/fi';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
+import { useLoading } from 'react-use-loading';
 
 import getValidationErrors from '../../utils/getValidationErrors';
 
@@ -20,6 +21,7 @@ import OutlineInput from '../OutlineInput';
 import OutlineInputMask from '../OutlineInputMask';
 import CustomRadioGroup from '../CustomRadioGroup';
 import RadioOptions from '../CustomRadioGroup/RadioOptions';
+import Loading from '../Loading';
 
 import logoWhiteImg from '../../assets/logo-white.svg';
 
@@ -34,6 +36,7 @@ interface StartServiceFormData {
 
 const LeftBar: React.FC = () => {
   const { user, signOut } = useAuth();
+  const [{ isLoading, message }, { start, stop }] = useLoading();
 
   const {
     startService,
@@ -47,6 +50,8 @@ const LeftBar: React.FC = () => {
   const handleSubmit = useCallback(
     async (data: StartServiceFormData) => {
       try {
+        start('Localizando cliente ...');
+
         formRef.current?.setErrors({});
 
         const schema = Yup.object().shape({
@@ -73,9 +78,11 @@ const LeftBar: React.FC = () => {
 
           formRef.current?.setErrors(errors);
         }
+      } finally {
+        stop();
       }
     },
-    [startService],
+    [startService, start, stop],
   );
 
   const handleFinishService = useCallback(() => {
@@ -149,6 +156,10 @@ const LeftBar: React.FC = () => {
           )}
         </Form>
       </ServiceForm>
+
+      {isLoading && (
+        <Loading isOpen={isLoading} message={message} setIsOpen={stop} />
+      )}
     </Container>
   );
 };

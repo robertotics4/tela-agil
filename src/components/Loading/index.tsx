@@ -6,10 +6,15 @@ import { Content } from './styles';
 
 interface LoadingModalProps {
   isOpen: boolean;
+  message?: string;
   setIsOpen: () => void;
 }
 
-const LoadingModal: React.FC<LoadingModalProps> = ({ isOpen, setIsOpen }) => {
+const LoadingModal: React.FC<LoadingModalProps> = ({
+  isOpen,
+  message,
+  setIsOpen,
+}) => {
   const [modalStatus, setModalStatus] = useState(isOpen);
 
   useEffect(() => {
@@ -36,7 +41,8 @@ const LoadingModal: React.FC<LoadingModalProps> = ({ isOpen, setIsOpen }) => {
       }}
     >
       <Content>
-        <Spinner name="line-spin-fade-loader" fadeIn="none" color="#fff" />
+        <Spinner name="ball-pulse-sync" fadeIn="none" color="#fff" />
+        <h2>{message}</h2>
       </Content>
     </ReactModal>
   );

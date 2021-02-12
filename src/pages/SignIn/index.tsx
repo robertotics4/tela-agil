@@ -1,13 +1,15 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { FiUser, FiLock } from 'react-icons/fi';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
 import { useHistory } from 'react-router-dom';
+import { useLoading } from 'react-use-loading';
+
+import Loading from '../../components/Loading';
 
 import { useAuth } from '../../hooks/auth';
 import { useToast } from '../../hooks/toast';
-import { useLoading } from '../../hooks/loading';
 
 import getValidationErrors from '../../utils/getValidationErrors';
 
@@ -28,14 +30,14 @@ const SignIn: React.FC = () => {
 
   const { signIn } = useAuth();
   const { addToast } = useToast();
-  const { toggleLoading } = useLoading();
+  const [{ isLoading, message }, { start, stop }] = useLoading();
 
   const history = useHistory();
 
   const handleSubmit = useCallback(
     async (data: SignInFormData) => {
       try {
-        toggleLoading();
+        start('Verificando as credenciais do usuário...');
 
         formRef.current?.setErrors({});
 
@@ -53,8 +55,6 @@ const SignIn: React.FC = () => {
           password: data.password,
         });
 
-        toggleLoading();
-
         history.push('/dashboard');
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
@@ -71,11 +71,17 @@ const SignIn: React.FC = () => {
             'Ocorreu um erro ao fazer o login, cheque as credenciais',
         });
       } finally {
-        toggleLoading();
+        stop();
       }
     },
-    [signIn, addToast, history, toggleLoading],
+    [signIn, addToast, history, start, stop],
   );
+
+  useEffect(() => {
+    return () => {
+      stop();
+    };
+  }, [stop]);
 
   return (
     <Container>
@@ -104,6 +110,10 @@ const SignIn: React.FC = () => {
           </Form>
         </AnimationContainer>
       </Content>
+
+      {isLoading && (
+        <Loading isOpen={isLoading} message={message} setIsOpen={stop} />
+      )}
     </Container>
   );
 };
