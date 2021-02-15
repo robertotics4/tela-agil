@@ -1,5 +1,5 @@
 export interface Contacts {
-  phones: {
+  phones?: {
     landline: string[];
     cellPhone: string[];
   };

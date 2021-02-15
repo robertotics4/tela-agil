@@ -6,9 +6,11 @@ import { useToast } from './toast';
 import Customer from '../types/Customer';
 
 import extractResponseData from '../utils/extractResponseData';
+import Installation from '../types/Installation';
 
 interface CustomerServiceState {
   customer: Customer;
+  installation: Installation;
 }
 
 interface GetCustomerData {
@@ -19,6 +21,7 @@ interface GetCustomerData {
 
 interface CustomerServiceContextData {
   customer: Customer;
+  installation: Installation;
   serviceStarted: boolean;
   getCustomer(customerData: GetCustomerData): Promise<void>;
   startService({ stateCode, contract, cpf }: GetCustomerData): Promise<void>;
@@ -30,6 +33,8 @@ const CustomerServiceContext = createContext<CustomerServiceContextData>(
 );
 
 const CustomerServiceProvider: React.FC = ({ children }) => {
+  const { addToast } = useToast();
+
   const [serviceStarted, setServiceStarted] = useState(false);
 
   const [
@@ -40,24 +45,30 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
       '@TelaAgil:customerServiceData',
     );
 
-    let mergedData;
-
     if (storagedCustomerServiceData) {
-      mergedData = {
-        customer: JSON.parse(storagedCustomerServiceData),
-      };
-
-      return mergedData;
+      const { customer, installation } = JSON.parse(
+        storagedCustomerServiceData,
+      );
+      return { customer, installation };
     }
 
     return {} as CustomerServiceState;
   });
 
-  const { addToast } = useToast();
-
   const getCustomer = useCallback(
     async ({ stateCode, contract, cpf }: GetCustomerData) => {
       let url;
+
+      if (cpf && contract) {
+        addToast({
+          type: 'error',
+          title: 'Erro no formulário',
+          description:
+            'Utilize apenas um dos campos (Conta contrato ou CPF / CNPJ)',
+        });
+
+        return;
+      }
 
       if (cpf) {
         url = `/atendimento/v1/clientes?cpf=${cpf}&flagDadosCliente=true&flagStatusInstalacao=true&flagPossuiDebitos=true&flagDadosTecnicos=false&empresaOperadora=${stateCode}&flagNotasAbertas=true&flagNotasEncerradas=true&flagDetalheDebitoCobranca=true&flagDetalheDebitoFatura=true&codigoTransacao=123`;
@@ -67,14 +78,17 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
 
       const response = await customerDataApi.get(url);
 
-      const { customer } = extractResponseData(response, stateCode);
+      const { customer, installation } = extractResponseData(
+        response,
+        stateCode,
+      );
 
       localStorage.setItem(
         '@TelaAgil:customerServiceData',
-        JSON.stringify(customer),
+        JSON.stringify({ customer, installation }),
       );
 
-      setCustomerServiceData({ customer });
+      setCustomerServiceData({ customer, installation });
     },
     [],
   );
@@ -113,6 +127,7 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
     <CustomerServiceContext.Provider
       value={{
         customer: customerServiceData.customer,
+        installation: customerServiceData.installation,
         serviceStarted,
         getCustomer,
         startService,

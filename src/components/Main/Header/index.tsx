@@ -8,7 +8,7 @@ import TagInfo from './TagInfo';
 const Header: React.FC = () => {
   return (
     <Container>
-      <h2>Protocolo: 92837627872</h2>
+      <h2>Protocolo: ------------</h2>
 
       <ImportantInfo>
         <TagInfo type="error" message="Desliga em andamento" />

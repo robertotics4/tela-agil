@@ -6,7 +6,7 @@ interface Address {
   city: string;
   uf: string;
   postalCode: string;
-  referencePoint: string;
+  referencePoint?: string;
 }
 
 export default Address;

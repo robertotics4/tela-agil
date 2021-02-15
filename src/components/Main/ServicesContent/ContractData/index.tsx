@@ -1,8 +1,16 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { Container, Content } from './styles';
 
+import { useCustomerService } from '../../../../hooks/customerService';
+
 const ContractData: React.FC = () => {
+  const { customer, installation } = useCustomerService();
+
+  const formattedContractStatus = useMemo(() => {
+    return installation.status === 'Ligada' ? 'Ativo' : 'Inativo';
+  }, [installation.status]);
+
   return (
     <Container>
       <h3>Dados da conta contrato</h3>
@@ -11,42 +19,42 @@ const ContractData: React.FC = () => {
         <div>
           <label>
             INSTALAÇÃO
-            <p>02345345924</p>
+            <p>{customer.installationNumber}</p>
           </label>
 
           <label>
-            CLASSE
-            <p>RESIDENCIAL</p>
+            SUBCLASSE
+            <p>{installation.technicalData.subclass}</p>
           </label>
 
           <label>
             STATUS DA INSTALAÇÃO
-            <p>Desliga em andamento</p>
+            <p>{installation.status}</p>
           </label>
 
           <label>
             STATUS DO CONTRATO
-            <p>Ativo</p>
+            <p>{formattedContractStatus}</p>
           </label>
 
           <label>
             BAIXA RENDA
-            <p>Não</p>
+            <p> </p>
           </label>
 
           <label>
             CONSUMO IRREGULAR
-            <p>Não</p>
+            <p> </p>
           </label>
 
           <label>
             DESLIGAMENTO PROGRAMADO
-            <p>Não</p>
+            <p>{installation.scheduledShutdown ? 'Sim' : 'Não'}</p>
           </label>
 
           <label>
             CONSUMO MÉDIO (12 MESES)
-            <p>1727 kWh</p>
+            <p> </p>
           </label>
         </div>
       </Content>

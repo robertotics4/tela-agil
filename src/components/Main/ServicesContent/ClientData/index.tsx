@@ -2,54 +2,68 @@ import React, { useMemo } from 'react';
 import { format } from 'date-fns';
 import { useCustomerService } from '../../../../hooks/customerService';
 
-import { phoneMask } from '../../../../utils/inputMasks';
-
 import { Container, Content } from './styles';
 
 const ClientData: React.FC = () => {
   const { customer } = useCustomerService();
+
+  const formattedFullName = useMemo(() => {
+    return `${customer.name} ${customer.surname}`;
+  }, [customer.name, customer.surname]);
 
   const formattedDayOfBirth = useMemo(() => {
     try {
       const dayOfBirth = format(new Date(customer.dayOfBirth), 'dd/MM/yyyy');
       return dayOfBirth;
     } catch {
-      return '';
+      return '-';
     }
   }, [customer.dayOfBirth]);
 
   const formattedAddress = useMemo(() => {
     const { address } = customer;
-    return `${address.publicArea}, ${address.number}, ${address.neighborhood}, ${address.city} - ${address.uf}, CEP: ${address.postalCode}. ${address.referencePoint}`;
+
+    const complement = address.complement ? `, ${address.complement}` : '';
+    const referencePoint = address.referencePoint
+      ? `, ${address.referencePoint}`
+      : '';
+
+    return `${address.publicArea}, Nº ${address.number}, ${address.neighborhood}${complement}, ${address.city} - ${address.uf}, CEP: ${address.postalCode}. ${referencePoint}`;
   }, [customer]);
 
   const formattedLandlines = useMemo(() => {
-    const landlines = customer.contacts.phones.landline.map((item, index) => {
-      item = phoneMask(item);
+    if (customer.contacts.phones) {
+      const landlines = customer.contacts.phones.landline.map((item, index) => {
+        if (index > 0) {
+          return `/ ${item}`;
+        }
 
-      if (index > 0) {
-        return `/ ${item}`;
-      }
+        return item;
+      });
 
-      return item;
-    });
+      return landlines;
+    }
 
-    return landlines;
-  }, [customer.contacts.phones.landline]);
+    return '-';
+  }, [customer.contacts.phones]);
 
   const formattedCellPhones = useMemo(() => {
-    const cellPhones = customer.contacts.phones.cellPhone.map((item, index) => {
-      item = phoneMask(item);
+    if (customer.contacts.phones) {
+      const cellPhones = customer.contacts.phones.cellPhone.map(
+        (item, index) => {
+          if (index > 0) {
+            return ` / ${item}`;
+          }
 
-      if (index > 0) {
-        return ` / ${item}`;
-      }
+          return item;
+        },
+      );
 
-      return item;
-    });
+      return cellPhones;
+    }
 
-    return cellPhones;
-  }, [customer.contacts.phones.cellPhone]);
+    return '';
+  }, [customer.contacts.phones]);
 
   return (
     <Container>
@@ -59,12 +73,12 @@ const ClientData: React.FC = () => {
         <div>
           <label>
             NOME COMPLETO
-            <p>{customer.name}</p>
+            <p>{formattedFullName}</p>
           </label>
 
           <label>
             FATURA POR E-MAIL
-            <p>{customer.emailInvoice ? 'Sim' : 'Não'}</p>
+            <p>Não</p>
           </label>
 
           <label>
@@ -84,7 +98,7 @@ const ClientData: React.FC = () => {
 
           <label>
             PN
-            <p>{customer.pn}</p>
+            <p> </p>
           </label>
 
           <label>
@@ -96,22 +110,22 @@ const ClientData: React.FC = () => {
         <div>
           <label>
             PERFIL DO CLIENTE
-            <p>{customer.profile}</p>
+            <p> </p>
           </label>
 
           <label>
             TIPO DO PN
-            <p>{customer.pnType}</p>
+            <p> </p>
           </label>
 
           <label>
             CONTRATO(S) ATIVO(S)
-            <p>{customer.numberOfActiveContracts}</p>
+            <p> </p>
           </label>
 
           <label>
             APTO A NEGOCIAR
-            <p>{customer.ableToNegotiate ? 'Sim' : 'Não'}</p>
+            <p> </p>
           </label>
 
           <label>

@@ -2,19 +2,18 @@ import Address from './Address';
 import { Contacts } from './Contacts';
 
 interface Customer {
+  contractAccount: string;
   name: string;
   surname: string;
-  emailInvoice: boolean;
-  cpf: string;
-  rg: string;
+  motherName: string;
   dayOfBirth: Date;
-  pn: string;
-  address: Address;
-  profile: string;
-  pnType: string;
-  numberOfActiveContracts: number;
-  ableToNegotiate: boolean;
+  rg: string | null;
+  cpf: string;
   contacts: Contacts;
+  address: Address;
+  phaseNumber: number;
+  bp: string;
+  installationNumber: string;
 }
 
 export default Customer;
