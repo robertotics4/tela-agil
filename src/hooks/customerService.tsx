@@ -4,13 +4,15 @@ import customerDataApi from '../services/customerDataApi';
 import { useToast } from './toast';
 
 import Customer from '../types/Customer';
+import Installation from '../types/Installation';
+import Debits from '../types/Debits';
 
 import extractResponseData from '../utils/extractResponseData';
-import Installation from '../types/Installation';
 
 interface CustomerServiceState {
   customer: Customer;
   installation: Installation;
+  debits: Debits;
 }
 
 interface GetCustomerData {
@@ -22,6 +24,7 @@ interface GetCustomerData {
 interface CustomerServiceContextData {
   customer: Customer;
   installation: Installation;
+  debits: Debits;
   serviceStarted: boolean;
   getCustomer(customerData: GetCustomerData): Promise<void>;
   startService({ stateCode, contract, cpf }: GetCustomerData): Promise<void>;
@@ -46,10 +49,10 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
     );
 
     if (storagedCustomerServiceData) {
-      const { customer, installation } = JSON.parse(
+      const { customer, installation, debits } = JSON.parse(
         storagedCustomerServiceData,
       );
-      return { customer, installation };
+      return { customer, installation, debits };
     }
 
     return {} as CustomerServiceState;
@@ -78,19 +81,19 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
 
       const response = await customerDataApi.get(url);
 
-      const { customer, installation } = extractResponseData(
+      const { customer, installation, debits } = extractResponseData(
         response,
         stateCode,
       );
 
       localStorage.setItem(
         '@TelaAgil:customerServiceData',
-        JSON.stringify({ customer, installation }),
+        JSON.stringify({ customer, installation, debits }),
       );
 
-      setCustomerServiceData({ customer, installation });
+      setCustomerServiceData({ customer, installation, debits });
     },
-    [],
+    [addToast],
   );
 
   const startService = useCallback(
@@ -128,6 +131,7 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
       value={{
         customer: customerServiceData.customer,
         installation: customerServiceData.installation,
+        debits: customerServiceData.debits,
         serviceStarted,
         getCustomer,
         startService,

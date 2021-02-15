@@ -3,17 +3,34 @@ import { BiTransfer } from 'react-icons/bi';
 
 import { Container, ImportantInfo } from './styles';
 
+import { useCustomerService } from '../../../hooks/customerService';
+
 import TagInfo from './TagInfo';
 
 const Header: React.FC = () => {
+  const { installation, debits } = useCustomerService();
+
   return (
     <Container>
       <h2>Protocolo: ------------</h2>
 
       <ImportantInfo>
-        <TagInfo type="error" message="Desliga em andamento" />
-        <TagInfo type="error" message="Com débitos" />
-        <TagInfo type="success" message="Sem desligamento programado" />
+        <TagInfo
+          type={installation.turnOffInProgress ? 'error' : 'success'}
+          message="Sem desliga em andamento"
+        />
+        <TagInfo
+          type={
+            debits.invoiceDebits.totalAmountInvoiceDebits > 0
+              ? 'error'
+              : 'success'
+          }
+          message="Com débitos"
+        />
+        <TagInfo
+          type={installation.scheduledShutdown ? 'error' : 'success'}
+          message="Sem desligamento programado"
+        />
       </ImportantInfo>
 
       <button type="button">

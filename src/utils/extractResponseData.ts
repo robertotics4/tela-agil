@@ -3,6 +3,7 @@ import { parseISO } from 'date-fns';
 
 import Customer from '../types/Customer';
 import Installation from '../types/Installation';
+import Debits, { InvoiceDebit, InstallmentDebit } from '../types/Debits';
 
 import { phoneMask } from './inputMasks';
 
@@ -11,6 +12,7 @@ import getInstallationSubclassName from './getInstallationSubclassName';
 interface ExtractedData {
   customer: Customer;
   installation: Installation;
+  debits: Debits;
 }
 
 interface ResponsePhone {
@@ -144,6 +146,52 @@ function getInstallationData(
   return installation;
 }
 
+function getDebits(responseDebits: any, stateCode: string): Debits {
+  const { debitosFatura, debitosParcelamento } = responseDebits;
+
+  const invoiceDebits: InvoiceDebit[] = debitosFatura.detalhesDebitoFatura.map(
+    (debit: any) => {
+      return {
+        overdueInvoiceNumber: debit.numeroFaturaVencida,
+        dueDate: parseISO(debit.dataVencimento),
+        invoiceAmount: Number(debit.valorFatura),
+        invoiceReference: debit.referenciaFatura,
+        paymentCode: debit.codigoPagamento,
+      };
+    },
+  );
+
+  const installmentDebits: InstallmentDebit[] = debitosParcelamento.detalhesDebitoParcelamento.map(
+    (debit: any) => {
+      const parsedDebit: InstallmentDebit = {
+        billingDocumentNumber: debit.numeroDocumentoCobranca,
+        invoiceAmount: debit.valorFatura,
+        paymentCode: debit.codigoPagamento,
+      };
+
+      if (stateCode === '82' || stateCode === '86') {
+        parsedDebit.invoiceReference = debit.referenciaFatura;
+      }
+
+      return parsedDebit;
+    },
+  );
+
+  const debits: Debits = {
+    invoiceDebits: {
+      invoiceDebitDetails: invoiceDebits,
+      totalAmountInvoiceDebits: debitosFatura.valorTotalDebitoFatura,
+    },
+    installmentDebits: {
+      installmentDebitDetails: installmentDebits,
+      totalAmountInstallmentDebits:
+        debitosParcelamento.valorTotalDebitoParcelamento,
+    },
+  };
+
+  return debits;
+}
+
 function extractResponseData(
   response: AxiosResponse,
   stateCode: string,
@@ -151,12 +199,13 @@ function extractResponseData(
   const { data: responseData } = response.data;
 
   const customer = getCustomerData(response, stateCode);
-
   const installation = getInstallationData(responseData.instalacao, stateCode);
+  const debits = getDebits(responseData.debitos, stateCode);
 
   return {
     customer,
     installation,
+    debits,
   };
 }
 

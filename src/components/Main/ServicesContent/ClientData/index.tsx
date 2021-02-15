@@ -62,7 +62,7 @@ const ClientData: React.FC = () => {
       return cellPhones;
     }
 
-    return '';
+    return '-';
   }, [customer.contacts.phones]);
 
   return (
@@ -78,7 +78,7 @@ const ClientData: React.FC = () => {
 
           <label>
             FATURA POR E-MAIL
-            <p>Não</p>
+            <p> </p>
           </label>
 
           <label>
