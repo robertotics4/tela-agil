@@ -16,16 +16,26 @@ const Header: React.FC = () => {
 
       <ImportantInfo>
         <TagInfo
-          type={installation.turnOffInProgress ? 'error' : 'success'}
-          message="Sem desliga em andamento"
-        />
-        <TagInfo
           type={
             debits.invoiceDebits.totalAmountInvoiceDebits > 0
               ? 'error'
               : 'success'
           }
           message="Com débitos"
+        />
+        <TagInfo
+          type={
+            installation.individualPowerOutage ||
+            installation.collectivePowerOutage ||
+            installation.powerPhaseOutage
+              ? 'error'
+              : 'success'
+          }
+          message="Falta de energia"
+        />
+        <TagInfo
+          type={installation.turnOffInProgress ? 'error' : 'success'}
+          message="Sem desliga em andamento"
         />
         <TagInfo
           type={installation.scheduledShutdown ? 'error' : 'success'}
