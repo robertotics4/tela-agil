@@ -5971,6 +5971,11 @@ globby@^6.1.0:
     pify "^2.0.0"
     pinkie-promise "^2.0.0"
 
+goober@2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/goober/-/goober-2.0.3.tgz#5069eb8b63644b9496dfd1662c6b31c2d3b22158"
+  integrity sha512-4CgkQXsNWlJiI2ckYde2JWhwli/MKYyVPwxj3WyCE0uEMjNhFyQcbCtvlmtSFAwkmTJda4y3Ujw2PdX/cDZfYg==
+
 got@^9.6.0:
   version "9.6.0"
   resolved "https://registry.yarnpkg.com/got/-/got-9.6.0.tgz#edf45e7d67f99545705de1f7bbeeeb121765ed85"
@@ -10005,6 +10010,13 @@ react-modal@^3.12.1:
     react-lifecycles-compat "^3.0.0"
     warning "^4.0.3"
 
+react-multistep@^5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/react-multistep/-/react-multistep-5.1.0.tgz#4260731fe42097f7e3b6a11e2163cd3f1ed97eee"
+  integrity sha512-xYoDx8lsonmGsYlmqyH5x/CE95ZUTsDf7Sb7EAIX4Ggbr1XcIXeGFw4nr3BpOdDA/41mM5z8m6RPUxtiVgmlLA==
+  dependencies:
+    goober "2.0.3"
+
 react-refresh@^0.8.3:
   version "0.8.3"
   resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.8.3.tgz#721d4657672d400c5e3c75d063c4a85fb2d5d68f"
@@ -11470,11 +11482,6 @@ svgo@^1.0.0, svgo@^1.2.2:
     stable "^0.1.8"
     unquote "~1.1.1"
     util.promisify "~1.0.0"
-
-sweetalert2@^10.15.0:
-  version "10.15.0"
-  resolved "https://registry.yarnpkg.com/sweetalert2/-/sweetalert2-10.15.0.tgz#b387db1fc04aafe50c66d76f6685a80bfaf44791"
-  integrity sha512-zh/4URSGH1b2RrJuPHI9nzcKsg1qMuRCNkmgVILJ+sQavXQn5jRx+ocCUN15vdGi05oavwdbMaXg2qjgr9Lplw==
 
 symbol-tree@^3.2.4:
   version "3.2.4"

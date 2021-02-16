@@ -6,7 +6,7 @@ export const Container = styled.div`
   position: fixed;
   bottom: 24px;
 
-  width: 1048px;
+  width: 1124px;
   margin-top: 24px;
 
   h3 {
@@ -32,6 +32,17 @@ export const Content = styled.div`
     justify-content: center;
     align-items: center;
 
+    &:hover {
+      button {
+        background: #fff;
+        border: 1px solid #3c1491;
+      }
+
+      svg {
+        color: #3c1491;
+      }
+    }
+
     button {
       display: flex;
       align-items: center;
@@ -43,6 +54,10 @@ export const Content = styled.div`
       border: 0;
 
       background: #3c1491;
+
+      svg {
+        color: #fff;
+      }
     }
 
     span {
