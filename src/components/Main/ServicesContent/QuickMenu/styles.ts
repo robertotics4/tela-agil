@@ -1,10 +1,12 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  display: flex;
-  flex-direction: column;
+  display: block;
 
-  width: 100%;
+  position: fixed;
+  bottom: 24px;
+
+  width: 1048px;
   margin-top: 24px;
 
   h3 {
@@ -35,8 +37,8 @@ export const Content = styled.div`
       align-items: center;
       justify-content: center;
 
-      height: 60px;
-      width: 60px;
+      height: 50px;
+      width: 50px;
       border-radius: 50%;
       border: 0;
 
