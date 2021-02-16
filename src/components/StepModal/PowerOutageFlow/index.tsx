@@ -60,10 +60,24 @@ const powerOutageQuestions: Question[] = [
     options: [
       {
         answer: 'Mesmo lugar',
+        nextQuestionId: 'f1-q5',
       },
       {
         answer: 'Desligou de novo',
         nextQuestionId: 'f1-r1',
+      },
+    ],
+  },
+  {
+    id: 'f1-q5',
+    title: 'Posso confirmar sua solicitação?',
+    options: [
+      {
+        answer: 'Sim',
+        nextQuestionId: 'f1-r2',
+      },
+      {
+        answer: 'Não',
       },
     ],
   },
@@ -77,6 +91,15 @@ const powerOutageQuestions: Question[] = [
       },
     ],
   },
+  {
+    id: 'f1-r2',
+    title: 'Solicitação gerada com sucesso',
+    options: [
+      {
+        answer: 'Finalizar serviço',
+      },
+    ],
+  },
 ];
 
 const PowerOutageFlow: React.FC<FlowComponentProps> = ({
@@ -85,7 +108,6 @@ const PowerOutageFlow: React.FC<FlowComponentProps> = ({
 }) => {
   const [questions, setQuestions] = useState<Question[]>(powerOutageQuestions);
   const [currentQuestion, setCurrentQuestion] = useState(questions[0]);
-  const [answers, setAnswers] = useState<Answer[]>([]);
 
   const handleSetCurrentQuestion = useCallback(
     (nextQuestionId: string) => {
