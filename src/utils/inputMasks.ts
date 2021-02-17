@@ -42,23 +42,23 @@ const pisMask = (value: string): string => {
     .replace(/(-\d{1})\d+?$/, '$1');
 };
 
-const currencyMask = (value: string): string => {
-  return value
-    .replace(/\D/g, '')
-    .replace(/(\d)(\d{2})$/, '$1,$2')
-    .replace(/(?=(\d{3})+(\D))\B/g, '.');
-};
+// const currencyMask = (value: string): string => {
+//   return value
+//     .replace(/\D/g, '')
+//     .replace(/(\d)(\d{2})$/, '$1,$2')
+//     .replace(/(?=(\d{3})+(\D))\B/g, '.');
+// };
 
 const numberPositiveMask = (value: string): string => {
   return value.replace(/[^0-9]{1,}$/, '');
 };
 
-// const formatValue = (value: number): string => {
-//   return Intl.NumberFormat('pt-BR', {
-//     style: 'currency',
-//     currency: 'BRL',
-//   }).format(value);
-// };
+const currencyMask = (value: number): string => {
+  return Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  }).format(value);
+};
 
 export {
   cpfMask,

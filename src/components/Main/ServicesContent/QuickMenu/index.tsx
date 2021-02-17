@@ -1,15 +1,22 @@
 import React, { useState } from 'react';
 import { BsLightningFill } from 'react-icons/bs';
+import { FaPlug } from 'react-icons/fa';
 
 import { Container, Content } from './styles';
 
-import PowerOutageFlow from '../../../StepModal/PowerOutageFlow';
+import PowerOutageFlow from '../../../Services/PowerOutageFlow';
+import DebitsConsultationModal from '../../../Services/DebitsConsultationModal';
 
 const QuickMenu: React.FC = () => {
-  const [modalOpen, setModalOpen] = useState(false);
+  const [outagePowerOpen, setOutagePowerOpen] = useState(false);
+  const [powerReconnection, setPowerReconnection] = useState(false);
 
-  function toggleModal(): void {
-    setModalOpen(!modalOpen);
+  function toggleOutagePower(): void {
+    setOutagePowerOpen(!outagePowerOpen);
+  }
+
+  function togglePowerReconnection(): void {
+    setPowerReconnection(!powerReconnection);
   }
 
   return (
@@ -18,7 +25,7 @@ const QuickMenu: React.FC = () => {
 
       <Content>
         <div>
-          <button type="button" onClick={toggleModal}>
+          <button type="button" onClick={toggleOutagePower}>
             <BsLightningFill size={20} />
           </button>
 
@@ -26,11 +33,11 @@ const QuickMenu: React.FC = () => {
         </div>
 
         <div>
-          <button type="button">
-            <BsLightningFill size={20} />
+          <button type="button" onClick={togglePowerReconnection}>
+            <FaPlug size={20} />
           </button>
 
-          <span>Falta de energia</span>
+          <span>Religação</span>
         </div>
 
         <div>
@@ -82,7 +89,15 @@ const QuickMenu: React.FC = () => {
         </div>
       </Content>
 
-      <PowerOutageFlow modalOpen={modalOpen} toggleModal={toggleModal} />
+      <PowerOutageFlow
+        modalOpen={outagePowerOpen}
+        toggleModal={toggleOutagePower}
+      />
+
+      <DebitsConsultationModal
+        isOpen={powerReconnection}
+        setIsOpen={togglePowerReconnection}
+      />
     </Container>
   );
 };

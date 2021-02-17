@@ -1,16 +1,5 @@
-import React, { useCallback, useState } from 'react';
-
-import StepModal, { Question } from '..';
-
-interface FlowComponentProps {
-  modalOpen: boolean;
-  toggleModal(): void;
-}
-
-interface Answer {
-  questionId: string;
-  content: string;
-}
+import PowerOutageFlow from '..';
+import { Question } from '../../../StepModal';
 
 const powerOutageQuestions: Question[] = [
   {
@@ -100,42 +89,18 @@ const powerOutageQuestions: Question[] = [
       },
     ],
   },
+  {
+    id: 'f2-q1',
+    title: 'Oscilando há mais de 7 dias?',
+    options: [
+      {
+        answer: 'Sim',
+      },
+      {
+        answer: 'Não',
+      },
+    ],
+  },
 ];
 
-const PowerOutageFlow: React.FC<FlowComponentProps> = ({
-  modalOpen,
-  toggleModal,
-}) => {
-  const [questions, setQuestions] = useState<Question[]>(powerOutageQuestions);
-  const [currentQuestion, setCurrentQuestion] = useState(questions[0]);
-
-  const handleSetCurrentQuestion = useCallback(
-    (nextQuestionId: string) => {
-      const nextQuestion: Question | undefined = questions.find(
-        question => question.id === nextQuestionId,
-      );
-
-      if (nextQuestion) {
-        setCurrentQuestion(nextQuestion);
-      }
-    },
-    [questions],
-  );
-
-  const handleClearFlow = useCallback(() => {
-    setCurrentQuestion(questions[0]);
-  }, [questions]);
-
-  return (
-    <StepModal
-      isOpen={modalOpen}
-      setIsOpen={toggleModal}
-      title="Falta de energia"
-      question={currentQuestion}
-      setCurrentQuestion={handleSetCurrentQuestion}
-      clearFlow={handleClearFlow}
-    />
-  );
-};
-
-export default PowerOutageFlow;
+export default powerOutageQuestions;
