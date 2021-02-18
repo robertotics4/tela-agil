@@ -8,8 +8,8 @@ const devConfig = {
   url: 'http://localhost:3333',
 };
 
-const customerDataApi = axios.create({
+const eqtlBarApi = axios.create({
   baseURL: devConfig.url,
 });
 
-export default customerDataApi;
+export default eqtlBarApi;

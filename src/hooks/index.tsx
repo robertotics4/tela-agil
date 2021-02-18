@@ -3,11 +3,14 @@ import React from 'react';
 import { AuthProvider } from './auth';
 import { ToastProvider } from './toast';
 import { CustomerServiceProvider } from './customerService';
+import { DebitsConsultationProvider } from './debitsConsultation';
 
 const AppProvider: React.FC = ({ children }) => (
   <AuthProvider>
     <ToastProvider>
-      <CustomerServiceProvider>{children}</CustomerServiceProvider>
+      <CustomerServiceProvider>
+        <DebitsConsultationProvider>{children}</DebitsConsultationProvider>
+      </CustomerServiceProvider>
     </ToastProvider>
   </AuthProvider>
 );

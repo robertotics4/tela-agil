@@ -67,6 +67,8 @@ export const Error = styled(Tooltip)`
   }
 
   span {
+    text-align: center;
+
     background: #ff5353;
     color: #fff;
 

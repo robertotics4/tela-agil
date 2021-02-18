@@ -1,9 +1,20 @@
 import React, { createContext, useCallback, useContext } from 'react';
+import { v4 as uuid } from 'uuid';
+
+import eqtlBarApi from '../services/eqtlBarApi';
 
 import { useCustomerService } from './customerService';
 
 interface DebitsConsultationContextData {
-  toggleDebitsModal(): void;
+  getInvoiceUrl({
+    invoiceReference,
+    operatingCompany,
+  }: DuplicateInvoiceProps): Promise<string>;
+}
+
+interface DuplicateInvoiceProps {
+  invoiceReference: string;
+  operatingCompany: string;
 }
 
 const DebitsConsultationContext = createContext<DebitsConsultationContextData>(
@@ -11,14 +22,26 @@ const DebitsConsultationContext = createContext<DebitsConsultationContextData>(
 );
 
 const DebitsConsultationProvider: React.FC = ({ children }) => {
-  const { debits } = useCustomerService();
-
-  const toggleDebitsModal = useCallback(() => {}, []);
+  const getInvoiceUrl = useCallback(
+    async ({ invoiceReference, operatingCompany }: DuplicateInvoiceProps) => {
+      const response = await eqtlBarApi.get(
+        `/fatura/v1/segundaVia/${invoiceReference}`,
+        {
+          params: {
+            empresaOperadora: operatingCompany,
+            codigoTransacao: uuid(),
+          },
+        },
+      );
+      return response.data.data.urlFatura;
+    },
+    [],
+  );
 
   return (
     <DebitsConsultationContext.Provider
       value={{
-        toggleDebitsModal,
+        getInvoiceUrl,
       }}
     >
       {children}

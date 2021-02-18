@@ -1,5 +1,6 @@
 import React, { createContext, useCallback, useContext, useState } from 'react';
-import customerDataApi from '../services/customerDataApi';
+import { string } from 'yup/lib/locale';
+import customerDataApi from '../services/eqtlBarApi';
 
 import { useToast } from './toast';
 
@@ -10,6 +11,7 @@ import Debits from '../types/Debits';
 import extractResponseData from '../utils/extractResponseData';
 
 interface CustomerServiceState {
+  operatingCompany: string;
   customer: Customer;
   installation: Installation;
   debits: Debits;
@@ -22,6 +24,7 @@ interface GetCustomerData {
 }
 
 interface CustomerServiceContextData {
+  operatingCompany: string;
   customer: Customer;
   installation: Installation;
   debits: Debits;
@@ -49,10 +52,10 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
     );
 
     if (storagedCustomerServiceData) {
-      const { customer, installation, debits } = JSON.parse(
+      const { operatingCompany, customer, installation, debits } = JSON.parse(
         storagedCustomerServiceData,
       );
-      return { customer, installation, debits };
+      return { operatingCompany, customer, installation, debits };
     }
 
     return {} as CustomerServiceState;
@@ -88,10 +91,20 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
 
       localStorage.setItem(
         '@TelaAgil:customerServiceData',
-        JSON.stringify({ customer, installation, debits }),
+        JSON.stringify({
+          operatingCompany: stateCode,
+          customer,
+          installation,
+          debits,
+        }),
       );
 
-      setCustomerServiceData({ customer, installation, debits });
+      setCustomerServiceData({
+        operatingCompany: stateCode,
+        customer,
+        installation,
+        debits,
+      });
     },
     [addToast],
   );
@@ -129,6 +142,7 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
   return (
     <CustomerServiceContext.Provider
       value={{
+        operatingCompany: customerServiceData.operatingCompany,
         customer: customerServiceData.customer,
         installation: customerServiceData.installation,
         debits: customerServiceData.debits,
