@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
+
 import { BsLightningFill } from 'react-icons/bs';
-import { FaPlug } from 'react-icons/fa';
+import { FaPlug, FaDollarSign, FaDivide, FaCalendarAlt } from 'react-icons/fa';
+import { IoDocumentText } from 'react-icons/io5';
+import { IoMdMail } from 'react-icons/io';
+import { MdReceipt } from 'react-icons/md';
 
 import { Container, Content } from './styles';
 
@@ -33,7 +37,7 @@ const QuickMenu: React.FC = () => {
         </div>
 
         <div>
-          <button type="button" onClick={togglePowerReconnection}>
+          <button type="button">
             <FaPlug size={20} />
           </button>
 
@@ -41,51 +45,51 @@ const QuickMenu: React.FC = () => {
         </div>
 
         <div>
-          <button type="button">
-            <BsLightningFill size={20} />
+          <button type="button" onClick={togglePowerReconnection}>
+            <IoDocumentText size={20} />
           </button>
 
-          <span>Falta de energia</span>
+          <span>Consulta de débitos</span>
         </div>
 
         <div>
           <button type="button">
-            <BsLightningFill size={20} />
+            <FaDollarSign size={20} />
           </button>
 
-          <span>Falta de energia</span>
+          <span>Baixa Renda</span>
         </div>
 
         <div>
           <button type="button">
-            <BsLightningFill size={20} />
+            <FaDivide size={20} />
           </button>
 
-          <span>Falta de energia</span>
+          <span>Entrada de parcelamento</span>
         </div>
 
         <div>
           <button type="button">
-            <BsLightningFill size={20} />
+            <IoMdMail size={20} />
           </button>
 
-          <span>Falta de energia</span>
+          <span>Fatura por e-mail</span>
         </div>
 
         <div>
           <button type="button">
-            <BsLightningFill size={20} />
+            <FaCalendarAlt size={20} />
           </button>
 
-          <span>Falta de energia</span>
+          <span>Data certa</span>
         </div>
 
         <div>
           <button type="button">
-            <BsLightningFill size={20} />
+            <MdReceipt size={20} />
           </button>
 
-          <span>Falta de energia</span>
+          <span>Protocolo</span>
         </div>
       </Content>
 

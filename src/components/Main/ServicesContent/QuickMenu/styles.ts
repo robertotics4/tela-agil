@@ -21,7 +21,7 @@ export const Content = styled.div`
   align-items: center;
   justify-content: space-between;
 
-  padding: 20px 32px;
+  padding: 16px 32px;
   margin-top: 8px;
   background: #fff;
   border: 1px solid #e7e5e5;
@@ -32,14 +32,20 @@ export const Content = styled.div`
     justify-content: center;
     align-items: center;
 
+    width: 75px;
+
     &:hover {
       button {
-        background: #fff;
-        border: 1px solid #3c1491;
+        background: #3c1491;
       }
 
       svg {
+        color: #fff;
+      }
+
+      span {
         color: #3c1491;
+        font-weight: bold;
       }
     }
 
@@ -53,7 +59,8 @@ export const Content = styled.div`
       border-radius: 50%;
       border: 0;
 
-      background: #3c1491;
+      background: #bdbdbd;
+      transition: background-color 0.2s;
 
       svg {
         color: #fff;
@@ -61,8 +68,11 @@ export const Content = styled.div`
     }
 
     span {
+      height: 32px;
+
       font-size: 14px;
       color: #444444;
+      text-align: center;
 
       margin-top: 8px;
     }
