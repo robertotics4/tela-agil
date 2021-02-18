@@ -68,10 +68,18 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
             operatingCompany,
           });
 
-          sendInvoiceDebit({
+          await sendInvoiceDebit({
             invoiceUrl,
             operatingCompany,
             phoneNumber: getUnformattedPhone(data.phone),
+          });
+
+          setIsOpen();
+
+          addToast({
+            type: 'success',
+            title: 'Fatura enviada',
+            description: 'Fatura foi enviada com sucesso.',
           });
         }
       } catch (err) {
@@ -81,6 +89,8 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
           formRef.current?.setErrors(errors);
           return;
         }
+
+        setIsOpen();
 
         addToast({
           type: 'error',
@@ -100,6 +110,7 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
       start,
       sendInvoiceDebit,
       stop,
+      setIsOpen,
     ],
   );
 
