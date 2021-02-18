@@ -8,7 +8,7 @@ export const ModalContent = styled.div`
   justify-content: center;
   align-items: center;
 
-  padding: 24px 96px;
+  padding: 0px 96px;
 
   h2 {
     text-align: center;
@@ -25,54 +25,60 @@ export const ModalContent = styled.div`
     table {
       width: 100%;
 
-      tr {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        border: 2px solid transparent;
-
-        height: 60px;
-        border-radius: 8px;
-
-        background: #e5e5e5;
-        cursor: pointer;
-
-        &:focus {
-          border: 2px solid #3c1490;
-          outline: none;
-        }
-
-        td {
+      tbody {
+        tr {
           display: flex;
-          flex: 1;
-          flex-direction: column;
           align-items: center;
+          justify-content: space-between;
+          border: 2px solid transparent;
+          outline: none;
 
-          span {
-            font-size: 14px;
+          height: 60px;
+          border-radius: 8px;
+
+          background: #e5e5e5;
+          cursor: pointer;
+
+          &:focus {
+            border: 2px solid #3c1490;
+            outline: none;
           }
 
-          strong {
-            font-size: 16px;
+          td {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            align-items: center;
+
+            span {
+              font-size: 14px;
+              color: #ff5353;
+            }
+
+            strong {
+              font-size: 16px;
+              color: #ff5353;
+            }
+
+            h2 {
+              font-size: 24px;
+              color: #000;
+              color: #ff5353;
+            }
           }
 
-          h2 {
-            font-size: 24px;
-            color: #000;
+          &:nth-child(even) {
+            background: transparent;
           }
-        }
 
-        &:nth-child(even) {
-          background: transparent;
-        }
+          &:first-child() {
+            border-radius: 8px 8px 0 0;
+          }
 
-        &:first-child() {
-          border-radius: 8px 8px 0 0;
-        }
-
-        &:last-child {
-          border-bottom-left-radius: 8px;
-          border-bottom-right-radius: 8px;
+          &:last-child {
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+          }
         }
       }
     }

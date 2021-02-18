@@ -2,14 +2,18 @@ import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 import { format } from 'date-fns';
+import { useLoading } from 'react-use-loading';
 import * as Yup from 'yup';
 
 import getValidationErrors from '../../../utils/getValidationErrors';
+import getUnformattedPhone from '../../../utils/getUnformattedPhone';
 
 import { useCustomerService } from '../../../hooks/customerService';
 import { useToast } from '../../../hooks/toast';
 import { useDebitsConsultation } from '../../../hooks/debitsConsultation';
+import { useWhatsappSending } from '../../../hooks/useWhatsappSending';
 
+import Loading from '../../Loading';
 import Modal from '../../Modal';
 import InputMask from '../../InputMask';
 
@@ -31,19 +35,23 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
   isOpen,
   setIsOpen,
 }) => {
-  const [selectedDebit, setSelectedDebit] = useState<InvoiceDebit>(
-    {} as InvoiceDebit,
+  const [selectedDebit, setSelectedDebit] = useState<InvoiceDebit | undefined>(
+    undefined,
   );
 
   const { debits, customer, operatingCompany } = useCustomerService();
   const { addToast } = useToast();
   const { getInvoiceUrl } = useDebitsConsultation();
+  const { sendInvoiceDebit } = useWhatsappSending();
+  const [{ isLoading, message }, { start, stop }] = useLoading();
 
   const formRef = useRef<FormHandles>(null);
 
   const handleSubmit = useCallback(
     async (data: SendDebitFormData) => {
       try {
+        start('Enviando fatura ...');
+
         formRef.current?.setErrors({});
 
         const schema = Yup.object().shape({
@@ -54,17 +62,18 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
           abortEarly: false,
         });
 
-        const invoiceUrl = await getInvoiceUrl({
-          invoiceReference: selectedDebit.invoiceReference,
-          operatingCompany,
-        });
+        if (selectedDebit) {
+          const invoiceUrl = await getInvoiceUrl({
+            invoiceReference: selectedDebit.invoiceReference,
+            operatingCompany,
+          });
 
-        // const invoiceUrl = await getDuplicateInvoiceUrl({
-        //   invoiceReference: '310449915839',
-        //   operatingCompany: '95',
-        // });
-
-        console.log(invoiceUrl);
+          sendInvoiceDebit({
+            invoiceUrl,
+            operatingCompany,
+            phoneNumber: getUnformattedPhone(data.phone),
+          });
+        }
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
@@ -79,9 +88,19 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
           description:
             'Ocorreu um erro ao enviar a fatura, cheque o número de telefone',
         });
+      } finally {
+        stop();
       }
     },
-    [addToast, getInvoiceUrl, selectedDebit, operatingCompany],
+    [
+      addToast,
+      getInvoiceUrl,
+      selectedDebit,
+      operatingCompany,
+      start,
+      sendInvoiceDebit,
+      stop,
+    ],
   );
 
   const handleClickRow = useCallback(debit => {
@@ -91,7 +110,11 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
   const generateInstallmentRows = useMemo(() => {
     const installmentRows = debits.installmentDebits.installmentDebitDetails.map(
       debit => (
-        <tr tabIndex={0} onClick={() => handleClickRow(debit)}>
+        <tr
+          key={debit.billingDocumentNumber}
+          tabIndex={0}
+          onClick={() => handleClickRow(debit)}
+        >
           <td>
             <span>Parcelamento</span>
           </td>
@@ -108,7 +131,11 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
 
   const generateInvoiceRows = useMemo(() => {
     const invoiceRows = debits.invoiceDebits.invoiceDebitDetails.map(debit => (
-      <tr tabIndex={0} onFocus={() => handleClickRow(debit)}>
+      <tr
+        key={debit.invoiceReference}
+        tabIndex={0}
+        onClick={() => handleClickRow(debit)}
+      >
         <td>
           <span>Referente a</span>
           <strong>-</strong>
@@ -133,8 +160,10 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
 
         <div>
           <table>
-            {generateInstallmentRows}
-            {generateInvoiceRows}
+            <tbody>
+              {generateInstallmentRows}
+              {generateInvoiceRows}
+            </tbody>
           </table>
         </div>
 
@@ -149,13 +178,17 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
             name="phone"
             mask="(99) 99999-9999"
             type="text"
-            placeholder="Telefone"
+            placeholder="Telefone do cliente"
             autoComplete="off"
           />
 
           <SendButton type="submit">Enviar fatura</SendButton>
         </Form>
       </ModalContent>
+
+      {isLoading && (
+        <Loading isOpen={isLoading} message={message} setIsOpen={stop} />
+      )}
     </Modal>
   );
 };
