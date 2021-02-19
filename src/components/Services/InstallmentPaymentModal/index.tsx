@@ -1,13 +1,6 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
-import { format } from 'date-fns';
 import { useLoading } from 'react-use-loading';
 import * as Yup from 'yup';
 
@@ -16,17 +9,16 @@ import getUnformattedPhone from '../../../utils/getUnformattedPhone';
 
 import { useCustomerService } from '../../../hooks/customerService';
 import { useToast } from '../../../hooks/toast';
-import { useDebitsConsultation } from '../../../hooks/debitsConsultation';
 import { useWhatsappSending } from '../../../hooks/useWhatsappSending';
 
 import Loading from '../../Loading';
 import Modal from '../../Modal';
-import InputMask from '../../InputMask';
 
 import { currencyMask } from '../../../utils/inputMasks';
 
-import { ModalContent, SendButton } from './styles';
-import { InstallmentDebit, InvoiceDebit } from '../../../types/Debits';
+import { ModalContent, SendButton, CodeBarContent, PhoneInput } from './styles';
+
+import { InstallmentDebit } from '../../../types/Debits';
 
 interface ModalProps {
   isOpen: boolean;
@@ -37,21 +29,19 @@ interface SendDebitFormData {
   phone: string;
 }
 
-const DebitsConsultationModal: React.FC<ModalProps> = ({
+const InstallmentPaymentModal: React.FC<ModalProps> = ({
   isOpen,
   setIsOpen,
 }) => {
-  const [selectedInvoiceDebit, setSelectedInvoiceDebit] = useState<
-    InvoiceDebit | undefined
-  >(undefined);
   const [selectedInstallmentDebit, setSelectedInstallmentDebit] = useState<
     InstallmentDebit | undefined
   >(undefined);
 
+  const [codeBarValue, setCodeBarValue] = useState('');
+
   const { debits, customer, operatingCompany } = useCustomerService();
   const { addToast } = useToast();
-  const { getInvoiceUrl } = useDebitsConsultation();
-  const { sendInvoiceDebit, sendInstallmentPayment } = useWhatsappSending();
+  const { sendInstallmentPayment } = useWhatsappSending();
   const [{ isLoading, message }, { start, stop }] = useLoading();
 
   const formRef = useRef<FormHandles>(null);
@@ -71,17 +61,7 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
           abortEarly: false,
         });
 
-        if (selectedInvoiceDebit) {
-          const invoiceUrl = await getInvoiceUrl({
-            invoiceReference: selectedInvoiceDebit.invoiceReference,
-            operatingCompany,
-          });
-          await sendInvoiceDebit({
-            invoiceUrl,
-            operatingCompany,
-            phoneNumber: getUnformattedPhone(data.phone),
-          });
-        } else if (selectedInstallmentDebit) {
+        if (selectedInstallmentDebit) {
           await sendInstallmentPayment({
             operatingCompany,
             phoneNumber: getUnformattedPhone(data.phone),
@@ -121,27 +101,19 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
     },
     [
       addToast,
-      selectedInvoiceDebit,
       selectedInstallmentDebit,
       customer,
-      getInvoiceUrl,
       operatingCompany,
       start,
-      sendInvoiceDebit,
       sendInstallmentPayment,
       stop,
       setIsOpen,
     ],
   );
 
-  const handleClickInstallmentDebit = useCallback(debit => {
+  const handleClickInstallmentDebit = useCallback((debit: InstallmentDebit) => {
     setSelectedInstallmentDebit(debit);
-    setSelectedInvoiceDebit(undefined);
-  }, []);
-
-  const handleClickInvoiceDebit = useCallback(debit => {
-    setSelectedInvoiceDebit(debit);
-    setSelectedInstallmentDebit(undefined);
+    setCodeBarValue(debit.paymentCode);
   }, []);
 
   const generateInstallmentRows = useMemo(() => {
@@ -153,12 +125,12 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
           onClick={() => handleClickInstallmentDebit(debit)}
         >
           <td>
-            <span>Parcelamento</span>
+            <span>Nº do documento</span>
+            <strong>{debit.billingDocumentNumber}</strong>
           </td>
           <td>
             <h2>{currencyMask(debit.invoiceAmount)}</h2>
           </td>
-          <td />
         </tr>
       ),
     );
@@ -166,48 +138,14 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
     return installmentRows;
   }, [debits, handleClickInstallmentDebit]);
 
-  const generateInvoiceRows = useMemo(() => {
-    const invoiceRows = debits.invoiceDebits.invoiceDebitDetails.map(debit => {
-      const monthReference = Number(debit.overdueInvoiceNumber.substr(5, 2));
-      const yearReference = Number(debit.overdueInvoiceNumber.substr(1, 4));
-
-      const referenceDate = new Date(yearReference, monthReference);
-
-      return (
-        <tr
-          key={debit.invoiceReference}
-          tabIndex={0}
-          onClick={() => handleClickInvoiceDebit(debit)}
-        >
-          <td>
-            <span>Referente a</span>
-            <strong>{format(referenceDate, 'MM/yyyy ')}</strong>
-          </td>
-          <td>
-            <h2>{currencyMask(debit.invoiceAmount)}</h2>
-          </td>
-          <td>
-            <span>Vencimento</span>
-            <strong>{format(new Date(debit.dueDate), 'dd/MM/yyyy')}</strong>
-          </td>
-        </tr>
-      );
-    });
-
-    return invoiceRows;
-  }, [debits, handleClickInvoiceDebit]);
-
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
       <ModalContent>
-        <h2>Consulta de débitos</h2>
+        <h2>Entrada de parcelamento</h2>
 
         <div>
           <table>
-            <tbody>
-              {generateInstallmentRows}
-              {generateInvoiceRows}
-            </tbody>
+            <tbody>{generateInstallmentRows}</tbody>
           </table>
         </div>
 
@@ -218,7 +156,14 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
             phone: customer.contacts.phones?.cellPhone,
           }}
         >
-          <InputMask
+          {codeBarValue ? (
+            <CodeBarContent>
+              <span>Código para pagamento</span>
+              <strong>{codeBarValue}</strong>
+            </CodeBarContent>
+          ) : null}
+
+          <PhoneInput
             name="phone"
             mask="(99) 99999-9999"
             type="text"
@@ -226,7 +171,7 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
             autoComplete="off"
           />
 
-          <SendButton type="submit">Enviar fatura</SendButton>
+          <SendButton type="submit">Enviar código</SendButton>
         </Form>
       </ModalContent>
 
@@ -237,4 +182,4 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
   );
 };
 
-export default DebitsConsultationModal;
+export default InstallmentPaymentModal;

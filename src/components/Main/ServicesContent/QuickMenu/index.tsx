@@ -10,17 +10,23 @@ import { Container, Content } from './styles';
 
 import PowerOutageFlow from '../../../Services/PowerOutageFlow';
 import DebitsConsultationModal from '../../../Services/DebitsConsultationModal';
+import InstallmentPaymentModal from '../../../Services/InstallmentPaymentModal';
 
 const QuickMenu: React.FC = () => {
   const [outagePowerOpen, setOutagePowerOpen] = useState(false);
-  const [powerReconnection, setPowerReconnection] = useState(false);
+  const [debitsConsultationOpen, setDebitsConsultationOpen] = useState(false);
+  const [installmentPaymentOpen, setInstallmentPaymentOpen] = useState(false);
 
   function toggleOutagePower(): void {
     setOutagePowerOpen(!outagePowerOpen);
   }
 
-  function togglePowerReconnection(): void {
-    setPowerReconnection(!powerReconnection);
+  function toggleDebitsConsultation(): void {
+    setDebitsConsultationOpen(!debitsConsultationOpen);
+  }
+
+  function toggleInstallmentPayment(): void {
+    setInstallmentPaymentOpen(!installmentPaymentOpen);
   }
 
   return (
@@ -45,7 +51,7 @@ const QuickMenu: React.FC = () => {
         </div>
 
         <div>
-          <button type="button" onClick={togglePowerReconnection}>
+          <button type="button" onClick={toggleDebitsConsultation}>
             <IoDocumentText size={20} />
           </button>
 
@@ -61,7 +67,7 @@ const QuickMenu: React.FC = () => {
         </div>
 
         <div>
-          <button type="button">
+          <button type="button" onClick={toggleInstallmentPayment}>
             <FaDivide size={20} />
           </button>
 
@@ -99,8 +105,12 @@ const QuickMenu: React.FC = () => {
       />
 
       <DebitsConsultationModal
-        isOpen={powerReconnection}
-        setIsOpen={togglePowerReconnection}
+        isOpen={debitsConsultationOpen}
+        setIsOpen={toggleDebitsConsultation}
+      />
+      <InstallmentPaymentModal
+        isOpen={installmentPaymentOpen}
+        setIsOpen={toggleInstallmentPayment}
       />
     </Container>
   );
