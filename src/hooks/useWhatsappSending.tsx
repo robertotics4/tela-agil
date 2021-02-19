@@ -52,6 +52,10 @@ const urlVariations: UrlVariationsProps = {
 };
 
 interface WhatsappSendingContextData {
+  sendNotification({
+    operatingCompany,
+    phoneNumber,
+  }: SendNotificationProps): Promise<void>;
   sendInvoiceDebit({
     operatingCompany,
     invoiceUrl,
@@ -79,29 +83,26 @@ const WhatsappSendingProvider: React.FC = ({ children }) => {
     async ({ operatingCompany, phoneNumber }: SendNotificationProps) => {
       const { id, token } = urlVariations[operatingCompany];
 
-      const payload = JSON.stringify({
-        type: 'entrada-parcelamento"',
-        users: [
-          {
-            phone: `55${phoneNumber}`,
-            params: {
-              nomeCliente: 'teste',
-              contaContrato: 'teste',
-              valorEntrada: 'teste',
-              codBarras: 'teste',
-            },
-          },
-        ],
-      });
-
-      console.log(payload);
-
       await yaloApi.post(
         `/accounts/equatorial/bots/${id}/notifications`,
-        payload,
+        {
+          type: 'entrada-parcelamento',
+          users: [
+            {
+              phone: `+55${phoneNumber}`,
+              params: {
+                nomeCliente: 'teste',
+                contaContrato: 'teste',
+                valorEntrada: 'teste',
+                codBarras: 'teste',
+              },
+            },
+          ],
+        },
         {
           headers: {
             Authorization: `Bearer ${token.noSession}`,
+            'Content-Type': 'application/json',
           },
         },
       );
@@ -148,6 +149,7 @@ const WhatsappSendingProvider: React.FC = ({ children }) => {
   return (
     <WhatsappSendingContext.Provider
       value={{
+        sendNotification,
         sendInvoiceDebit,
       }}
     >
