@@ -1,4 +1,10 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 import { format } from 'date-fns';
@@ -20,7 +26,7 @@ import InputMask from '../../InputMask';
 import { currencyMask } from '../../../utils/inputMasks';
 
 import { ModalContent, SendButton } from './styles';
-import { InvoiceDebit } from '../../../types/Debits';
+import { InstallmentDebit, InvoiceDebit } from '../../../types/Debits';
 
 interface ModalProps {
   isOpen: boolean;
@@ -35,15 +41,21 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
   isOpen,
   setIsOpen,
 }) => {
-  const [selectedDebit, setSelectedDebit] = useState<InvoiceDebit | undefined>(
-    undefined,
-  );
+  const [selectedInvoiceDebit, setSelectedInvoiceDebit] = useState<
+    InvoiceDebit | undefined
+  >(undefined);
+  const [selectedInstallmentDebit, setSelectedInstallmentDebit] = useState<
+    InstallmentDebit | undefined
+  >(undefined);
 
   const { debits, customer, operatingCompany } = useCustomerService();
   const { addToast } = useToast();
   const { getInvoiceUrl } = useDebitsConsultation();
-  const { sendInvoiceDebit } = useWhatsappSending();
+  const { sendInvoiceDebit, sendInstallmentPayment } = useWhatsappSending();
   const [{ isLoading, message }, { start, stop }] = useLoading();
+
+  console.log(selectedInvoiceDebit);
+  console.log(selectedInstallmentDebit);
 
   const formRef = useRef<FormHandles>(null);
 
@@ -62,26 +74,34 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
           abortEarly: false,
         });
 
-        if (selectedDebit) {
+        if (selectedInvoiceDebit) {
           const invoiceUrl = await getInvoiceUrl({
-            invoiceReference: selectedDebit.invoiceReference,
+            invoiceReference: selectedInvoiceDebit.invoiceReference,
             operatingCompany,
           });
-
           await sendInvoiceDebit({
             invoiceUrl,
             operatingCompany,
             phoneNumber: getUnformattedPhone(data.phone),
           });
-
-          setIsOpen();
-
-          addToast({
-            type: 'success',
-            title: 'Fatura enviada',
-            description: 'Fatura foi enviada com sucesso.',
+        } else if (selectedInstallmentDebit) {
+          await sendInstallmentPayment({
+            operatingCompany,
+            phoneNumber: getUnformattedPhone(data.phone),
+            name: customer.name,
+            amount: selectedInstallmentDebit.invoiceAmount,
+            barCode: selectedInstallmentDebit.paymentCode,
+            contract: customer.contractAccount,
           });
         }
+
+        setIsOpen();
+
+        addToast({
+          type: 'success',
+          title: 'Fatura enviada',
+          description: 'Fatura foi enviada com sucesso.',
+        });
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
@@ -104,18 +124,27 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
     },
     [
       addToast,
+      selectedInvoiceDebit,
+      selectedInstallmentDebit,
+      customer,
       getInvoiceUrl,
-      selectedDebit,
       operatingCompany,
       start,
       sendInvoiceDebit,
+      sendInstallmentPayment,
       stop,
       setIsOpen,
     ],
   );
 
-  const handleClickRow = useCallback(debit => {
-    setSelectedDebit(debit);
+  const handleClickInstallmentDebit = useCallback(debit => {
+    setSelectedInstallmentDebit(debit);
+    setSelectedInvoiceDebit(undefined);
+  }, []);
+
+  const handleClickInvoiceDebit = useCallback(debit => {
+    setSelectedInvoiceDebit(debit);
+    setSelectedInstallmentDebit(undefined);
   }, []);
 
   const generateInstallmentRows = useMemo(() => {
@@ -124,7 +153,7 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
         <tr
           key={debit.billingDocumentNumber}
           tabIndex={0}
-          onClick={() => handleClickRow(debit)}
+          onClick={() => handleClickInstallmentDebit(debit)}
         >
           <td>
             <span>Parcelamento</span>
@@ -138,7 +167,7 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
     );
 
     return installmentRows;
-  }, [debits, handleClickRow]);
+  }, [debits, handleClickInstallmentDebit]);
 
   const generateInvoiceRows = useMemo(() => {
     const invoiceRows = debits.invoiceDebits.invoiceDebitDetails.map(debit => {
@@ -151,7 +180,7 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
         <tr
           key={debit.invoiceReference}
           tabIndex={0}
-          onClick={() => handleClickRow(debit)}
+          onClick={() => handleClickInvoiceDebit(debit)}
         >
           <td>
             <span>Referente a</span>
@@ -169,7 +198,7 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
     });
 
     return invoiceRows;
-  }, [debits, handleClickRow]);
+  }, [debits, handleClickInvoiceDebit]);
 
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>

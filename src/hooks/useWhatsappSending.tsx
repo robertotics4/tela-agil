@@ -61,6 +61,14 @@ interface WhatsappSendingContextData {
     invoiceUrl,
     phoneNumber,
   }: SendInvoiceDebitProps): Promise<void>;
+  sendInstallmentPayment({
+    operatingCompany,
+    phoneNumber,
+    name,
+    contract,
+    amount,
+    barCode,
+  }: SendInstallmentPaymentProps): Promise<void>;
 }
 
 interface SendInvoiceDebitProps {
@@ -72,6 +80,15 @@ interface SendInvoiceDebitProps {
 interface SendNotificationProps {
   operatingCompany: string;
   phoneNumber: string;
+}
+
+interface SendInstallmentPaymentProps {
+  operatingCompany: string;
+  phoneNumber: string;
+  name: string;
+  contract: string;
+  amount: number;
+  barCode: string;
 }
 
 const WhatsappSendingContext = createContext<WhatsappSendingContextData>(
@@ -95,6 +112,44 @@ const WhatsappSendingProvider: React.FC = ({ children }) => {
                 contaContrato: 'teste',
                 valorEntrada: 'teste',
                 codBarras: 'teste',
+              },
+            },
+          ],
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token.noSession}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+    },
+    [],
+  );
+
+  const sendInstallmentPayment = useCallback(
+    async ({
+      operatingCompany,
+      phoneNumber,
+      name,
+      contract,
+      amount,
+      barCode,
+    }: SendInstallmentPaymentProps) => {
+      const { id, token } = urlVariations[operatingCompany];
+
+      await yaloApi.post(
+        `/accounts/equatorial/bots/${id}/notifications`,
+        {
+          type: 'entrada-parcelamento',
+          users: [
+            {
+              phone: `+55${phoneNumber}`,
+              params: {
+                nomeCliente: name,
+                contaContrato: contract,
+                valorEntrada: amount,
+                codBarras: barCode,
               },
             },
           ],
@@ -151,6 +206,7 @@ const WhatsappSendingProvider: React.FC = ({ children }) => {
       value={{
         sendNotification,
         sendInvoiceDebit,
+        sendInstallmentPayment,
       }}
     >
       {children}
