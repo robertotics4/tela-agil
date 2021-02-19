@@ -19,7 +19,7 @@ const urlVariations: UrlVariationsProps = {
       activeSession:
         'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJ5YWxvY2hhdF9hdXRoIiwiZXhwIjoxNTUzNzM1NjIwLCJpYXQiOjE1NTEzMTY0MjAsImlzcyI6InlhbG9jaGF0X2F1dGgiLCJqdGkiOiJlNjM2MmVmYS01ZDRlLTQ0Y2EtODE0OS0xMmQ0ZGY3MmViNWIiLCJuYmYiOjE1NTEzMTY0MTksInN1YiI6IjVjNzczNWMxMzdhZGE5MDAwODg1OWIwMSIsInR5cCI6ImFjY2VzcyJ9.ExSTxYepjNNi1NWV_MtC_g87NEmZz7tAPpeGHLfre9IkiI3oC2np945L9nCTTzleqgjJ9kWUNscdJaaEIy6SPg',
       noSession:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhalZ4SUQ1MFZnZjNEWkc0aTR5RkRyWWNETmYycmRHQyJ9.oqDnOoDOzmO12B5oEOSzX0F8K_FUBUhrm0HVvNBuKpQ',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJUNUtNbHBiSGpKQ2RQSUtmdFZ5SUJBem5IUEllcThyMCJ9.EDZ45MU8V6tlEvAv1KAZeLtAwRSJgSg2bo5VzwNzdRE',
     },
   },
   '95': {
@@ -79,22 +79,26 @@ const WhatsappSendingProvider: React.FC = ({ children }) => {
     async ({ operatingCompany, phoneNumber }: SendNotificationProps) => {
       const { id, token } = urlVariations[operatingCompany];
 
+      const payload = JSON.stringify({
+        type: 'entrada-parcelamento"',
+        users: [
+          {
+            phone: `55${phoneNumber}`,
+            params: {
+              nomeCliente: 'teste',
+              contaContrato: 'teste',
+              valorEntrada: 'teste',
+              codBarras: 'teste',
+            },
+          },
+        ],
+      });
+
+      console.log(payload);
+
       await yaloApi.post(
         `/accounts/equatorial/bots/${id}/notifications`,
-        {
-          type: 'entrada-parcelamento"',
-          users: [
-            {
-              phone: phoneNumber,
-              params: {
-                nomeCliente: 'teste',
-                contaContrato: 'teste',
-                valorEntrada: 'teste',
-                codBarras: 'teste',
-              },
-            },
-          ],
-        },
+        payload,
         {
           headers: {
             Authorization: `Bearer ${token.noSession}`,
@@ -113,7 +117,10 @@ const WhatsappSendingProvider: React.FC = ({ children }) => {
     }: SendInvoiceDebitProps) => {
       const { id, token } = urlVariations[operatingCompany];
 
-      await sendNotification({ operatingCompany, phoneNumber });
+      await sendNotification({
+        operatingCompany,
+        phoneNumber,
+      });
 
       await yaloApi.post(
         `/outgoing_webhook/bots/${id}/messages`,

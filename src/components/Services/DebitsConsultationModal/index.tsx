@@ -141,25 +141,32 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
   }, [debits, handleClickRow]);
 
   const generateInvoiceRows = useMemo(() => {
-    const invoiceRows = debits.invoiceDebits.invoiceDebitDetails.map(debit => (
-      <tr
-        key={debit.invoiceReference}
-        tabIndex={0}
-        onClick={() => handleClickRow(debit)}
-      >
-        <td>
-          <span>Referente a</span>
-          <strong>-</strong>
-        </td>
-        <td>
-          <h2>{currencyMask(debit.invoiceAmount)}</h2>
-        </td>
-        <td>
-          <span>Vencimento</span>
-          <strong>{format(new Date(debit.dueDate), 'dd/MM/yyyy')}</strong>
-        </td>
-      </tr>
-    ));
+    const invoiceRows = debits.invoiceDebits.invoiceDebitDetails.map(debit => {
+      const monthReference = Number(debit.overdueInvoiceNumber.substr(5, 2));
+      const yearReference = Number(debit.overdueInvoiceNumber.substr(1, 4));
+
+      const referenceDate = new Date(yearReference, monthReference);
+
+      return (
+        <tr
+          key={debit.invoiceReference}
+          tabIndex={0}
+          onClick={() => handleClickRow(debit)}
+        >
+          <td>
+            <span>Referente a</span>
+            <strong>{format(referenceDate, 'MM/yyyy ')}</strong>
+          </td>
+          <td>
+            <h2>{currencyMask(debit.invoiceAmount)}</h2>
+          </td>
+          <td>
+            <span>Vencimento</span>
+            <strong>{format(new Date(debit.dueDate), 'dd/MM/yyyy')}</strong>
+          </td>
+        </tr>
+      );
+    });
 
     return invoiceRows;
   }, [debits, handleClickRow]);
