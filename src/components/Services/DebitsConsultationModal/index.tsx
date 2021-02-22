@@ -205,36 +205,41 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
 
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
-      <ModalContent>
-        <h2>Consulta de débitos</h2>
+      {debits.installmentDebits.totalAmountInstallmentDebits > 0 ||
+      debits.invoiceDebits.totalAmountInvoiceDebits > 0 ? (
+        <ModalContent>
+          <h2>Consulta de débitos</h2>
 
-        <div>
-          <table>
-            <tbody>
-              {generateInstallmentRows}
-              {generateInvoiceRows}
-            </tbody>
-          </table>
-        </div>
+          <div>
+            <table>
+              <tbody>
+                {generateInstallmentRows}
+                {generateInvoiceRows}
+              </tbody>
+            </table>
+          </div>
 
-        <Form
-          ref={formRef}
-          onSubmit={handleSubmit}
-          initialData={{
-            phone: customer.contacts.phones?.cellPhone,
-          }}
-        >
-          <InputMask
-            name="phone"
-            mask="(99) 99999-9999"
-            type="text"
-            placeholder="Telefone do cliente"
-            autoComplete="off"
-          />
+          <Form
+            ref={formRef}
+            onSubmit={handleSubmit}
+            initialData={{
+              phone: customer.contacts.phones?.cellPhone,
+            }}
+          >
+            <InputMask
+              name="phone"
+              mask="(99) 99999-9999"
+              type="text"
+              placeholder="Telefone do cliente"
+              autoComplete="off"
+            />
 
-          <SendButton type="submit">Enviar fatura</SendButton>
-        </Form>
-      </ModalContent>
+            <SendButton type="submit">Enviar fatura</SendButton>
+          </Form>
+        </ModalContent>
+      ) : (
+        <p>O cliente não possui débitos.</p>
+      )}
 
       {isLoading && (
         <Loading isOpen={isLoading} message={message} setIsOpen={stop} />
