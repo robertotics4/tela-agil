@@ -47,8 +47,6 @@ const InstallmentPaymentModal: React.FC<ModalProps> = ({
 
   const formRef = useRef<FormHandles>(null);
 
-  console.log(selectedInstallmentDebit);
-
   const handleSubmit = useCallback(
     async (data: SendDebitFormData) => {
       try {
