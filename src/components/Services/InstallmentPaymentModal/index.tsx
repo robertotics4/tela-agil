@@ -72,8 +72,6 @@ const InstallmentPaymentModal: React.FC<ModalProps> = ({
             contract: customer.contractAccount,
           });
 
-          setIsOpen();
-
           addToast({
             type: 'success',
             title: 'Fatura enviada',
@@ -88,8 +86,6 @@ const InstallmentPaymentModal: React.FC<ModalProps> = ({
           return;
         }
 
-        setIsOpen();
-
         addToast({
           type: 'error',
           title: 'Erro no envio',
@@ -97,6 +93,7 @@ const InstallmentPaymentModal: React.FC<ModalProps> = ({
             'Ocorreu um erro ao enviar a fatura, cheque o número de telefone',
         });
       } finally {
+        setIsOpen();
         stop();
       }
     },
@@ -141,42 +138,46 @@ const InstallmentPaymentModal: React.FC<ModalProps> = ({
 
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
-      <ModalContent>
-        <h2>Entrada de parcelamento</h2>
+      {debits.installmentDebits.installmentDebitDetails.length ? (
+        <ModalContent>
+          <h2>Entrada de parcelamento</h2>
 
-        <div>
-          <table>
-            <tbody>{generateInstallmentRows}</tbody>
-          </table>
-        </div>
+          <div>
+            <table>
+              <tbody>{generateInstallmentRows}</tbody>
+            </table>
+          </div>
 
-        <Form
-          ref={formRef}
-          onSubmit={handleSubmit}
-          initialData={{
-            phone: customer.contacts.phones?.cellPhone,
-          }}
-        >
-          {codeBarValue ? (
-            <CodeBarContent>
-              <span>Código para pagamento</span>
-              <strong>{codeBarValue}</strong>
-            </CodeBarContent>
-          ) : (
-            <span>Nenhum documento selecionado</span>
-          )}
+          <Form
+            ref={formRef}
+            onSubmit={handleSubmit}
+            initialData={{
+              phone: customer.contacts.phones?.cellPhone,
+            }}
+          >
+            {codeBarValue ? (
+              <CodeBarContent>
+                <span>Código para pagamento</span>
+                <strong>{codeBarValue}</strong>
+              </CodeBarContent>
+            ) : (
+              <span>Nenhum documento selecionado</span>
+            )}
 
-          <InputMask
-            name="phone"
-            mask="(99) 99999-9999"
-            type="text"
-            placeholder="Telefone do cliente"
-            autoComplete="off"
-          />
+            <InputMask
+              name="phone"
+              mask="(99) 99999-9999"
+              type="text"
+              placeholder="Telefone do cliente"
+              autoComplete="off"
+            />
 
-          <SendButton type="submit">Enviar código</SendButton>
-        </Form>
-      </ModalContent>
+            <SendButton type="submit">Enviar código</SendButton>
+          </Form>
+        </ModalContent>
+      ) : (
+        <p>O cliente não possui negociações.</p>
+      )}
 
       {isLoading && (
         <Loading isOpen={isLoading} message={message} setIsOpen={stop} />
