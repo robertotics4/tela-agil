@@ -81,7 +81,19 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
             operatingCompany,
             phoneNumber: getUnformattedPhone(data.phone),
           });
-        } else if (selectedInstallmentDebit) {
+
+          setIsOpen();
+
+          addToast({
+            type: 'success',
+            title: 'Fatura enviada',
+            description: 'Fatura foi enviada com sucesso.',
+          });
+
+          return;
+        }
+
+        if (selectedInstallmentDebit) {
           await sendInstallmentPayment({
             operatingCompany,
             phoneNumber: getUnformattedPhone(data.phone),
@@ -90,15 +102,15 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
             barCode: selectedInstallmentDebit.paymentCode,
             contract: customer.contractAccount,
           });
+
+          setIsOpen();
+
+          addToast({
+            type: 'success',
+            title: 'Código enviado',
+            description: 'O código para pagamento foi enviado com sucesso.',
+          });
         }
-
-        setIsOpen();
-
-        addToast({
-          type: 'success',
-          title: 'Fatura enviada',
-          description: 'Fatura foi enviada com sucesso.',
-        });
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);

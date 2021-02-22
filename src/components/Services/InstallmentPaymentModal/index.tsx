@@ -13,10 +13,11 @@ import { useWhatsappSending } from '../../../hooks/useWhatsappSending';
 
 import Loading from '../../Loading';
 import Modal from '../../Modal';
+import InputMask from '../../InputMask';
 
 import { currencyMask } from '../../../utils/inputMasks';
 
-import { ModalContent, SendButton, CodeBarContent, PhoneInput } from './styles';
+import { ModalContent, SendButton, CodeBarContent } from './styles';
 
 import { InstallmentDebit } from '../../../types/Debits';
 
@@ -46,6 +47,8 @@ const InstallmentPaymentModal: React.FC<ModalProps> = ({
 
   const formRef = useRef<FormHandles>(null);
 
+  console.log(selectedInstallmentDebit);
+
   const handleSubmit = useCallback(
     async (data: SendDebitFormData) => {
       try {
@@ -70,15 +73,15 @@ const InstallmentPaymentModal: React.FC<ModalProps> = ({
             barCode: selectedInstallmentDebit.paymentCode,
             contract: customer.contractAccount,
           });
+
+          setIsOpen();
+
+          addToast({
+            type: 'success',
+            title: 'Fatura enviada',
+            description: 'Fatura foi enviada com sucesso.',
+          });
         }
-
-        setIsOpen();
-
-        addToast({
-          type: 'success',
-          title: 'Fatura enviada',
-          description: 'Fatura foi enviada com sucesso.',
-        });
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
@@ -161,9 +164,11 @@ const InstallmentPaymentModal: React.FC<ModalProps> = ({
               <span>Código para pagamento</span>
               <strong>{codeBarValue}</strong>
             </CodeBarContent>
-          ) : null}
+          ) : (
+            <span>Nenhum documento selecionado</span>
+          )}
 
-          <PhoneInput
+          <InputMask
             name="phone"
             mask="(99) 99999-9999"
             type="text"

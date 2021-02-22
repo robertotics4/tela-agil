@@ -1,7 +1,5 @@
 import styled from 'styled-components';
 
-import InputMask from '../../InputMask';
-import Input from '../../Input';
 import Button from '../../Button';
 
 export const ModalContent = styled.div`
@@ -93,6 +91,10 @@ export const ModalContent = styled.div`
 
     padding: 8px;
     margin-top: 16px;
+
+    span {
+      margin-bottom: 16px;
+    }
   }
 `;
 
@@ -101,8 +103,7 @@ export const CodeBarContent = styled.div`
   flex-direction: column;
 
   width: 100%;
-
-  border: 1px solid red;
+  margin-bottom: 16px;
 
   span {
     font-size: 14px;
@@ -113,10 +114,6 @@ export const CodeBarContent = styled.div`
     font-size: 16px;
     color: #444444;
   }
-`;
-
-export const PhoneInput = styled(InputMask)`
-  width: 60% !important;
 `;
 
 export const SendButton = styled(Button)`
