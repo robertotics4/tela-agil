@@ -165,7 +165,8 @@ function getDebits(responseDebits: any, stateCode: string): Debits {
     (debit: any) => {
       const parsedDebit: InstallmentDebit = {
         billingDocumentNumber: debit.numeroDocumentoCobranca,
-        invoiceAmount: debit.valorFatura,
+        invoiceAmount: Number(debit.valorFatura.toString().trim()),
+        invoiceReference: '',
         paymentCode: debit.codigoPagamento,
       };
 

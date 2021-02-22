@@ -19,8 +19,8 @@ import InputMask from '../../InputMask';
 
 import { currencyMask } from '../../../utils/inputMasks';
 
-import { ModalContent, SendButton } from './styles';
 import { InstallmentDebit, InvoiceDebit } from '../../../types/Debits';
+import { ModalContent, SendButton, DebitContainer } from './styles';
 
 interface ModalProps {
   isOpen: boolean;
@@ -35,11 +35,8 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
   isOpen,
   setIsOpen,
 }) => {
-  const [selectedInvoiceDebit, setSelectedInvoiceDebit] = useState<
-    InvoiceDebit | undefined
-  >(undefined);
-  const [selectedInstallmentDebit, setSelectedInstallmentDebit] = useState<
-    InstallmentDebit | undefined
+  const [selectedDebit, setSelectedDebit] = useState<
+    InstallmentDebit | InvoiceDebit | undefined
   >(undefined);
 
   const { debits, customer, operatingCompany } = useCustomerService();
@@ -65,45 +62,43 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
           abortEarly: false,
         });
 
-        if (selectedInvoiceDebit) {
-          const invoiceUrl = await getInvoiceUrl({
-            invoiceReference: selectedInvoiceDebit.invoiceReference,
-            operatingCompany,
-          });
-          await sendInvoiceDebit({
-            invoiceUrl,
-            operatingCompany,
-            phoneNumber: getUnformattedPhone(data.phone),
-          });
+        if (selectedDebit) {
+          if (Object.keys(selectedDebit).includes('overdueInvoiceNumber')) {
+            const invoiceUrl = await getInvoiceUrl({
+              invoiceReference: selectedDebit.invoiceReference,
+              operatingCompany,
+            });
+            await sendInvoiceDebit({
+              invoiceUrl,
+              operatingCompany,
+              phoneNumber: getUnformattedPhone(data.phone),
+            });
 
-          setIsOpen();
+            addToast({
+              type: 'success',
+              title: 'Fatura enviada',
+              description: 'Fatura foi enviada com sucesso.',
+            });
 
-          addToast({
-            type: 'success',
-            title: 'Fatura enviada',
-            description: 'Fatura foi enviada com sucesso.',
-          });
+            return;
+          }
 
-          return;
-        }
+          if (Object.keys(selectedDebit).includes('billingDocumentNumber')) {
+            await sendInstallmentPayment({
+              operatingCompany,
+              phoneNumber: getUnformattedPhone(data.phone),
+              name: customer.name,
+              amount: selectedDebit.invoiceAmount,
+              barCode: selectedDebit.paymentCode,
+              contract: customer.contractAccount,
+            });
 
-        if (selectedInstallmentDebit) {
-          await sendInstallmentPayment({
-            operatingCompany,
-            phoneNumber: getUnformattedPhone(data.phone),
-            name: customer.name,
-            amount: selectedInstallmentDebit.invoiceAmount,
-            barCode: selectedInstallmentDebit.paymentCode,
-            contract: customer.contractAccount,
-          });
-
-          setIsOpen();
-
-          addToast({
-            type: 'success',
-            title: 'Código enviado',
-            description: 'O código para pagamento foi enviado com sucesso.',
-          });
+            addToast({
+              type: 'success',
+              title: 'Código enviado',
+              description: 'O código para pagamento foi enviado com sucesso.',
+            });
+          }
         }
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
@@ -113,8 +108,6 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
           return;
         }
 
-        setIsOpen();
-
         addToast({
           type: 'error',
           title: 'Erro no envio',
@@ -122,13 +115,14 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
             'Ocorreu um erro ao enviar a fatura, cheque o número de telefone',
         });
       } finally {
+        setSelectedDebit(undefined);
+        setIsOpen();
         stop();
       }
     },
     [
       addToast,
-      selectedInvoiceDebit,
-      selectedInstallmentDebit,
+      selectedDebit,
       customer,
       getInvoiceUrl,
       operatingCompany,
@@ -140,14 +134,8 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
     ],
   );
 
-  const handleClickInstallmentDebit = useCallback(debit => {
-    setSelectedInstallmentDebit(debit);
-    setSelectedInvoiceDebit(undefined);
-  }, []);
-
-  const handleClickInvoiceDebit = useCallback(debit => {
-    setSelectedInvoiceDebit(debit);
-    setSelectedInstallmentDebit(undefined);
+  const handleClickDebit = useCallback(debit => {
+    setSelectedDebit(debit);
   }, []);
 
   const generateInstallmentRows = useMemo(() => {
@@ -156,7 +144,7 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
         <tr
           key={debit.billingDocumentNumber}
           tabIndex={0}
-          onClick={() => handleClickInstallmentDebit(debit)}
+          onClick={() => handleClickDebit(debit)}
         >
           <td>
             <span>Parcelamento</span>
@@ -170,7 +158,7 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
     );
 
     return installmentRows;
-  }, [debits, handleClickInstallmentDebit]);
+  }, [debits, handleClickDebit]);
 
   const generateInvoiceRows = useMemo(() => {
     const invoiceRows = debits.invoiceDebits.invoiceDebitDetails.map(debit => {
@@ -183,7 +171,7 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
         <tr
           key={debit.invoiceReference}
           tabIndex={0}
-          onClick={() => handleClickInvoiceDebit(debit)}
+          onClick={() => handleClickDebit(debit)}
         >
           <td>
             <span>Referente a</span>
@@ -201,7 +189,29 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
     });
 
     return invoiceRows;
-  }, [debits, handleClickInvoiceDebit]);
+  }, [debits, handleClickDebit]);
+
+  const selectedDebitReference = useMemo(() => {
+    if (selectedDebit) {
+      if (Object.keys(selectedDebit).includes('overdueInvoiceNumber')) {
+        const invoiceDebit: InvoiceDebit = selectedDebit as InvoiceDebit;
+
+        const monthReference = Number(
+          invoiceDebit.overdueInvoiceNumber.substr(5, 2),
+        );
+        const yearReference = Number(
+          invoiceDebit.overdueInvoiceNumber.substr(1, 4),
+        );
+
+        const referenceDate = new Date(yearReference, monthReference);
+
+        return format(referenceDate, 'MM/yyyy ');
+      }
+      return 'Parcelamento';
+    }
+
+    return null;
+  }, [selectedDebit]);
 
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
@@ -226,6 +236,20 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
               phone: customer.contacts.phones?.cellPhone,
             }}
           >
+            {selectedDebit ? (
+              <DebitContainer>
+                <p>Débito selecionado</p>
+
+                <strong>{`Referente a: ${selectedDebitReference}`}</strong>
+
+                <strong>
+                  {`Valor: ${currencyMask(selectedDebit.invoiceAmount)}`}
+                </strong>
+              </DebitContainer>
+            ) : (
+              <span>Nenhum débito selecionado</span>
+            )}
+
             <InputMask
               name="phone"
               mask="(99) 99999-9999"
@@ -238,7 +262,7 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
           </Form>
         </ModalContent>
       ) : (
-        <p>O cliente não possui débitos.</p>
+        <span>O cliente não possui débitos.</span>
       )}
 
       {isLoading && (

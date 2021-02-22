@@ -86,16 +86,39 @@ export const ModalContent = styled.div`
 
   form {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
 
     padding: 8px;
     margin-top: 16px;
+
+    span {
+      margin-bottom: 16px;
+      color: #444444;
+    }
   }
 `;
 
 export const SendButton = styled(Button)`
-  margin: 0 0 0 16px;
   height: 40px;
   width: 100%;
+`;
+
+export const DebitContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 100%;
+  margin-bottom: 16px;
+
+  span {
+    font-size: 14px;
+    color: #444444;
+  }
+
+  strong {
+    font-size: 16px;
+    color: #444444;
+  }
 `;

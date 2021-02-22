@@ -9,7 +9,7 @@ export interface InvoiceDebit {
 export interface InstallmentDebit {
   billingDocumentNumber: string;
   invoiceAmount: number;
-  invoiceReference?: string;
+  invoiceReference: string;
   paymentCode: string;
 }
 
