@@ -11,11 +11,13 @@ import { Container, Content } from './styles';
 import PowerOutageFlow from '../../../Services/PowerOutageFlow';
 import DebitsConsultationModal from '../../../Services/DebitsConsultationModal';
 import InstallmentPaymentModal from '../../../Services/InstallmentPaymentModal';
+import EmailInvoice from '../../../Services/EmailInvoice';
 
 const QuickMenu: React.FC = () => {
   const [outagePowerOpen, setOutagePowerOpen] = useState(false);
   const [debitsConsultationOpen, setDebitsConsultationOpen] = useState(false);
   const [installmentPaymentOpen, setInstallmentPaymentOpen] = useState(false);
+  const [emailInvoiceOpen, setEmailInvoiceOpen] = useState(false);
 
   function toggleOutagePower(): void {
     setOutagePowerOpen(!outagePowerOpen);
@@ -27,6 +29,10 @@ const QuickMenu: React.FC = () => {
 
   function toggleInstallmentPayment(): void {
     setInstallmentPaymentOpen(!installmentPaymentOpen);
+  }
+
+  function toggleEmailInvoice(): void {
+    setEmailInvoiceOpen(!emailInvoiceOpen);
   }
 
   return (
@@ -76,7 +82,7 @@ const QuickMenu: React.FC = () => {
 
         <div>
           <button type="button">
-            <IoMdMail size={20} />
+            <IoMdMail size={20} onClick={toggleEmailInvoice} />
           </button>
 
           <span>Fatura por e-mail</span>
@@ -112,6 +118,8 @@ const QuickMenu: React.FC = () => {
         isOpen={installmentPaymentOpen}
         setIsOpen={toggleInstallmentPayment}
       />
+
+      <EmailInvoice isOpen={emailInvoiceOpen} setIsOpen={toggleEmailInvoice} />
     </Container>
   );
 };
