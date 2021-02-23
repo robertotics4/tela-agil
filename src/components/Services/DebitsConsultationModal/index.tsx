@@ -1,4 +1,10 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 import { format } from 'date-fns';
@@ -212,6 +218,10 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
 
     return null;
   }, [selectedDebit]);
+
+  useEffect(() => {
+    setSelectedDebit(undefined);
+  }, [setIsOpen]);
 
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>

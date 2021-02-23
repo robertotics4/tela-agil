@@ -12,7 +12,7 @@ import PowerOutageFlow from '../../../Services/PowerOutageFlow';
 import DebitsConsultationModal from '../../../Services/DebitsConsultationModal';
 import InstallmentPaymentModal from '../../../Services/InstallmentPaymentModal';
 import EmailInvoice from '../../../Services/EmailInvoice';
-import ExpirationChange from '../../../Services/ExpirationChange';
+import ExpirationChange from '../../../Services/DueDateChange';
 
 const QuickMenu: React.FC = () => {
   const [outagePowerOpen, setOutagePowerOpen] = useState(false);
@@ -87,16 +87,16 @@ const QuickMenu: React.FC = () => {
         </div>
 
         <div>
-          <button type="button">
-            <IoMdMail size={20} onClick={toggleEmailInvoice} />
+          <button type="button" onClick={toggleEmailInvoice}>
+            <IoMdMail size={20} />
           </button>
 
           <span>Fatura por e-mail</span>
         </div>
 
         <div>
-          <button type="button">
-            <FaCalendarAlt size={20} onClick={toggleExpirationChange} />
+          <button type="button" onClick={toggleExpirationChange}>
+            <FaCalendarAlt size={20} />
           </button>
 
           <span>Data certa</span>

@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import Select from 'react-select';
 
 import Button from '../../Button';
@@ -9,10 +9,10 @@ export const ModalContent = styled.div`
   justify-content: center;
   align-items: center;
 
-  min-height: 480px;
+  min-height: 448px;
   overflow: hidden;
 
-  padding: 24px 48px;
+  padding: 0 48px;
 
   h2 {
     text-align: center;
@@ -38,14 +38,35 @@ export const SelectDate = styled(Select)`
   margin-top: 24px;
 `;
 
+export const SelectedInfo = styled.span`
+  margin-top: 16px;
+
+  font-size: 16px;
+  color: #444444;
+  text-align: center;
+`;
+
 export const ConfirmButton = styled(Button)`
   background: transparent;
   color: #3c1491;
   border: 1px solid #3c1491;
   height: 40px;
 
-  &:hover {
-    background: #3c1491;
-    color: #fff;
-  }
+  ${props =>
+    props.disabled
+      ? css`
+          opacity: 25%;
+          cursor: not-allowed;
+
+          &:hover {
+            background: transparent;
+            color: #3c1491;
+          }
+        `
+      : css`
+          &:hover {
+            background: #3c1491;
+            color: #fff;
+          }
+        `}
 `;

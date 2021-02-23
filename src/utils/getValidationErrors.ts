@@ -1,6 +1,6 @@
 import { ValidationError } from 'yup';
 
-interface Errors {
+export interface Errors {
   [key: string]: string;
 }
 
