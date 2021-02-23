@@ -1,38 +1,129 @@
-import React from 'react';
-import Select from 'react-select';
+import React, { useCallback, useEffect, useState } from 'react';
+import { v4 as uuid } from 'uuid';
 
 import { useLoading } from 'react-use-loading';
 
+import Select from 'react-select';
 import { useToast } from '../../../hooks/toast';
+import eqtlBarApi from '../../../services/eqtlBarApi';
 
 import Loading from '../../Loading';
 import Modal from '../../Modal';
-import { OutlineButton } from '../../StepModal/styles';
 
-import { ModalContent, OptionsContainer, OptionButton } from './styles';
+import {
+  ModalContent,
+  SelectContainer,
+  SelectDate,
+  ConfirmButton,
+} from './styles';
+import { useCustomerService } from '../../../hooks/customerService';
 
 interface ModalProps {
   isOpen: boolean;
   setIsOpen: () => void;
 }
 
+interface ValidDate {
+  description: string;
+  code: string;
+}
+
+interface ResponseValidDate {
+  descricaoDt: string;
+  codigoDt: string;
+}
+
+interface GetDateListProps {
+  contract: string;
+  stateCode: string;
+}
+
+interface OptionProps {
+  value: string;
+  label: string;
+}
+
 const ExpirationChange: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
-  const { addToast } = useToast();
   const [{ isLoading, message }, { start, stop }] = useLoading();
+
+  const { customer, operatingCompany } = useCustomerService();
+  const { addToast } = useToast();
+
+  const [validDates, setValidDates] = useState<ValidDate[]>([]);
+  const [selectOptions, setSelectOptions] = useState<OptionProps[]>([]);
+  const [selectedDate, setSelectedDate] = useState<ValidDate | undefined>(
+    undefined,
+  );
+
+  const getDateList = useCallback(
+    async ({ contract, stateCode }: GetDateListProps) => {
+      const response = await eqtlBarApi.get('/servico/v1/dataCerta', {
+        params: {
+          contaContrato: contract,
+          empresaOperadora: stateCode,
+          flagConsultar: true,
+          codigoTransacao: uuid(),
+          canalAtendimento: 'S',
+        },
+      });
+
+      return response.data.data.listaDataCerta;
+    },
+    [],
+  );
+
+  const handleChangeSelect = useCallback((value: ValidDate) => {
+    setSelectedDate(value);
+  }, []);
+
+  useEffect(() => {
+    getDateList({
+      contract: customer.contractAccount,
+      stateCode: operatingCompany,
+    }).then(data => {
+      setValidDates(
+        data.map((date: ResponseValidDate) => {
+          const validDate: ValidDate = {
+            description: date.descricaoDt,
+            code: date.codigoDt,
+          };
+
+          return validDate;
+        }),
+      );
+    });
+  }, [customer, getDateList, operatingCompany]);
+
+  useEffect(() => {
+    setSelectOptions(
+      validDates.map(date => {
+        const option: OptionProps = {
+          value: date.description,
+          label: date.code,
+        };
+
+        return option;
+      }),
+    );
+  }, [validDates]);
 
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
       <ModalContent>
-        <h2>Fatura por e-mail</h2>
+        <h2>Data certa</h2>
 
-        <p>
-          Autorizo o envio mensal das faturas de energia elétrica e de eventuais
-          notificações referentes à conta contrato especificada, ao e-mail do
-          meu cadastro: roberto@email.com, dispensando a necessidade de envio
-          impresso em papel.
-        </p>
+        <h1>Escolha a melhor data para você receber suas próximas faturas:</h1>
 
-        <input type="" />
+        <SelectContainer>
+          <SelectDate
+            options={[...selectOptions]}
+            maxMenuHeight={144}
+            placeholder="Selecione"
+            onChange={(value: ValidDate) => handleChangeSelect(value)}
+          />
+
+          <ConfirmButton type="button">Cadastrar</ConfirmButton>
+        </SelectContainer>
       </ModalContent>
 
       {isLoading && (

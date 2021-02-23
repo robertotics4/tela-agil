@@ -93,6 +93,7 @@ const InstallmentPaymentModal: React.FC<ModalProps> = ({
             'Ocorreu um erro ao enviar a fatura, cheque o número de telefone',
         });
       } finally {
+        setSelectedInstallmentDebit(undefined);
         setIsOpen();
         stop();
       }

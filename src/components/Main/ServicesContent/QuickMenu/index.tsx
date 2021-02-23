@@ -12,12 +12,14 @@ import PowerOutageFlow from '../../../Services/PowerOutageFlow';
 import DebitsConsultationModal from '../../../Services/DebitsConsultationModal';
 import InstallmentPaymentModal from '../../../Services/InstallmentPaymentModal';
 import EmailInvoice from '../../../Services/EmailInvoice';
+import ExpirationChange from '../../../Services/ExpirationChange';
 
 const QuickMenu: React.FC = () => {
   const [outagePowerOpen, setOutagePowerOpen] = useState(false);
   const [debitsConsultationOpen, setDebitsConsultationOpen] = useState(false);
   const [installmentPaymentOpen, setInstallmentPaymentOpen] = useState(false);
   const [emailInvoiceOpen, setEmailInvoiceOpen] = useState(false);
+  const [expirationChangeOpen, setExpirationChangeOpen] = useState(false);
 
   function toggleOutagePower(): void {
     setOutagePowerOpen(!outagePowerOpen);
@@ -33,6 +35,10 @@ const QuickMenu: React.FC = () => {
 
   function toggleEmailInvoice(): void {
     setEmailInvoiceOpen(!emailInvoiceOpen);
+  }
+
+  function toggleExpirationChange(): void {
+    setExpirationChangeOpen(!expirationChangeOpen);
   }
 
   return (
@@ -90,7 +96,7 @@ const QuickMenu: React.FC = () => {
 
         <div>
           <button type="button">
-            <FaCalendarAlt size={20} />
+            <FaCalendarAlt size={20} onClick={toggleExpirationChange} />
           </button>
 
           <span>Data certa</span>
@@ -120,6 +126,11 @@ const QuickMenu: React.FC = () => {
       />
 
       <EmailInvoice isOpen={emailInvoiceOpen} setIsOpen={toggleEmailInvoice} />
+
+      <ExpirationChange
+        isOpen={expirationChangeOpen}
+        setIsOpen={toggleExpirationChange}
+      />
     </Container>
   );
 };
