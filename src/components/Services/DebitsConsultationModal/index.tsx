@@ -268,7 +268,9 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
               autoComplete="off"
             />
 
-            <SendButton type="submit">Enviar fatura</SendButton>
+            <SendButton type="submit" disabled={!selectedDebit}>
+              Enviar fatura
+            </SendButton>
           </Form>
         </ModalContent>
       ) : (

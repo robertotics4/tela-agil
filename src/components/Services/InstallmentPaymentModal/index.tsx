@@ -186,7 +186,9 @@ const InstallmentPaymentModal: React.FC<ModalProps> = ({
               autoComplete="off"
             />
 
-            <SendButton type="submit">Enviar código</SendButton>
+            <SendButton type="submit" disabled={!selectedInstallmentDebit}>
+              Enviar código
+            </SendButton>
           </Form>
         </ModalContent>
       ) : (

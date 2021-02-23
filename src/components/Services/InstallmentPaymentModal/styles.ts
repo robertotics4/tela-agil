@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import Button from '../../Button';
 
@@ -117,6 +117,28 @@ export const CodeBarContent = styled.div`
 `;
 
 export const SendButton = styled(Button)`
+  background: transparent;
+  color: #3c1491;
+  border: 1px solid #3c1491;
+
   height: 40px;
   width: 60%;
+
+  ${props =>
+    props.disabled
+      ? css`
+          opacity: 25%;
+          cursor: not-allowed;
+
+          &:hover {
+            background: transparent;
+            color: #3c1491;
+          }
+        `
+      : css`
+          &:hover {
+            background: #3c1491;
+            color: #fff;
+          }
+        `}
 `;
