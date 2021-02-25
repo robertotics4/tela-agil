@@ -4,6 +4,7 @@ import { parseISO } from 'date-fns';
 import Customer from '../types/Customer';
 import Installation from '../types/Installation';
 import Debits, { InvoiceDebit, InstallmentDebit } from '../types/Debits';
+import ServiceNotes, { ServiceNote } from '../types/ServiceNotes';
 
 import { phoneMask } from './inputMasks';
 
@@ -193,6 +194,51 @@ function getDebits(responseDebits: any, stateCode: string): Debits {
   return debits;
 }
 
+function getServiceNotes(response: AxiosResponse): ServiceNotes {
+  const responseNotes = response.data.data.notas;
+
+  const mappedOpenServiceNotes: ServiceNote[] = responseNotes.notasAbertas.map(
+    (note: any) => {
+      const openServiceNote: ServiceNote = {
+        type: note.tipoNota,
+        description: note.descricaoNota,
+        codeGroup: note.grupoCode,
+        codeGroupDescription: note.descricaoGrupoCode,
+        code: note.code,
+        codeDescription: note.descricaoCode,
+        openingDate: parseISO(note.dataAbertura),
+        conclusionDate: parseISO(note.dataConclusao),
+      };
+
+      return openServiceNote;
+    },
+  );
+
+  const mappedClosedServiceNotes: ServiceNote[] = responseNotes.notasEncerradas.map(
+    (note: any) => {
+      const openServiceNote: ServiceNote = {
+        type: note.tipoNota,
+        description: note.descricaoNota,
+        codeGroup: note.grupoCode,
+        codeGroupDescription: note.descricaoGrupoCode,
+        code: note.code,
+        codeDescription: note.descricaoCode,
+        openingDate: parseISO(note.dataAbertura),
+        conclusionDate: parseISO(note.dataConclusao),
+      };
+
+      return openServiceNote;
+    },
+  );
+
+  const serviceNotes: ServiceNotes = {
+    openServiceNotes: mappedOpenServiceNotes,
+    closedServiceNotes: mappedClosedServiceNotes,
+  };
+
+  return serviceNotes;
+}
+
 function extractResponseData(
   response: AxiosResponse,
   stateCode: string,
@@ -202,6 +248,9 @@ function extractResponseData(
   const customer = getCustomerData(response, stateCode);
   const installation = getInstallationData(responseData.instalacao, stateCode);
   const debits = getDebits(responseData.debitos, stateCode);
+  const serviceNotes = getServiceNotes(response);
+
+  console.log(serviceNotes);
 
   return {
     customer,
