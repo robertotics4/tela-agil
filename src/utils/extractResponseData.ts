@@ -14,6 +14,7 @@ interface ExtractedData {
   customer: Customer;
   installation: Installation;
   debits: Debits;
+  serviceNotes: ServiceNotes;
 }
 
 interface ResponsePhone {
@@ -250,12 +251,11 @@ function extractResponseData(
   const debits = getDebits(responseData.debitos, stateCode);
   const serviceNotes = getServiceNotes(response);
 
-  console.log(serviceNotes);
-
   return {
     customer,
     installation,
     debits,
+    serviceNotes,
   };
 }
 

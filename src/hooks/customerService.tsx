@@ -1,5 +1,4 @@
 import React, { createContext, useCallback, useContext, useState } from 'react';
-import { string } from 'yup/lib/locale';
 import customerDataApi from '../services/eqtlBarApi';
 
 import { useToast } from './toast';
@@ -9,12 +8,14 @@ import Installation from '../types/Installation';
 import Debits from '../types/Debits';
 
 import extractResponseData from '../utils/extractResponseData';
+import ServiceNotes from '../types/ServiceNotes';
 
 interface CustomerServiceState {
   operatingCompany: string;
   customer: Customer;
   installation: Installation;
   debits: Debits;
+  serviceNotes: ServiceNotes;
 }
 
 interface GetCustomerData {
@@ -28,6 +29,7 @@ interface CustomerServiceContextData {
   customer: Customer;
   installation: Installation;
   debits: Debits;
+  serviceNotes: ServiceNotes;
   serviceStarted: boolean;
   getCustomer(customerData: GetCustomerData): Promise<void>;
   startService({ stateCode, contract, cpf }: GetCustomerData): Promise<void>;
@@ -52,10 +54,14 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
     );
 
     if (storagedCustomerServiceData) {
-      const { operatingCompany, customer, installation, debits } = JSON.parse(
-        storagedCustomerServiceData,
-      );
-      return { operatingCompany, customer, installation, debits };
+      const {
+        operatingCompany,
+        customer,
+        installation,
+        debits,
+        serviceNotes,
+      } = JSON.parse(storagedCustomerServiceData);
+      return { operatingCompany, customer, installation, debits, serviceNotes };
     }
 
     return {} as CustomerServiceState;
@@ -84,10 +90,12 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
 
       const response = await customerDataApi.get(url);
 
-      const { customer, installation, debits } = extractResponseData(
-        response,
-        stateCode,
-      );
+      const {
+        customer,
+        installation,
+        debits,
+        serviceNotes,
+      } = extractResponseData(response, stateCode);
 
       localStorage.setItem(
         '@TelaAgil:customerServiceData',
@@ -96,6 +104,7 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
           customer,
           installation,
           debits,
+          serviceNotes,
         }),
       );
 
@@ -104,6 +113,7 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
         customer,
         installation,
         debits,
+        serviceNotes,
       });
     },
     [addToast],
@@ -146,6 +156,7 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
         customer: customerServiceData.customer,
         installation: customerServiceData.installation,
         debits: customerServiceData.debits,
+        serviceNotes: customerServiceData.serviceNotes,
         serviceStarted,
         getCustomer,
         startService,
