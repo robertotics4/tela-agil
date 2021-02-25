@@ -54,7 +54,7 @@ const EmailInvoiceModal: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
         if (response.data.data.codigoErro === '09') {
           throw new Error('Fatura por e-mail já cadastrada');
         } else {
-          throw new Error('Falha ao ativar o serviço de fatura por e-mail.');
+          throw new Error(response.data.data.mensagem);
         }
       }
     },

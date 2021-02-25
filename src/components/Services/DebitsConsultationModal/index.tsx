@@ -74,17 +74,22 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
               invoiceReference: selectedDebit.invoiceReference,
               operatingCompany,
             });
-            await sendInvoiceDebit({
-              invoiceUrl,
-              operatingCompany,
-              phoneNumber: getUnformattedPhone(data.phone),
-            });
 
-            addToast({
-              type: 'success',
-              title: 'Fatura enviada',
-              description: 'Fatura foi enviada com sucesso.',
-            });
+            console.log(invoiceUrl);
+
+            if (invoiceUrl) {
+              await sendInvoiceDebit({
+                invoiceUrl,
+                operatingCompany,
+                phoneNumber: getUnformattedPhone(data.phone),
+              });
+
+              addToast({
+                type: 'success',
+                title: 'Fatura enviada',
+                description: 'Fatura foi enviada com sucesso.',
+              });
+            }
 
             return;
           }

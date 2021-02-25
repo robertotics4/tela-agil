@@ -92,10 +92,7 @@ const DueDateChange: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
         },
       });
 
-      if (
-        response.data.data.mensagem !== '00' ||
-        response.data.data.mensagem !== 'Data Certa Incluida com Sucesso!'
-      ) {
+      if (response.data.data.mensagem !== 'Data Certa Incluida com Sucesso!') {
         throw new Error(response.data.data.mensagem);
       }
     },
