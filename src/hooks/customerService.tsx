@@ -1,5 +1,5 @@
 import React, { createContext, useCallback, useContext, useState } from 'react';
-import customerDataApi from '../services/eqtlBarApi';
+import { v4 as uuid } from 'uuid';
 
 import { useToast } from './toast';
 
@@ -9,6 +9,7 @@ import Debits from '../types/Debits';
 
 import extractResponseData from '../utils/extractResponseData';
 import ServiceNotes from '../types/ServiceNotes';
+import eqtlBarApi from '../services/eqtlBarApi';
 
 interface CustomerServiceState {
   operatingCompany: string;
@@ -24,6 +25,11 @@ interface GetCustomerData {
   cpf?: string;
 }
 
+interface StartServiceProps {
+  stateCode: string;
+  contract: string;
+}
+
 interface CustomerServiceContextData {
   operatingCompany: string;
   customer: Customer;
@@ -34,6 +40,11 @@ interface CustomerServiceContextData {
   getCustomer(customerData: GetCustomerData): Promise<void>;
   startService({ stateCode, contract, cpf }: GetCustomerData): Promise<void>;
   finishService(): void;
+}
+
+interface GenerateProtocolProps {
+  operatingCompany: string;
+  contract: string;
 }
 
 const CustomerServiceContext = createContext<CustomerServiceContextData>(
@@ -61,7 +72,16 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
         debits,
         serviceNotes,
       } = JSON.parse(storagedCustomerServiceData);
-      return { operatingCompany, customer, installation, debits, serviceNotes };
+
+      const customerServiceState: CustomerServiceState = {
+        operatingCompany,
+        customer,
+        installation,
+        debits,
+        serviceNotes,
+      };
+
+      return customerServiceState;
     }
 
     return {} as CustomerServiceState;
@@ -88,7 +108,7 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
         url = `/atendimento/v1/clientes?contrato=${contract}&flagDadosCliente=true&flagStatusInstalacao=true&flagPossuiDebitos=true&flagDadosTecnicos=true&empresaOperadora=${stateCode}&flagNotasAbertas=true&flagNotasEncerradas=true&flagDetalheDebitoCobranca=true&flagDetalheDebitoFatura=true&codigoTransacao=123`;
       }
 
-      const response = await customerDataApi.get(url);
+      const response = await eqtlBarApi.get(url);
 
       const {
         customer,
@@ -119,13 +139,33 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
     [addToast],
   );
 
+  const generateProtocol = useCallback(
+    async ({ operatingCompany, contract }: GenerateProtocolProps) => {
+      const response = await eqtlBarApi.get('/atendimento/v1/clientes', {
+        params: {
+          empresaOperadora: operatingCompany,
+          contrato: contract,
+          flagGerarProtocolo: true,
+          codigoTransacao: uuid(),
+        },
+      });
+
+      localStorage.setItem('@TelaAgil:protocol', response.data.data.protocolo);
+    },
+    [],
+  );
+
   const startService = useCallback(
-    async ({ stateCode, contract, cpf }: GetCustomerData) => {
+    async ({ stateCode, contract }: StartServiceProps) => {
       try {
         await getCustomer({
           stateCode,
           contract,
-          cpf,
+        });
+
+        await generateProtocol({
+          contract,
+          operatingCompany: stateCode,
         });
 
         setServiceStarted(true);
@@ -138,10 +178,11 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
         });
       }
     },
-    [getCustomer, addToast],
+    [getCustomer, generateProtocol, addToast],
   );
 
   const finishService = useCallback(() => {
+    localStorage.removeItem('@TelaAgil:protocol');
     localStorage.removeItem('@TelaAgil:customerServiceData');
 
     setCustomerServiceData({} as CustomerServiceContextData);

@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
-import { useLoading } from 'react-use-loading';
 import { Container, WaitingForService } from './styles';
 
 import { useCustomerService } from '../../hooks/customerService';
