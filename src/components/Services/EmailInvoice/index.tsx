@@ -7,7 +7,6 @@ import { useCustomerService } from '../../../hooks/customerService';
 
 import Loading from '../../Loading';
 import Modal from '../../Modal';
-import { OutlineButton } from '../../StepModal/styles';
 
 import { ModalContent, OptionsContainer, OptionButton } from './styles';
 import eqtlBarApi from '../../../services/eqtlBarApi';

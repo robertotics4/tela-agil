@@ -3,8 +3,6 @@ import { v4 as uuid } from 'uuid';
 
 import eqtlBarApi from '../services/eqtlBarApi';
 
-import { useCustomerService } from './customerService';
-
 interface DebitsConsultationContextData {
   getInvoiceUrl({
     invoiceReference,

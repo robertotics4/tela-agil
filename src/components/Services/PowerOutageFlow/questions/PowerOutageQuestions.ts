@@ -1,4 +1,3 @@
-import PowerOutageFlow from '..';
 import { Question } from '../../../StepModal';
 
 const powerOutageQuestions: Question[] = [
@@ -37,7 +36,7 @@ const powerOutageQuestions: Question[] = [
     options: [
       {
         answer: 'Rua toda',
-        nextQuestionId: 'abrir-servico-falta-energia',
+        nextQuestionId: 'abrir-servico-falta-energia-completa',
       },
       {
         answer: 'Minha casa',
@@ -75,11 +74,12 @@ const powerOutageQuestions: Question[] = [
     ],
   },
   {
-    id: 'abrir-servico-falta-energia',
+    id: 'abrir-servico-falta-energia-completa',
     title: 'Posso confirmar sua solicitação?',
     options: [
       {
         answer: 'Sim',
+        action: 'falta-energia-completa',
       },
       {
         answer: 'Não',
@@ -92,6 +92,7 @@ const powerOutageQuestions: Question[] = [
     options: [
       {
         answer: 'Sim',
+        action: 'falta-energia-fase',
       },
       {
         answer: 'Não',
@@ -105,6 +106,7 @@ const powerOutageQuestions: Question[] = [
     options: [
       {
         answer: 'Sim',
+        action: 'falta-energia-oscilacao',
       },
       {
         answer: 'Não',
