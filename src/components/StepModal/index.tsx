@@ -2,7 +2,13 @@ import React, { useState, useEffect, useCallback } from 'react';
 
 import ReactModal from 'react-modal';
 
-import { Content, OutlineButton } from './styles';
+import {
+  Content,
+  OutlineButton,
+  ModalTitle,
+  QuestionTitle,
+  QuestionContent,
+} from './styles';
 
 interface Option {
   answer: string;
@@ -78,11 +84,11 @@ const Modal: React.FC<ModalProps> = ({
       }}
     >
       <Content>
-        <h2>{title}</h2>
+        <ModalTitle>{title}</ModalTitle>
 
-        <h1>{question.title}</h1>
+        <QuestionTitle>{question.title}</QuestionTitle>
 
-        <div>
+        <QuestionContent>
           {question.options.map(option => (
             <OutlineButton
               type="button"
@@ -91,7 +97,7 @@ const Modal: React.FC<ModalProps> = ({
               {option.answer}
             </OutlineButton>
           ))}
-        </div>
+        </QuestionContent>
       </Content>
     </ReactModal>
   );

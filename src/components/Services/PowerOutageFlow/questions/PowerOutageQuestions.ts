@@ -13,6 +13,7 @@ const powerOutageQuestions: Question[] = [
       },
       {
         answer: 'Oscilando ou fraca',
+        nextQuestionId: 'f2-q1',
       },
     ],
   },
@@ -26,6 +27,7 @@ const powerOutageQuestions: Question[] = [
       },
       {
         answer: 'Algumas partes',
+        nextQuestionId: 'teste-disjuntor',
       },
     ],
   },
@@ -35,57 +37,11 @@ const powerOutageQuestions: Question[] = [
     options: [
       {
         answer: 'Rua toda',
+        nextQuestionId: 'abrir-servico-falta-energia',
       },
       {
         answer: 'Minha casa',
-        nextQuestionId: 'f1-q4',
-      },
-    ],
-  },
-  {
-    id: 'f1-q4',
-    title:
-      'Você fez o teste do disjuntor? Ele ficou no mesmo lugar ou desligou de novo?',
-    options: [
-      {
-        answer: 'Mesmo lugar',
-        nextQuestionId: 'f1-q5',
-      },
-      {
-        answer: 'Desligou de novo',
-        nextQuestionId: 'f1-r1',
-      },
-    ],
-  },
-  {
-    id: 'f1-q5',
-    title: 'Posso confirmar sua solicitação?',
-    options: [
-      {
-        answer: 'Sim',
-        nextQuestionId: 'f1-r2',
-      },
-      {
-        answer: 'Não',
-      },
-    ],
-  },
-  {
-    id: 'f1-r1',
-    title:
-      'Pelas informações que você passou, parece que você está com um defeito interno.',
-    options: [
-      {
-        answer: 'Voltar',
-      },
-    ],
-  },
-  {
-    id: 'f1-r2',
-    title: 'Solicitação gerada com sucesso',
-    options: [
-      {
-        answer: 'Finalizar serviço',
+        nextQuestionId: 'teste-disjuntor',
       },
     ],
   },
@@ -95,9 +51,92 @@ const powerOutageQuestions: Question[] = [
     options: [
       {
         answer: 'Sim',
+        nextQuestionId: 'resposta-variacao-tensao',
       },
       {
         answer: 'Não',
+        nextQuestionId: 'abrir-avaliacao-tecnica',
+      },
+    ],
+  },
+  {
+    id: 'teste-disjuntor',
+    title:
+      'Antes de abrir sua solicitação, preciso que você faça um teste. Vá até a chave geral e certifique-se que o disjuntor está desligado (com o sinal | aparente). Após ligar novamente, o disjuntor ficou no mesmo lugar ou desligou de novo?',
+    options: [
+      {
+        answer: 'Mesmo lugar',
+        nextQuestionId: 'abrir-servico-falta-fase',
+      },
+      {
+        answer: 'Desligou de novo',
+        nextQuestionId: 'resposta-defeito-interno',
+      },
+    ],
+  },
+  {
+    id: 'abrir-servico-falta-energia',
+    title: 'Posso confirmar sua solicitação?',
+    options: [
+      {
+        answer: 'Sim',
+      },
+      {
+        answer: 'Não',
+      },
+    ],
+  },
+  {
+    id: 'abrir-servico-falta-fase',
+    title: 'Você confirma a abertura do serviço de falta de fase?',
+    options: [
+      {
+        answer: 'Sim',
+      },
+      {
+        answer: 'Não',
+      },
+    ],
+  },
+  {
+    id: 'abrir-avaliacao-tecnica',
+    title:
+      'Para resolver o seu problema, preciso abrir uma avaliação técnica de fornecimento. Posso gerar o serviço para você?',
+    options: [
+      {
+        answer: 'Sim',
+      },
+      {
+        answer: 'Não',
+      },
+    ],
+  },
+  {
+    id: 'resposta-defeito-interno',
+    title:
+      'Pelas informações que você passou, parece que você está com um defeito interno.',
+    options: [
+      {
+        answer: 'Voltar',
+      },
+    ],
+  },
+  {
+    id: 'resposta-variacao-tensao',
+    title:
+      'Parece que você está com uma variação no seu nível tensão. Para resolver essa solicitação, ligue para o 116.',
+    options: [
+      {
+        answer: 'Voltar',
+      },
+    ],
+  },
+  {
+    id: 'resposta-solicitacao-sucesso',
+    title: 'Solicitação gerada com sucesso',
+    options: [
+      {
+        answer: 'Finalizar serviço',
       },
     ],
   },
