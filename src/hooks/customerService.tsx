@@ -17,6 +17,7 @@ interface CustomerServiceState {
   installation: Installation;
   debits: Debits;
   serviceNotes: ServiceNotes;
+  protocol?: string;
 }
 
 interface GetCustomerData {
@@ -32,6 +33,7 @@ interface StartServiceProps {
 
 interface CustomerServiceContextData {
   operatingCompany: string;
+  protocol: string | undefined;
   customer: Customer;
   installation: Installation;
   debits: Debits;
@@ -64,6 +66,8 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
       '@TelaAgil:customerServiceData',
     );
 
+    const storagedProtocol = localStorage.getItem('@TelaAgil:protocol');
+
     if (storagedCustomerServiceData) {
       const {
         operatingCompany,
@@ -80,6 +84,10 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
         debits,
         serviceNotes,
       };
+
+      if (storagedProtocol) {
+        customerServiceState.protocol = storagedProtocol;
+      }
 
       return customerServiceState;
     }
@@ -151,6 +159,11 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
       });
 
       localStorage.setItem('@TelaAgil:protocol', response.data.data.protocolo);
+
+      setCustomerServiceData(state => ({
+        ...state,
+        protocol: response.data.data.protocolo,
+      }));
     },
     [],
   );
@@ -194,6 +207,7 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
     <CustomerServiceContext.Provider
       value={{
         operatingCompany: customerServiceData.operatingCompany,
+        protocol: customerServiceData.protocol,
         customer: customerServiceData.customer,
         installation: customerServiceData.installation,
         debits: customerServiceData.debits,

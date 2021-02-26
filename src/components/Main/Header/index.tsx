@@ -1,18 +1,23 @@
 import React from 'react';
 import { BiTransfer } from 'react-icons/bi';
 
-import { Container, ImportantInfo } from './styles';
+import {
+  Container,
+  Protocol,
+  ImportantInfo,
+  ButtonChangeContract,
+} from './styles';
 
 import { useCustomerService } from '../../../hooks/customerService';
 
 import TagInfo from './TagInfo';
 
 const Header: React.FC = () => {
-  const { installation, debits } = useCustomerService();
+  const { installation, debits, protocol } = useCustomerService();
 
   return (
     <Container>
-      <h2>Protocolo: 9568163182</h2>
+      <Protocol>{`Protocolo: ${protocol}`}</Protocol>
 
       <ImportantInfo>
         <TagInfo
@@ -43,10 +48,10 @@ const Header: React.FC = () => {
         />
       </ImportantInfo>
 
-      <button type="button">
+      <ButtonChangeContract type="button">
         <BiTransfer />
-        Trocar unidade
-      </button>
+        Trocar contrato
+      </ButtonChangeContract>
     </Container>
   );
 };
