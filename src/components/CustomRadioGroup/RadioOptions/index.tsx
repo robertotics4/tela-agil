@@ -12,7 +12,12 @@ interface RadioProps extends InputHTMLAttributes<HTMLInputElement> {
   }[];
 }
 
-const RadioOptions: React.FC<RadioProps> = ({ name, options, ...rest }) => {
+const RadioOptions: React.FC<RadioProps> = ({
+  name,
+  options,
+  disabled,
+  ...rest
+}) => {
   const inputRefs = useRef<HTMLInputElement[]>([]);
   const { fieldName, registerField, defaultValue = [] } = useField(name);
 
@@ -51,6 +56,7 @@ const RadioOptions: React.FC<RadioProps> = ({ name, options, ...rest }) => {
             id={option.id}
             type="radio"
             value={option.value}
+            disabled={disabled}
             {...rest}
           />
           <span>{option.label}</span>

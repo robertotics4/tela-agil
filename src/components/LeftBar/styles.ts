@@ -11,6 +11,22 @@ export const Container = styled.aside`
   max-width: 272px;
   background: #3c1491;
 `;
+export const Logo = styled.img`
+  width: 257px;
+  height: 117px;
+`;
+
+export const WelcomeText = styled.span`
+  width: 100%;
+  font-size: 16px;
+  color: #fff;
+
+  margin-top: 32px;
+`;
+
+export const Username = styled.strong`
+  margin-left: 6px;
+`;
 
 export const UserMenu = styled.div`
   display: flex;
@@ -22,26 +38,9 @@ export const UserMenu = styled.div`
   padding: 16px;
 
   border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-
-  > svg {
-    width: 257px;
-    height: 117px;
-  }
-
-  > span {
-    width: 100%;
-    font-size: 16px;
-    color: #fff;
-
-    margin-top: 32px;
-
-    strong {
-      margin-left: 6px;
-    }
-  }
 `;
 
-export const Logout = styled.div`
+export const LogoutButton = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -65,14 +64,16 @@ export const Logout = styled.div`
 
   > svg {
     color: rgba(255, 255, 255, 0.5);
+    transition: color 0.2s;
   }
+`;
 
-  span {
-    font-size: 16px;
-    color: rgba(255, 255, 255, 0.5);
+export const LogoutButtonText = styled.span`
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.5);
+  transition: color 0.2s;
 
-    margin-left: 6px;
-  }
+  margin-left: 6px;
 `;
 
 export const ServiceForm = styled.div`

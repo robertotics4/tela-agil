@@ -9,8 +9,12 @@ import getValidationErrors from '../../utils/getValidationErrors';
 
 import {
   Container,
+  Logo,
+  WelcomeText,
+  Username,
   UserMenu,
-  Logout,
+  LogoutButton,
+  LogoutButtonText,
   ServiceForm,
   StartServiceButton,
   FinishServiceButton,
@@ -92,17 +96,17 @@ const LeftBar: React.FC = () => {
   return (
     <Container>
       <UserMenu>
-        <img src={logoWhiteImg} alt="Equatorial Energia" />
+        <Logo src={logoWhiteImg} alt="Equatorial Energia" />
 
-        <span>
+        <WelcomeText>
           Bem vindo,
-          <strong>{user.name}</strong>
-        </span>
+          <Username>{user.name}</Username>
+        </WelcomeText>
 
-        <Logout onClick={signOut}>
+        <LogoutButton onClick={signOut}>
           <FiPower />
-          <span>Sair</span>
-        </Logout>
+          <LogoutButtonText>Sair</LogoutButtonText>
+        </LogoutButton>
       </UserMenu>
 
       <ServiceForm>
@@ -120,6 +124,7 @@ const LeftBar: React.FC = () => {
                 { id: 'radio3', value: '95', label: 'Pará' },
                 { id: 'radio4', value: '86', label: 'Piauí' },
               ]}
+              disabled={serviceStarted}
             />
           </CustomRadioGroup>
 
@@ -128,6 +133,7 @@ const LeftBar: React.FC = () => {
             type="text"
             placeholder="Código único ou conta contrato"
             autoComplete="off"
+            disabled={serviceStarted}
           />
 
           <OutlineInputMask
@@ -136,6 +142,7 @@ const LeftBar: React.FC = () => {
             type="text"
             placeholder="CPF ou CNPJ"
             autoComplete="off"
+            disabled={serviceStarted}
           />
 
           {serviceStarted && customer ? (

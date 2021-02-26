@@ -49,7 +49,7 @@ const Modal: React.FC<ModalProps> = ({
   const [modalStatus, setModalStatus] = useState(isOpen);
 
   const { generatePowerOutageService } = usePowerOutageService();
-  const { customer, operatingCompany } = useCustomerService();
+  const { customer, operatingCompany, protocol } = useCustomerService();
   const { user } = useAuth();
   const { addToast } = useToast();
 
@@ -80,7 +80,7 @@ const Modal: React.FC<ModalProps> = ({
           await generatePowerOutageService({
             type,
             contract: customer.contractAccount,
-            protocol: '123', // HARD CODDED
+            protocol: protocol || '00',
             descriptionText: `Gerado pela Tela Ágil - Usuário: ${user}`,
             reference: customer.address.referencePoint
               ? customer.address.referencePoint
@@ -109,6 +109,7 @@ const Modal: React.FC<ModalProps> = ({
       addToast,
       customer,
       generatePowerOutageService,
+      protocol,
       operatingCompany,
       start,
       stop,

@@ -14,6 +14,7 @@ interface InputProps extends Props {
 const OutlineInputMask: React.FC<InputProps> = ({
   name,
   icon: Icon,
+  disabled,
   ...rest
 }) => {
   const inputRef = useRef(null);
@@ -43,13 +44,14 @@ const OutlineInputMask: React.FC<InputProps> = ({
   }, [fieldName, registerField]);
 
   return (
-    <Container isFocused={isFocused} isErrored={!!error}>
+    <Container isFocused={isFocused} isErrored={!!error} isDisabled={disabled}>
       {Icon && <Icon size={20} />}
 
       <ReactInputMask
         onFocus={handleInputFocus}
         onBlur={handleInputBlur}
         defaultValue={defaultValue}
+        disabled={disabled}
         ref={inputRef}
         {...rest}
       />
