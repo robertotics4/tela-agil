@@ -9,7 +9,6 @@ import { useLoading } from 'react-use-loading';
 import Loading from '../../components/Loading';
 
 import { useAuth } from '../../hooks/auth';
-import { useToast } from '../../hooks/toast';
 
 import getValidationErrors from '../../utils/getValidationErrors';
 
@@ -19,6 +18,7 @@ import logoImg from '../../assets/logo.svg';
 
 import Input from '../../components/Input';
 import Button from '../../components/Button';
+import { useAlert } from '../../hooks/alert';
 
 interface SignInFormData {
   username: string;
@@ -29,7 +29,7 @@ const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
 
   const { signIn } = useAuth();
-  const { addToast } = useToast();
+  const { customAlert } = useAlert();
   const [{ isLoading, message }, { start, stop }] = useLoading();
 
   const history = useHistory();
@@ -64,17 +64,18 @@ const SignIn: React.FC = () => {
           return;
         }
 
-        addToast({
+        customAlert({
           type: 'error',
           title: 'Erro na autenticação',
           description:
             'Ocorreu um erro ao fazer o login, cheque as credenciais',
+          confirmationText: 'OK',
         });
       } finally {
         stop();
       }
     },
-    [signIn, addToast, history, start, stop],
+    [signIn, customAlert, history, start, stop],
   );
 
   useEffect(() => {

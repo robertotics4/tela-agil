@@ -2,12 +2,12 @@ import React, { useState, useEffect, useCallback } from 'react';
 import ReactModal from 'react-modal';
 import { useLoading } from 'react-use-loading';
 
-import Loading from '../Loading';
+import Loading from '../../../Loading';
 
-import { useAuth } from '../../hooks/auth';
-import { useCustomerService } from '../../hooks/customerService';
-import { usePowerOutageService } from '../../hooks/powerOutageService';
-import { useToast } from '../../hooks/toast';
+import { useAuth } from '../../../../hooks/auth';
+import { useCustomerService } from '../../../../hooks/customerService';
+import { usePowerOutageService } from '../../../../hooks/powerOutageService';
+import { useAlert } from '../../../../hooks/alert';
 
 import {
   Content,
@@ -51,7 +51,7 @@ const Modal: React.FC<ModalProps> = ({
   const { generatePowerOutageService } = usePowerOutageService();
   const { customer, operatingCompany, protocol } = useCustomerService();
   const { user } = useAuth();
-  const { addToast } = useToast();
+  const { customAlert } = useAlert();
 
   const [{ isLoading, message }, { start, stop }] = useLoading();
 
@@ -88,16 +88,18 @@ const Modal: React.FC<ModalProps> = ({
             operatingCompany,
           });
 
-          addToast({
+          customAlert({
             type: 'success',
             title: 'Serviço gerado',
             description: 'Solicitação gerada com sucesso.',
+            confirmationText: 'OK',
           });
         } catch (err) {
-          addToast({
+          customAlert({
             type: 'error',
             title: 'Falha ao gerar solicitação',
             description: err.message,
+            confirmationText: 'OK',
           });
         } finally {
           stop();
@@ -106,7 +108,7 @@ const Modal: React.FC<ModalProps> = ({
       }
     },
     [
-      addToast,
+      customAlert,
       customer,
       generatePowerOutageService,
       protocol,

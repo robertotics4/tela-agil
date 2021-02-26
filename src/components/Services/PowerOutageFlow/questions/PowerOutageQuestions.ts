@@ -1,4 +1,4 @@
-import { Question } from '../../../StepModal';
+import { Question } from '../StepModal';
 
 const powerOutageQuestions: Question[] = [
   {

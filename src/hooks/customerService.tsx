@@ -1,7 +1,7 @@
 import React, { createContext, useCallback, useContext, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 
-import { useToast } from './toast';
+import { useAlert } from './alert';
 
 import Customer from '../types/Customer';
 import Installation from '../types/Installation';
@@ -54,7 +54,7 @@ const CustomerServiceContext = createContext<CustomerServiceContextData>(
 );
 
 const CustomerServiceProvider: React.FC = ({ children }) => {
-  const { addToast } = useToast();
+  const { customAlert } = useAlert();
 
   const [serviceStarted, setServiceStarted] = useState(false);
 
@@ -100,11 +100,12 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
       let url;
 
       if (cpf && contract) {
-        addToast({
+        customAlert({
           type: 'error',
           title: 'Erro no formulário',
           description:
             'Utilize apenas um dos campos (Conta contrato ou CPF / CNPJ)',
+          confirmationText: 'OK',
         });
 
         return;
@@ -144,7 +145,7 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
         serviceNotes,
       });
     },
-    [addToast],
+    [customAlert],
   );
 
   const generateProtocol = useCallback(
@@ -183,15 +184,16 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
 
         setServiceStarted(true);
       } catch {
-        addToast({
+        customAlert({
           type: 'error',
           title: 'Erro no atendimento',
           description:
             'Ocorreu um erro ao iniciar o atendimento, cheque as informações do cliente',
+          confirmationText: 'OK',
         });
       }
     },
-    [getCustomer, generateProtocol, addToast],
+    [getCustomer, generateProtocol, customAlert],
   );
 
   const finishService = useCallback(() => {

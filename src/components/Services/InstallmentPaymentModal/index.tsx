@@ -15,7 +15,8 @@ import getUnformattedPhone from '../../../utils/getUnformattedPhone';
 
 import { useCustomerService } from '../../../hooks/customerService';
 import { useToast } from '../../../hooks/toast';
-import { useWhatsappSending } from '../../../hooks/useWhatsappSending';
+import { useWhatsappSending } from '../../../hooks/whatsappSending';
+import { useAlert } from '../../../hooks/alert';
 
 import Loading from '../../Loading';
 import Modal from '../../Modal';
@@ -49,6 +50,7 @@ const InstallmentPaymentModal: React.FC<ModalProps> = ({
   );
 
   const { debits, customer, operatingCompany } = useCustomerService();
+  const { customAlert } = useAlert();
   const { addToast } = useToast();
   const { sendInstallmentPayment } = useWhatsappSending();
   const [{ isLoading, message }, { start, stop }] = useLoading();
@@ -80,10 +82,11 @@ const InstallmentPaymentModal: React.FC<ModalProps> = ({
             contract: customer.contractAccount,
           });
 
-          addToast({
+          customAlert({
             type: 'success',
-            title: 'Fatura enviada',
-            description: 'Fatura foi enviada com sucesso.',
+            title: 'Código enviado',
+            description: 'O código para pagamento foi enviado com sucesso.',
+            confirmationText: 'OK',
           });
         }
       } catch (err) {
@@ -94,11 +97,12 @@ const InstallmentPaymentModal: React.FC<ModalProps> = ({
           return;
         }
 
-        addToast({
+        customAlert({
           type: 'error',
           title: 'Erro no envio',
           description:
-            'Ocorreu um erro ao enviar a fatura, cheque o número de telefone',
+            'Ocorreu um erro ao enviar o código, cheque o número de telefone',
+          confirmationText: 'OK',
         });
       } finally {
         setSelectedInstallmentDebit(undefined);
@@ -107,7 +111,7 @@ const InstallmentPaymentModal: React.FC<ModalProps> = ({
       }
     },
     [
-      addToast,
+      customAlert,
       selectedInstallmentDebit,
       customer,
       operatingCompany,

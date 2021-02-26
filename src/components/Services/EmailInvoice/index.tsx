@@ -2,8 +2,8 @@ import React, { useCallback } from 'react';
 import { v4 as uuid } from 'uuid';
 
 import { useLoading } from 'react-use-loading';
-import { useToast } from '../../../hooks/toast';
 import { useCustomerService } from '../../../hooks/customerService';
+import { useAlert } from '../../../hooks/alert';
 
 import Loading from '../../Loading';
 import Modal from '../../Modal';
@@ -26,7 +26,7 @@ const EmailInvoiceModal: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
   const [{ isLoading, message }, { start, stop }] = useLoading();
 
   const { customer, operatingCompany } = useCustomerService();
-  const { addToast } = useToast();
+  const { customAlert } = useAlert();
 
   const registerInvoiceByEmail = useCallback(
     async ({ contract, email, stateCode }: RegisterInvoiceByEmailProps) => {
@@ -70,23 +70,25 @@ const EmailInvoiceModal: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
         stateCode: operatingCompany,
       });
 
-      addToast({
+      customAlert({
         type: 'success',
         title: 'Serviço ativado',
         description: 'Serviço de fatura por e-mail ativado com sucesso.',
+        confirmationText: 'OK',
       });
     } catch (err) {
-      addToast({
+      customAlert({
         type: 'error',
         title: 'Erro na ativação',
         description: err.message,
+        confirmationText: 'OK',
       });
     } finally {
       setIsOpen();
       stop();
     }
   }, [
-    addToast,
+    customAlert,
     customer,
     operatingCompany,
     registerInvoiceByEmail,

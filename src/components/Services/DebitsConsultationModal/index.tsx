@@ -15,9 +15,9 @@ import getValidationErrors from '../../../utils/getValidationErrors';
 import getUnformattedPhone from '../../../utils/getUnformattedPhone';
 
 import { useCustomerService } from '../../../hooks/customerService';
-import { useToast } from '../../../hooks/toast';
 import { useDebitsConsultation } from '../../../hooks/debitsConsultation';
-import { useWhatsappSending } from '../../../hooks/useWhatsappSending';
+import { useWhatsappSending } from '../../../hooks/whatsappSending';
+import { useAlert } from '../../../hooks/alert';
 
 import Loading from '../../Loading';
 import Modal from '../../Modal';
@@ -46,7 +46,7 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
   >(undefined);
 
   const { debits, customer, operatingCompany } = useCustomerService();
-  const { addToast } = useToast();
+  const { customAlert } = useAlert();
   const { getInvoiceUrl } = useDebitsConsultation();
   const { sendInvoiceDebit, sendInstallmentPayment } = useWhatsappSending();
   const [{ isLoading, message }, { start, stop }] = useLoading();
@@ -75,8 +75,6 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
               operatingCompany,
             });
 
-            console.log(invoiceUrl);
-
             if (invoiceUrl) {
               await sendInvoiceDebit({
                 invoiceUrl,
@@ -84,10 +82,11 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
                 phoneNumber: getUnformattedPhone(data.phone),
               });
 
-              addToast({
+              customAlert({
                 type: 'success',
                 title: 'Fatura enviada',
                 description: 'Fatura foi enviada com sucesso.',
+                confirmationText: 'OK',
               });
             }
 
@@ -104,10 +103,11 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
               contract: customer.contractAccount,
             });
 
-            addToast({
+            customAlert({
               type: 'success',
               title: 'Código enviado',
               description: 'O código para pagamento foi enviado com sucesso.',
+              confirmationText: 'OK',
             });
           }
         }
@@ -119,11 +119,12 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
           return;
         }
 
-        addToast({
+        customAlert({
           type: 'error',
           title: 'Erro no envio',
           description:
             'Ocorreu um erro ao enviar a fatura, cheque o número de telefone',
+          confirmationText: 'OK',
         });
       } finally {
         setSelectedDebit(undefined);
@@ -132,7 +133,7 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
       }
     },
     [
-      addToast,
+      customAlert,
       selectedDebit,
       customer,
       getInvoiceUrl,

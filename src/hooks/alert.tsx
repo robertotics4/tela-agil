@@ -3,7 +3,7 @@ import React, { createContext, useCallback, useContext, useState } from 'react';
 import AlertModal from '../components/AlertModal';
 
 interface AlertContextData {
-  openAlert(message: AlertMessage): void;
+  customAlert(message: AlertMessage): void;
 }
 
 export interface AlertMessage {
@@ -25,7 +25,7 @@ const AlertProvider: React.FC = ({ children }) => {
     setAlertOpen(state => !state);
   }, []);
 
-  const openAlert = useCallback(
+  const customAlert = useCallback(
     (message: AlertMessage) => {
       setAlertMessage(message);
       toggleAlert();
@@ -34,7 +34,7 @@ const AlertProvider: React.FC = ({ children }) => {
   );
 
   return (
-    <AlertContext.Provider value={{ openAlert }}>
+    <AlertContext.Provider value={{ customAlert }}>
       {children}
 
       {alert && (

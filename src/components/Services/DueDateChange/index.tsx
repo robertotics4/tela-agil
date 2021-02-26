@@ -18,6 +18,7 @@ import {
 } from './styles';
 
 import { useCustomerService } from '../../../hooks/customerService';
+import { useAlert } from '../../../hooks/alert';
 
 interface ModalProps {
   isOpen: boolean;
@@ -55,6 +56,7 @@ const DueDateChange: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
 
   const { customer, operatingCompany } = useCustomerService();
   const { addToast } = useToast();
+  const { customAlert } = useAlert();
 
   const [validDates, setValidDates] = useState<ValidDate[]>([]);
   const [selectOptions, setSelectOptions] = useState<OptionProps[]>([]);
@@ -114,24 +116,26 @@ const DueDateChange: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
           requestedDate: selectedDate.value,
         });
 
-        addToast({
+        customAlert({
           type: 'success',
           title: 'Sucesso na alteração',
           description: 'Data certa alterada com sucesso.',
+          confirmationText: 'OK',
         });
       }
     } catch (err) {
-      addToast({
+      customAlert({
         type: 'error',
         title: 'Erro na alteração',
         description: err.message,
+        confirmationText: 'OK',
       });
     } finally {
       setIsOpen();
       stop();
     }
   }, [
-    addToast,
+    customAlert,
     selectedDate,
     setDueDate,
     setIsOpen,

@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 
-import StepModal, { Question } from '../../StepModal';
+import StepModal, { Question } from './StepModal';
 
 import powerOutageQuestions from './questions/PowerOutageQuestions';
 
