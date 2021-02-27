@@ -1,13 +1,7 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  display: block;
-
-  position: fixed;
-  bottom: 24px;
-
-  width: 1124px;
-  margin-top: 24px;
+  width: 1100px;
 
   h3 {
     font-size: 16px;

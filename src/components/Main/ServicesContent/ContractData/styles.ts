@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
+  grid-area: right;
+
   display: flex;
   flex-direction: column;
   flex: 1;

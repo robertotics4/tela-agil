@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { BiTransfer } from 'react-icons/bi';
 
 import {

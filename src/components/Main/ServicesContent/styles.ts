@@ -1,16 +1,24 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex: 1;
+  height: calc(100vh - 72px);
+  padding: 16px 24px;
 
-  padding: 24px 32px;
+  display: grid;
+  grid-gap: 32px;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: 2fr 1fr;
+  grid-template-areas:
+    'left right'
+    'bottom bottom';
+
+  border: 1px solid yellow;
 `;
 
-export const RightContainer = styled.div`
-  display: flex;
-  flex-direction: column;
+export const Bottom = styled.div`
+  grid-area: bottom;
 
-  margin-left: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
