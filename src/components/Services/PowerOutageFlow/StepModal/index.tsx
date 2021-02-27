@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import ReactModal from 'react-modal';
+import Rodal from 'rodal';
 import { useLoading } from 'react-use-loading';
+
+import 'rodal/lib/rodal.css';
 
 import Loading from '../../../Loading';
 
@@ -139,29 +141,19 @@ const Modal: React.FC<ModalProps> = ({
   }, [isOpen, clearFlow]);
 
   return (
-    <ReactModal
-      shouldCloseOnOverlayClick={!false}
-      onRequestClose={setIsOpen}
-      isOpen={modalStatus}
-      ariaHideApp={false}
-      style={{
-        content: {
-          top: '50%',
-          left: '50%',
-          right: 'auto',
-          bottom: 'auto',
-          marginRight: '-50%',
-          transform: 'translate(-50%, -50%)',
-          background: '#F0F0F5',
-          color: '#000000',
-          borderRadius: '8px',
-          width: '736px',
-          padding: '48px',
-          border: 'none',
-        },
-        overlay: {
-          backgroundColor: 'rgba(0,0,0,0.7)',
-        },
+    <Rodal
+      visible={modalStatus}
+      showCloseButton
+      closeOnEsc
+      onClose={setIsOpen}
+      customStyles={{
+        borderRadius: '8px',
+        padding: '48px 64px',
+        width: '736px',
+        height: 'fit-content',
+      }}
+      customMaskStyles={{
+        background: 'rgba(0, 0, 0, 0.6)',
       }}
     >
       <Content>
@@ -184,7 +176,7 @@ const Modal: React.FC<ModalProps> = ({
       {isLoading && (
         <Loading isOpen={isLoading} message={message} setIsOpen={stop} />
       )}
-    </ReactModal>
+    </Rodal>
   );
 };
 

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import Rodal from 'rodal';
 import { FiCheck, FiAlertTriangle, FiXCircle } from 'react-icons/fi';
-import ReactModal from 'react-modal';
+
+import 'rodal/lib/rodal.css';
 
 import { AlertMessage } from '../../hooks/alert';
 
@@ -32,28 +34,17 @@ const AlertModal: React.FC<AlertProps> = ({ message, isOpen, setIsOpen }) => {
   }, [isOpen]);
 
   return (
-    <ReactModal
-      shouldCloseOnOverlayClick={!false}
-      isOpen={alertStatus}
-      ariaHideApp={false}
-      style={{
-        content: {
-          top: '50%',
-          left: '50%',
-          right: 'auto',
-          bottom: 'auto',
-          marginRight: '-50%',
-          transform: 'translate(-50%, -50%)',
-          background: '#F0F0F5',
-          color: '#000000',
-          borderRadius: '8px',
-          width: '480px',
-          padding: '48px 64px',
-          border: 'none',
-        },
-        overlay: {
-          backgroundColor: 'rgba(0,0,0,0.7)',
-        },
+    <Rodal
+      visible={alertStatus}
+      showCloseButton={false}
+      customStyles={{
+        borderRadius: '8px',
+        padding: '48px 64px',
+        width: '480px',
+        height: 'fit-content',
+      }}
+      customMaskStyles={{
+        background: 'rgba(0, 0, 0, 0.6)',
       }}
     >
       <AlertContent>
@@ -68,7 +59,7 @@ const AlertModal: React.FC<AlertProps> = ({ message, isOpen, setIsOpen }) => {
           </ConfirmationButtonText>
         </ConfirmationButton>
       </AlertContent>
-    </ReactModal>
+    </Rodal>
   );
 };
 
