@@ -11,8 +11,6 @@ export const Container = styled.div`
   grid-template-areas:
     'left right'
     'bottom bottom';
-
-  border: 1px solid yellow;
 `;
 
 export const Bottom = styled.div`

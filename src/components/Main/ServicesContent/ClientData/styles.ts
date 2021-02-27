@@ -16,6 +16,7 @@ export const Container = styled.div`
 export const Content = styled.div`
   background: #fff;
   border: 1px solid #e7e5e5;
+  height: 100%;
 
   padding: 24px 32px;
   margin-top: 8px;
