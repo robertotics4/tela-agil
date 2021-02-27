@@ -34,6 +34,7 @@ const LoadingModal: React.FC<LoadingModalProps> = ({
         background: 'transparent',
         border: 'none',
         boxShadow: 'none',
+        width: 'fit-content',
       }}
       customMaskStyles={{
         background: 'rgba(0, 0, 0, 0.6)',

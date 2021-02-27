@@ -77,7 +77,7 @@ const Modal: React.FC<ModalProps> = ({
         }
 
         try {
-          start('Gerando solicitação de falta de energia...');
+          start('Gerando solicitação de serviço ...');
 
           await generatePowerOutageService({
             type,
