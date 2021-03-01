@@ -1,6 +1,19 @@
-export interface ServiceNote {
+export interface OpenNote {
   type: string;
-  description: string;
+  typeDescription: string;
+  codeGroup: string;
+  codeGroupDescription: string;
+  code: string;
+  codeDescription: string;
+  openingDate: Date;
+  status: string;
+  rejectionCode: string | null;
+  rejectionCodeDescription: string | null;
+}
+
+export interface ClosedNote {
+  type: string;
+  typeDescription: string;
   codeGroup: string;
   codeGroupDescription: string;
   code: string;
@@ -10,8 +23,8 @@ export interface ServiceNote {
 }
 
 interface ServiceNotes {
-  openServiceNotes: ServiceNote[];
-  closedServiceNotes: ServiceNote[];
+  openServiceNotes: OpenNote[];
+  closedServiceNotes: ClosedNote[];
 }
 
 export default ServiceNotes;

@@ -4,7 +4,7 @@ import { parseISO } from 'date-fns';
 import Customer from '../types/Customer';
 import Installation from '../types/Installation';
 import Debits, { InvoiceDebit, InstallmentDebit } from '../types/Debits';
-import ServiceNotes, { ServiceNote } from '../types/ServiceNotes';
+import ServiceNotes, { OpenNote, ClosedNote } from '../types/ServiceNotes';
 
 import { phoneMask } from './inputMasks';
 
@@ -198,28 +198,30 @@ function getDebits(responseDebits: any, stateCode: string): Debits {
 function getServiceNotes(response: AxiosResponse): ServiceNotes {
   const responseNotes = response.data.data.notas;
 
-  const mappedOpenServiceNotes: ServiceNote[] = responseNotes.notasAbertas.map(
+  const mappedOpenServiceNotes: OpenNote[] = responseNotes.notasAbertas.map(
     (note: any) => {
-      const openServiceNote: ServiceNote = {
+      const openServiceNote: OpenNote = {
         type: note.tipoNota,
-        description: note.descricaoNota,
+        typeDescription: note.descricaoNota,
         codeGroup: note.grupoCode,
         codeGroupDescription: note.descricaoGrupoCode,
         code: note.code,
         codeDescription: note.descricaoCode,
         openingDate: parseISO(note.dataAbertura),
-        conclusionDate: parseISO(note.dataConclusao),
+        status: note.status,
+        rejectionCode: note.codigoRejeicao,
+        rejectionCodeDescription: note.descricaoCodigoRejeicao,
       };
 
       return openServiceNote;
     },
   );
 
-  const mappedClosedServiceNotes: ServiceNote[] = responseNotes.notasEncerradas.map(
+  const mappedClosedServiceNotes: ClosedNote[] = responseNotes.notasEncerradas.map(
     (note: any) => {
-      const openServiceNote: ServiceNote = {
+      const openServiceNote: ClosedNote = {
         type: note.tipoNota,
-        description: note.descricaoNota,
+        typeDescription: note.descricaoNota,
         codeGroup: note.grupoCode,
         codeGroupDescription: note.descricaoGrupoCode,
         code: note.code,

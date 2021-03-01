@@ -13,6 +13,7 @@ import DebitsConsultationModal from '../../../Services/DebitsConsultationModal';
 import InstallmentPaymentModal from '../../../Services/InstallmentPaymentModal';
 import EmailInvoice from '../../../Services/EmailInvoice';
 import ExpirationChange from '../../../Services/DueDateChange';
+import RequestList from '../../../Services/RequestList';
 
 const QuickMenu: React.FC = () => {
   const [outagePowerOpen, setOutagePowerOpen] = useState(false);
@@ -20,6 +21,7 @@ const QuickMenu: React.FC = () => {
   const [installmentPaymentOpen, setInstallmentPaymentOpen] = useState(false);
   const [emailInvoiceOpen, setEmailInvoiceOpen] = useState(false);
   const [expirationChangeOpen, setExpirationChangeOpen] = useState(false);
+  const [requestListOpen, setRequestListOpen] = useState(false);
 
   function toggleOutagePower(): void {
     setOutagePowerOpen(!outagePowerOpen);
@@ -39,6 +41,10 @@ const QuickMenu: React.FC = () => {
 
   function toggleExpirationChange(): void {
     setExpirationChangeOpen(!expirationChangeOpen);
+  }
+
+  function toggleRequestList(): void {
+    setRequestListOpen(!requestListOpen);
   }
 
   return (
@@ -103,11 +109,11 @@ const QuickMenu: React.FC = () => {
         </div>
 
         <div>
-          <button type="button">
+          <button type="button" onClick={toggleRequestList}>
             <MdReceipt size={20} />
           </button>
 
-          <span>Protocolo</span>
+          <span>Protocolos</span>
         </div>
       </Content>
 
@@ -131,6 +137,8 @@ const QuickMenu: React.FC = () => {
         isOpen={expirationChangeOpen}
         setIsOpen={toggleExpirationChange}
       />
+
+      <RequestList isOpen={requestListOpen} setIsOpen={toggleRequestList} />
     </Container>
   );
 };

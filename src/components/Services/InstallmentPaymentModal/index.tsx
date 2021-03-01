@@ -51,7 +51,6 @@ const InstallmentPaymentModal: React.FC<ModalProps> = ({
 
   const { debits, customer, operatingCompany } = useCustomerService();
   const { customAlert } = useAlert();
-  const { addToast } = useToast();
   const { sendInstallmentPayment } = useWhatsappSending();
   const [{ isLoading, message }, { start, stop }] = useLoading();
 
