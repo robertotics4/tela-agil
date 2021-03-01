@@ -7,20 +7,23 @@ import { DebitsConsultationProvider } from './debitsConsultation';
 import { WhatsappSendingProvider } from './whatsappSending';
 import { PowerOutageServiceProvider } from './powerOutageService';
 import { AlertProvider } from './alert';
+import { TimerProvider } from './timer';
 
 const AppProvider: React.FC = ({ children }) => (
   <AuthProvider>
-    <AlertProvider>
-      <ToastProvider>
-        <CustomerServiceProvider>
-          <DebitsConsultationProvider>
-            <PowerOutageServiceProvider>
-              <WhatsappSendingProvider>{children}</WhatsappSendingProvider>
-            </PowerOutageServiceProvider>
-          </DebitsConsultationProvider>
-        </CustomerServiceProvider>
-      </ToastProvider>
-    </AlertProvider>
+    <TimerProvider>
+      <AlertProvider>
+        <ToastProvider>
+          <CustomerServiceProvider>
+            <DebitsConsultationProvider>
+              <PowerOutageServiceProvider>
+                <WhatsappSendingProvider>{children}</WhatsappSendingProvider>
+              </PowerOutageServiceProvider>
+            </DebitsConsultationProvider>
+          </CustomerServiceProvider>
+        </ToastProvider>
+      </AlertProvider>
+    </TimerProvider>
   </AuthProvider>
 );
 

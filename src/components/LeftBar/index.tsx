@@ -31,6 +31,7 @@ import logoWhiteImg from '../../assets/logo-white.svg';
 
 import { useAuth } from '../../hooks/auth';
 import { useCustomerService } from '../../hooks/customerService';
+import { useTimer } from '../../hooks/timer';
 
 interface StartServiceFormData {
   state: string;
@@ -40,6 +41,7 @@ interface StartServiceFormData {
 
 const LeftBar: React.FC = () => {
   const { user, signOut } = useAuth();
+  const { currentTime } = useTimer();
   const [{ isLoading, message }, { start, stop }] = useLoading();
 
   const {
@@ -158,7 +160,7 @@ const LeftBar: React.FC = () => {
           {serviceStarted && customer && (
             <Cronometro>
               <span>Tempo de atendimento:</span>
-              <h1>00:01</h1>
+              <h1>{currentTime}</h1>
             </Cronometro>
           )}
         </Form>

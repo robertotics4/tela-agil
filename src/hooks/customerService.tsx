@@ -10,6 +10,7 @@ import Debits from '../types/Debits';
 import extractResponseData from '../utils/extractResponseData';
 import ServiceNotes from '../types/ServiceNotes';
 import eqtlBarApi from '../services/eqtlBarApi';
+import { useTimer } from './timer';
 
 interface CustomerServiceState {
   operatingCompany: string;
@@ -55,6 +56,7 @@ const CustomerServiceContext = createContext<CustomerServiceContextData>(
 
 const CustomerServiceProvider: React.FC = ({ children }) => {
   const { customAlert } = useAlert();
+  const { currentTime, startTimer, stopTimer, resetTimer } = useTimer();
 
   const [serviceStarted, setServiceStarted] = useState(false);
 
@@ -183,6 +185,8 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
         });
 
         setServiceStarted(true);
+
+        startTimer();
       } catch {
         customAlert({
           type: 'error',
@@ -193,7 +197,7 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
         });
       }
     },
-    [getCustomer, generateProtocol, customAlert],
+    [getCustomer, generateProtocol, startTimer, customAlert],
   );
 
   const finishService = useCallback(() => {
@@ -202,8 +206,10 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
 
     setCustomerServiceData({} as CustomerServiceContextData);
 
+    resetTimer();
+
     setServiceStarted(false);
-  }, []);
+  }, [resetTimer]);
 
   return (
     <CustomerServiceContext.Provider
