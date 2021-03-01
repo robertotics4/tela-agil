@@ -5,8 +5,6 @@ import { useLoading } from 'react-use-loading';
 
 import eqtlBarApi from '../../../services/eqtlBarApi';
 
-import { useToast } from '../../../hooks/toast';
-
 import Loading from '../../Loading';
 import Modal from '../../Modal';
 
@@ -55,7 +53,6 @@ const DueDateChange: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
   const [{ isLoading, message }, { start, stop }] = useLoading();
 
   const { customer, operatingCompany } = useCustomerService();
-  const { addToast } = useToast();
   const { customAlert } = useAlert();
 
   const [validDates, setValidDates] = useState<ValidDate[]>([]);

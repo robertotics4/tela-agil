@@ -1,25 +1,19 @@
-import React, {
-  createContext,
-  useEffect,
-  useContext,
-  useState,
-  useCallback,
-} from 'react';
+import React, { createContext, useContext, useCallback } from 'react';
 import { useStopwatch } from 'react-timer-hook';
-import { format, parseISO } from 'date-fns';
 
 interface TimerContextData {
-  currentTime: string;
   startTimer(): void;
   stopTimer(): void;
   resetTimer(): void;
+  hours: number;
+  minutes: number;
+  seconds: number;
+  isRunning: boolean;
 }
 
 const TimerContext = createContext<TimerContextData>({} as TimerContextData);
 
 const TimerProvider: React.FC = ({ children }) => {
-  const [currentTime, setCurrentTime] = useState('-');
-
   const {
     hours,
     seconds,
@@ -31,10 +25,6 @@ const TimerProvider: React.FC = ({ children }) => {
   } = useStopwatch({
     autoStart: false,
   });
-
-  useEffect(() => {
-    setCurrentTime(format(new Date(0, 0, 0, hours, minutes, seconds), 'mm:ss'));
-  }, [seconds, minutes, hours]);
 
   const startTimer = useCallback(() => {
     start();
@@ -50,7 +40,15 @@ const TimerProvider: React.FC = ({ children }) => {
 
   return (
     <TimerContext.Provider
-      value={{ currentTime, startTimer, stopTimer, resetTimer }}
+      value={{
+        startTimer,
+        stopTimer,
+        resetTimer,
+        hours,
+        minutes,
+        seconds,
+        isRunning,
+      }}
     >
       {children}
     </TimerContext.Provider>

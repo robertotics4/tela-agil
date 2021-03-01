@@ -6,7 +6,7 @@ export const Container = styled.div`
 
   display: grid;
   grid-gap: 32px;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 1fr 1fr;
   grid-template-rows: 2fr 1fr;
   grid-template-areas:
     'left right'

@@ -56,7 +56,7 @@ const CustomerServiceContext = createContext<CustomerServiceContextData>(
 
 const CustomerServiceProvider: React.FC = ({ children }) => {
   const { customAlert } = useAlert();
-  const { currentTime, startTimer, stopTimer, resetTimer } = useTimer();
+  const { startTimer, resetTimer } = useTimer();
 
   const [serviceStarted, setServiceStarted] = useState(false);
 
@@ -186,7 +186,7 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
 
         setServiceStarted(true);
 
-        startTimer();
+        // startTimer();
       } catch {
         customAlert({
           type: 'error',

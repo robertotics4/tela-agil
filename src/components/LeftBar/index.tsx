@@ -1,9 +1,10 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import { FiPower } from 'react-icons/fi';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 import * as Yup from 'yup';
 import { useLoading } from 'react-use-loading';
+import { format } from 'date-fns';
 
 import getValidationErrors from '../../utils/getValidationErrors';
 
@@ -41,7 +42,7 @@ interface StartServiceFormData {
 
 const LeftBar: React.FC = () => {
   const { user, signOut } = useAuth();
-  const { currentTime } = useTimer();
+  const { hours, minutes, seconds } = useTimer();
   const [{ isLoading, message }, { start, stop }] = useLoading();
 
   const {
@@ -94,6 +95,10 @@ const LeftBar: React.FC = () => {
   const handleFinishService = useCallback(() => {
     finishService();
   }, [finishService]);
+
+  const formattedTime = useMemo(() => {
+    return format(new Date(0, 0, 0, hours, minutes, seconds), 'mm:ss');
+  }, [hours, minutes, seconds]);
 
   return (
     <Container>
@@ -160,7 +165,7 @@ const LeftBar: React.FC = () => {
           {serviceStarted && customer && (
             <Cronometro>
               <span>Tempo de atendimento:</span>
-              <h1>{currentTime}</h1>
+              <h1>{formattedTime}</h1>
             </Cronometro>
           )}
         </Form>
