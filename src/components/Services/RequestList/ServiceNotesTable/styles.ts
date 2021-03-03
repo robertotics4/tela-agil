@@ -4,6 +4,26 @@ export const Container = styled.div`
   margin-top: 16px;
   max-height: 448px;
   overflow: auto;
+  padding: 0 24px;
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    scroll-margin-left: 16px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
 `;
 
 export const TableContainer = styled.table`
@@ -33,7 +53,9 @@ export const TableRow = styled.tr`
   }
 `;
 
-export const TableBody = styled.tbody``;
+export const TableBody = styled.tbody`
+  margin-right: 24px;
+`;
 
 export const TableDataCell = styled.td`
   font-size: 16px;

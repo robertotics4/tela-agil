@@ -36,11 +36,11 @@ const RequestList: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
         {
           Header: 'Nº do protocolo',
           accessor: 'protocol',
+          width: 50,
         },
         {
           Header: 'Serviço',
           accessor: 'service',
-          minWidth: 500,
         },
         {
           Header: 'Solicitado em',
@@ -58,11 +58,22 @@ const RequestList: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
               return <StatusIndicator type="concluded" title="Concluído" />;
             }
 
-            if (value === 'ABER' || value === 'RECE' || value === 'ATIV') {
+            if (value === 'AGUA' || value === 'RECE' || value === 'ATIV') {
               return <StatusIndicator type="open" title="Aberto" />;
             }
 
-            return <StatusIndicator type="canceled" title="Cancelada" />;
+            if (
+              value === 'ECAN' ||
+              value === 'CANC' ||
+              value === 'ERRO' ||
+              value === 'IMPR' ||
+              value === 'REJE' ||
+              value === 'DEVO'
+            ) {
+              return <StatusIndicator type="canceled" title="Cancelada" />;
+            }
+
+            return null;
           },
         },
       ] as Column<Note>[],
@@ -99,7 +110,7 @@ const RequestList: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
       setIsOpen={setIsOpen}
       customStyles={{
         borderRadius: '8px',
-        padding: '48px 8px',
+        padding: '48px 0px',
         width: 'fit-content',
         height: 'fit-content',
       }}

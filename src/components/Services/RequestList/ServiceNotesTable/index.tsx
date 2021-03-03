@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTable, Column, useResizeColumns } from 'react-table';
+import { useTable, Column } from 'react-table';
 
 import {
   Container,
@@ -35,7 +35,7 @@ const ServiceNotesTable: React.FC<ServiceNotesTableProps> = ({
     headerGroups,
     rows,
     prepareRow,
-  } = useTable({ columns, data }, useResizeColumns);
+  } = useTable({ columns, data });
 
   return (
     <Container>
