@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useLoading } from 'react-use-loading';
 import { format } from 'date-fns';
-import { Column, ColumnInstance, ColumnInterface } from 'react-table';
+import { Column } from 'react-table';
 import { useCustomerService } from '../../../hooks/customerService';
 
 import Loading from '../../Loading';
@@ -11,6 +11,7 @@ import Table from './ServiceNotesTable';
 import { ClosedNote, OpenNote } from '../../../types/ServiceNotes';
 
 import { ModalContent, OpeningDate, Title } from './styles';
+import StatusIndicator from './StatusIndicator';
 
 interface ModalProps {
   isOpen: boolean;
@@ -39,6 +40,7 @@ const RequestList: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
         {
           Header: 'Serviço',
           accessor: 'service',
+          minWidth: 500,
         },
         {
           Header: 'Solicitado em',
@@ -51,6 +53,17 @@ const RequestList: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
         {
           Header: 'Status',
           accessor: 'status',
+          Cell: ({ value }) => {
+            if (!value || value === 'FINL') {
+              return <StatusIndicator type="concluded" title="Concluído" />;
+            }
+
+            if (value === 'ABER' || value === 'RECE' || value === 'ATIV') {
+              return <StatusIndicator type="open" title="Aberto" />;
+            }
+
+            return <StatusIndicator type="canceled" title="Cancelada" />;
+          },
         },
       ] as Column<Note>[],
     [],
@@ -74,7 +87,6 @@ const RequestList: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
           service: note.typeDescription,
           openingDate: format(note.openingDate, 'dd/MM/yyyy'),
           conclusionDate: format(note.conclusionDate, 'dd/MM/yyyy'),
-          status: 'Concluído',
         } as Note),
     );
 
@@ -82,7 +94,16 @@ const RequestList: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
   }, [serviceNotes]);
 
   return (
-    <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
+    <Modal
+      isOpen={isOpen}
+      setIsOpen={setIsOpen}
+      customStyles={{
+        borderRadius: '8px',
+        padding: '48px 8px',
+        width: 'fit-content',
+        height: 'fit-content',
+      }}
+    >
       <ModalContent>
         <Title>Acompanhamento de protocolos</Title>
 

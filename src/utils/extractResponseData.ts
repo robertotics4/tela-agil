@@ -202,7 +202,7 @@ function getServiceNotes(response: AxiosResponse): ServiceNotes {
     (note: any) => {
       const openServiceNote: OpenNote = {
         type: note.tipoNota,
-        typeDescription: note.descricaoNota,
+        typeDescription: note.descricaoTipoNota,
         codeGroup: note.grupoCode,
         codeGroupDescription: note.descricaoGrupoCode,
         code: note.code,

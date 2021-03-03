@@ -1,9 +1,12 @@
 import React from 'react';
-import { useTable, TableInstance, Column } from 'react-table';
+import { useTable, Column, useResizeColumns } from 'react-table';
 
 import {
+  Container,
   TableContainer,
-  TableHead,
+  TableHeadContainer,
+  TableColumnsTitleContainer,
+  TableColumnTitle,
   TableRow,
   TableBody,
   TableDataCell,
@@ -32,36 +35,40 @@ const ServiceNotesTable: React.FC<ServiceNotesTableProps> = ({
     headerGroups,
     rows,
     prepareRow,
-  } = useTable({ columns, data });
+  } = useTable({ columns, data }, useResizeColumns);
 
   return (
-    <TableContainer {...getTableProps()}>
-      <TableHead>
-        {headerGroups.map(headerGroup => (
-          <TableRow {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map(column => (
-              <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-            ))}
-          </TableRow>
-        ))}
-      </TableHead>
-      <TableBody {...getTableBodyProps()}>
-        {rows.map((row, i) => {
-          prepareRow(row);
-          return (
-            <TableRow {...row.getRowProps()}>
-              {row.cells.map(cell => {
-                return (
-                  <TableDataCell {...cell.getCellProps()}>
-                    {cell.render('Cell')}
-                  </TableDataCell>
-                );
-              })}
-            </TableRow>
-          );
-        })}
-      </TableBody>
-    </TableContainer>
+    <Container>
+      <TableContainer {...getTableProps()}>
+        <TableHeadContainer>
+          {headerGroups.map(headerGroup => (
+            <TableColumnsTitleContainer {...headerGroup.getHeaderGroupProps()}>
+              {headerGroup.headers.map(column => (
+                <TableColumnTitle {...column.getHeaderProps()}>
+                  {column.render('Header')}
+                </TableColumnTitle>
+              ))}
+            </TableColumnsTitleContainer>
+          ))}
+        </TableHeadContainer>
+        <TableBody {...getTableBodyProps()}>
+          {rows.map((row, i) => {
+            prepareRow(row);
+            return (
+              <TableRow {...row.getRowProps()}>
+                {row.cells.map(cell => {
+                  return (
+                    <TableDataCell {...cell.getCellProps()}>
+                      {cell.render('Cell')}
+                    </TableDataCell>
+                  );
+                })}
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </TableContainer>
+    </Container>
   );
 };
 
