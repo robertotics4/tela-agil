@@ -3,8 +3,8 @@ import React, { createContext, useCallback, useContext } from 'react';
 import eqtlBarApi from '../services/eqtlBarApi';
 
 interface PowerReconnectionContextData {
-  ableToReconnection(): void;
-  suitableForEmergencyReconnection(): void;
+  ableToReconnection(): boolean;
+  suitableForEmergencyReconnection(): boolean;
 }
 
 const PowerReconnectionServiceContext = createContext<PowerReconnectionContextData>(
@@ -13,11 +13,11 @@ const PowerReconnectionServiceContext = createContext<PowerReconnectionContextDa
 
 const PowerReconnectionProvider: React.FC = ({ children }) => {
   const ableToReconnection = useCallback(() => {
-    console.log();
+    return true; // HARD CODDED
   }, []);
 
   const suitableForEmergencyReconnection = useCallback(() => {
-    console.log();
+    return false; // HARD CODDED
   }, []);
 
   return (

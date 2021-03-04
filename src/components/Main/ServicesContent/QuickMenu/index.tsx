@@ -18,6 +18,8 @@ import RequestList from '../../../Services/RequestList';
 
 import { useCustomerService } from '../../../../hooks/customerService';
 import { useAlert } from '../../../../hooks/alert';
+import { usePowerReconnectionService } from '../../../../hooks/powerReconnectionService';
+import { usePowerOutageService } from '../../../../hooks/powerOutageService';
 
 const QuickMenu: React.FC = () => {
   const [outagePowerOpen, setOutagePowerOpen] = useState(false);
@@ -30,13 +32,35 @@ const QuickMenu: React.FC = () => {
 
   const { customAlert } = useAlert();
   const { serviceNotes } = useCustomerService();
+  const { ableToPowerOutage } = usePowerOutageService();
+  const { ableToReconnection } = usePowerReconnectionService();
 
   function toggleOutagePower(): void {
-    setOutagePowerOpen(!outagePowerOpen);
+    if (!ableToPowerOutage()) {
+      customAlert({
+        type: 'warning',
+        title: 'Falta de energia',
+        description:
+          'O cliente não está habilitado para o serviço de falta de energia.',
+        confirmationText: 'OK',
+      });
+    } else {
+      setOutagePowerOpen(!outagePowerOpen);
+    }
   }
 
   function togglePowerReconnection(): void {
-    setPowerReconnectionOpen(!powerReconnectionOpen);
+    if (!ableToReconnection()) {
+      customAlert({
+        type: 'warning',
+        title: 'Religação',
+        description:
+          'O cliente não está habilitado para o serviço de religação.',
+        confirmationText: 'OK',
+      });
+    } else {
+      setPowerReconnectionOpen(!powerReconnectionOpen);
+    }
   }
 
   function toggleDebitsConsultation(): void {

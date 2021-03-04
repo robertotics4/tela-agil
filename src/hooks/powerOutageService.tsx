@@ -4,6 +4,7 @@ import { v4 as uuid } from 'uuid';
 import eqtlBarApi from '../services/eqtlBarApi';
 
 interface PowerOutageServiceContextData {
+  ableToPowerOutage(): boolean;
   generatePowerOutageService({
     contract,
     protocol,
@@ -27,6 +28,10 @@ const PowerOutageServiceContext = createContext<PowerOutageServiceContextData>(
 );
 
 const PowerOutageServiceProvider: React.FC = ({ children }) => {
+  const ableToPowerOutage = useCallback(() => {
+    return true; // HARD CODDED
+  }, []);
+
   const generatePowerOutageService = useCallback(
     async ({
       type,
@@ -76,6 +81,7 @@ const PowerOutageServiceProvider: React.FC = ({ children }) => {
   return (
     <PowerOutageServiceContext.Provider
       value={{
+        ableToPowerOutage,
         generatePowerOutageService,
       }}
     >

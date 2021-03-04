@@ -7,7 +7,7 @@ interface AlertContextData {
 }
 
 export interface AlertMessage {
-  type?: 'success' | 'error' | 'info';
+  type?: 'success' | 'error' | 'info' | 'warning';
   title: string;
   description: string;
   confirmationText: string;

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Rodal from 'rodal';
 import { FiCheck, FiAlertTriangle, FiXCircle } from 'react-icons/fi';
+import { GoInfo } from 'react-icons/go';
 
 import 'rodal/lib/rodal.css';
 
@@ -21,9 +22,10 @@ interface AlertProps {
 }
 
 const icons = {
-  info: <FiAlertTriangle size={80} color="#87ADBD" />,
+  info: <GoInfo size={80} color="#0DC9F0" />,
   error: <FiXCircle size={80} color="#eb5757" />,
   success: <FiCheck size={80} color="#04d361" />,
+  warning: <FiAlertTriangle size={80} color="#FFC105" />,
 };
 
 const AlertModal: React.FC<AlertProps> = ({ message, isOpen, setIsOpen }) => {
