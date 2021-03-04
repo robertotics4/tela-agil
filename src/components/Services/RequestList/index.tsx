@@ -11,8 +11,6 @@ import { ClosedNote, OpenNote } from '../../../types/ServiceNotes';
 
 import { ModalContent, Title } from './styles';
 
-import { useAlert } from '../../../hooks/alert';
-
 interface ModalProps {
   isOpen: boolean;
   setIsOpen: () => void;
@@ -28,7 +26,6 @@ interface Note {
 
 const RequestList: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
   const { serviceNotes } = useCustomerService();
-  const { customAlert } = useAlert();
 
   const columns: Column<Note>[] = useMemo(
     () =>
@@ -36,7 +33,6 @@ const RequestList: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
         {
           Header: 'Nº do protocolo',
           accessor: 'protocol',
-          width: 50,
         },
         {
           Header: 'Serviço',
@@ -110,7 +106,7 @@ const RequestList: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
       setIsOpen={setIsOpen}
       customStyles={{
         borderRadius: '8px',
-        padding: '48px 16px',
+        padding: '48px 0',
         width: 'fit-content',
         height: 'fit-content',
       }}

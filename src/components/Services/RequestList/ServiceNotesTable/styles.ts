@@ -4,6 +4,8 @@ export const Container = styled.div`
   margin-top: 16px;
   max-height: 448px;
   overflow: auto;
+
+  width: 100%;
   padding: 0 24px;
 
   ::-webkit-scrollbar {
@@ -39,8 +41,9 @@ export const TableColumnsTitleContainer = styled.tr`
 
 export const TableColumnTitle = styled.th`
   font-size: 16px;
-  color: #5f6062;
   font-weight: 400;
+  text-align: left;
+  color: #5f6062;
   border-bottom: 1px solid #5f6062;
   padding: 12px;
 `;

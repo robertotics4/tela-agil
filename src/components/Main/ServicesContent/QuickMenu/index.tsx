@@ -9,6 +9,7 @@ import { MdReceipt } from 'react-icons/md';
 import { Container, Content } from './styles';
 
 import PowerOutageFlow from '../../../Services/PowerOutageFlow';
+import PowerReconnectionFlow from '../../../Services/PowerReconnectionFlow';
 import DebitsConsultationModal from '../../../Services/DebitsConsultationModal';
 import InstallmentPaymentModal from '../../../Services/InstallmentPaymentModal';
 import EmailInvoice from '../../../Services/EmailInvoice';
@@ -20,6 +21,7 @@ import { useAlert } from '../../../../hooks/alert';
 
 const QuickMenu: React.FC = () => {
   const [outagePowerOpen, setOutagePowerOpen] = useState(false);
+  const [powerReconnectionOpen, setPowerReconnectionOpen] = useState(false);
   const [debitsConsultationOpen, setDebitsConsultationOpen] = useState(false);
   const [installmentPaymentOpen, setInstallmentPaymentOpen] = useState(false);
   const [emailInvoiceOpen, setEmailInvoiceOpen] = useState(false);
@@ -31,6 +33,10 @@ const QuickMenu: React.FC = () => {
 
   function toggleOutagePower(): void {
     setOutagePowerOpen(!outagePowerOpen);
+  }
+
+  function togglePowerReconnection(): void {
+    setPowerReconnectionOpen(!powerReconnectionOpen);
   }
 
   function toggleDebitsConsultation(): void {
@@ -79,7 +85,7 @@ const QuickMenu: React.FC = () => {
         </div>
 
         <div>
-          <button type="button">
+          <button type="button" onClick={togglePowerReconnection}>
             <FaPlug size={20} />
           </button>
 
@@ -131,13 +137,18 @@ const QuickMenu: React.FC = () => {
             <MdReceipt size={20} />
           </button>
 
-          <span>Protocolos</span>
+          <span>Acompanhamento de protocolos</span>
         </div>
       </Content>
 
       <PowerOutageFlow
         modalOpen={outagePowerOpen}
         toggleModal={toggleOutagePower}
+      />
+
+      <PowerReconnectionFlow
+        modalOpen={powerReconnectionOpen}
+        toggleModal={togglePowerReconnection}
       />
 
       <DebitsConsultationModal
