@@ -21,7 +21,7 @@ interface AlertProps {
 }
 
 const icons = {
-  info: <FiAlertTriangle size={80} color="#444444" />,
+  info: <FiAlertTriangle size={80} color="#87ADBD" />,
   error: <FiXCircle size={80} color="#eb5757" />,
   success: <FiCheck size={80} color="#04d361" />,
 };

@@ -12,6 +12,7 @@ export const AlertContent = styled.div`
 export const AlertTitle = styled.h1`
   font-size: 36px;
   margin-top: 24px;
+  text-align: center;
 `;
 
 export const AlertDescription = styled.p`

@@ -15,6 +15,9 @@ import EmailInvoice from '../../../Services/EmailInvoice';
 import ExpirationChange from '../../../Services/DueDateChange';
 import RequestList from '../../../Services/RequestList';
 
+import { useCustomerService } from '../../../../hooks/customerService';
+import { useAlert } from '../../../../hooks/alert';
+
 const QuickMenu: React.FC = () => {
   const [outagePowerOpen, setOutagePowerOpen] = useState(false);
   const [debitsConsultationOpen, setDebitsConsultationOpen] = useState(false);
@@ -22,6 +25,9 @@ const QuickMenu: React.FC = () => {
   const [emailInvoiceOpen, setEmailInvoiceOpen] = useState(false);
   const [expirationChangeOpen, setExpirationChangeOpen] = useState(false);
   const [requestListOpen, setRequestListOpen] = useState(false);
+
+  const { customAlert } = useAlert();
+  const { serviceNotes } = useCustomerService();
 
   function toggleOutagePower(): void {
     setOutagePowerOpen(!outagePowerOpen);
@@ -44,7 +50,19 @@ const QuickMenu: React.FC = () => {
   }
 
   function toggleRequestList(): void {
-    setRequestListOpen(!requestListOpen);
+    if (
+      !serviceNotes.openServiceNotes.length &&
+      !serviceNotes.closedServiceNotes.length
+    ) {
+      customAlert({
+        type: 'info',
+        title: 'Acompanhamento de protocolos',
+        description: 'O cliente não possui notas para serem exibidas.',
+        confirmationText: 'OK',
+      });
+    } else {
+      setRequestListOpen(!requestListOpen);
+    }
   }
 
   return (

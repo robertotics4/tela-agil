@@ -1,17 +1,17 @@
 import React, { useMemo } from 'react';
-import { useLoading } from 'react-use-loading';
 import { format } from 'date-fns';
 import { Column } from 'react-table';
 import { useCustomerService } from '../../../hooks/customerService';
 
-import Loading from '../../Loading';
 import Modal from '../../Modal';
 import Table from './ServiceNotesTable';
+import StatusIndicator from './StatusIndicator';
 
 import { ClosedNote, OpenNote } from '../../../types/ServiceNotes';
 
-import { ModalContent, OpeningDate, Title } from './styles';
-import StatusIndicator from './StatusIndicator';
+import { ModalContent, Title } from './styles';
+
+import { useAlert } from '../../../hooks/alert';
 
 interface ModalProps {
   isOpen: boolean;
@@ -27,8 +27,8 @@ interface Note {
 }
 
 const RequestList: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
-  const [{ isLoading, message }, { start, stop }] = useLoading();
   const { serviceNotes } = useCustomerService();
+  const { customAlert } = useAlert();
 
   const columns: Column<Note>[] = useMemo(
     () =>
@@ -110,7 +110,7 @@ const RequestList: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
       setIsOpen={setIsOpen}
       customStyles={{
         borderRadius: '8px',
-        padding: '48px 0px',
+        padding: '48px 16px',
         width: 'fit-content',
         height: 'fit-content',
       }}
@@ -120,10 +120,6 @@ const RequestList: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
 
         <Table columns={columns} data={data} />
       </ModalContent>
-
-      {isLoading && (
-        <Loading isOpen={isLoading} message={message} setIsOpen={stop} />
-      )}
     </Modal>
   );
 };
