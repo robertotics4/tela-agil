@@ -2,6 +2,7 @@ import React, { createContext, useCallback, useContext } from 'react';
 import { v4 as uuid } from 'uuid';
 
 import eqtlBarApi from '../services/eqtlBarApi';
+import { useCustomerService } from './customerService';
 
 interface PowerOutageServiceContextData {
   ableToPowerOutage(): boolean;
@@ -28,9 +29,45 @@ const PowerOutageServiceContext = createContext<PowerOutageServiceContextData>(
 );
 
 const PowerOutageServiceProvider: React.FC = ({ children }) => {
+  const { serviceNotes, installation } = useCustomerService();
+
   const ableToPowerOutage = useCallback(() => {
-    return true; // HARD CODDED
-  }, []);
+    const reconnectionNotes = serviceNotes.openServiceNotes.find(
+      note => note.type === 'RL',
+    );
+
+    const suspensionNotes = serviceNotes.openServiceNotes.find(
+      note => note.type === 'SUSPENSÃO',
+    ); // HARD CODDED
+
+    const highVoltageNotes = serviceNotes.openServiceNotes.find(
+      note => note.type === 'AT',
+    );
+
+    const powerOutageNotes = serviceNotes.openServiceNotes.find(
+      note => note.type === 'FE',
+    );
+
+    const newEnergyConnection = serviceNotes.openServiceNotes.find(
+      note => note.type === 'FE',
+    );
+
+    if (
+      reconnectionNotes ||
+      installation.cutInProgress ||
+      suspensionNotes ||
+      installation.status !== 'Ligada' ||
+      installation.scheduledShutdown ||
+      installation.powerPhaseOutage ||
+      highVoltageNotes ||
+      powerOutageNotes ||
+      newEnergyConnection
+    ) {
+      return false;
+    }
+
+    return true;
+  }, [serviceNotes, installation]);
 
   const generatePowerOutageService = useCallback(
     async ({

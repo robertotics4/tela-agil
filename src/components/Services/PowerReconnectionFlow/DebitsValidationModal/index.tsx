@@ -164,6 +164,7 @@ const DebitsValidationModal: React.FC<ModalProps> = ({
         <QuestionContent>
           {question.options.map(option => (
             <OutlineButton
+              key={option.answer}
               type="button"
               onClick={() => handleClickOption(option)}
             >

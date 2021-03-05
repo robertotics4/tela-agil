@@ -13,7 +13,7 @@ const PowerReconnectionServiceContext = createContext<PowerReconnectionContextDa
 
 const PowerReconnectionProvider: React.FC = ({ children }) => {
   const ableToReconnection = useCallback(() => {
-    return true; // HARD CODDED
+    return false; // HARD CODDED
   }, []);
 
   const suitableForEmergencyReconnection = useCallback(() => {
