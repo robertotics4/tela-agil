@@ -182,11 +182,13 @@ const DueDateChange: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
   }, [setIsOpen]);
 
   useEffect(() => {
-    registerServicePerformed({
-      serviceName: 'Alteração de Data Certa',
-      executionDate: new Date(),
-    });
-  }, [registerServicePerformed]);
+    if (isOpen) {
+      registerServicePerformed({
+        serviceName: 'Alteração de Data Certa',
+        executionDate: new Date(),
+      });
+    }
+  }, [registerServicePerformed, isOpen]);
 
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>

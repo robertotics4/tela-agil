@@ -51,7 +51,12 @@ const Modal: React.FC<ModalProps> = ({
   const [modalStatus, setModalStatus] = useState(isOpen);
 
   const { generatePowerOutageService } = usePowerOutageService();
-  const { customer, operatingCompany, protocol } = useCustomerService();
+  const {
+    customer,
+    operatingCompany,
+    protocol,
+    registerServicePerformed,
+  } = useCustomerService();
   const { user } = useAuth();
   const { customAlert } = useAlert();
 
@@ -139,6 +144,15 @@ const Modal: React.FC<ModalProps> = ({
     setModalStatus(isOpen);
     clearFlow();
   }, [isOpen, clearFlow]);
+
+  useEffect(() => {
+    if (isOpen) {
+      registerServicePerformed({
+        serviceName: 'Falta de energia',
+        executionDate: new Date(),
+      });
+    }
+  }, [registerServicePerformed, isOpen]);
 
   return (
     <Rodal

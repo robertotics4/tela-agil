@@ -101,11 +101,13 @@ const RequestList: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
   }, [serviceNotes]);
 
   useEffect(() => {
-    registerServicePerformed({
-      serviceName: 'Acompanhamento de protocolos',
-      executionDate: new Date(),
-    });
-  }, [registerServicePerformed]);
+    if (isOpen) {
+      registerServicePerformed({
+        serviceName: 'Acompanhamento de protocolos',
+        executionDate: new Date(),
+      });
+    }
+  }, [registerServicePerformed, isOpen]);
 
   return (
     <Modal

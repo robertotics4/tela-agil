@@ -156,11 +156,13 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
   }, []);
 
   useEffect(() => {
-    registerServicePerformed({
-      serviceName: 'Consulta de débitos',
-      executionDate: new Date(),
-    });
-  }, [registerServicePerformed]);
+    if (isOpen) {
+      registerServicePerformed({
+        serviceName: 'Consulta de débitos',
+        executionDate: new Date(),
+      });
+    }
+  }, [registerServicePerformed, isOpen]);
 
   const generateInstallmentRows = useMemo(() => {
     const installmentRows = debits.installmentDebits.installmentDebitDetails.map(

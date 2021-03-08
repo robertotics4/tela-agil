@@ -158,11 +158,13 @@ const InstallmentPaymentModal: React.FC<ModalProps> = ({
   }, [setIsOpen]);
 
   useEffect(() => {
-    registerServicePerformed({
-      serviceName: 'Envio de entrada de parcelamento',
-      executionDate: new Date(),
-    });
-  }, [registerServicePerformed]);
+    if (isOpen) {
+      registerServicePerformed({
+        serviceName: 'Envio de entrada de parcelamento',
+        executionDate: new Date(),
+      });
+    }
+  }, [registerServicePerformed, isOpen]);
 
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>

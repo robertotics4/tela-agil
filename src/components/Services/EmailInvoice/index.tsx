@@ -102,11 +102,13 @@ const EmailInvoiceModal: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
   ]);
 
   useEffect(() => {
-    registerServicePerformed({
-      serviceName: 'Cadastro de fatura por e-mail',
-      executionDate: new Date(),
-    });
-  }, [registerServicePerformed]);
+    if (isOpen) {
+      registerServicePerformed({
+        serviceName: 'Cadastro de fatura por e-mail',
+        executionDate: new Date(),
+      });
+    }
+  }, [registerServicePerformed, isOpen]);
 
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
