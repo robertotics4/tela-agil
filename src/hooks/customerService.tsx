@@ -43,7 +43,7 @@ interface CustomerServiceContextData {
   serviceStarted: boolean;
   getCustomer(customerData: GetCustomerData): Promise<void>;
   startService({ stateCode, contract, cpf }: GetCustomerData): Promise<void>;
-  finishService(attendanceTime: string): void;
+  finishService(attendanceTime: string): Promise<void>;
   registerServicePerformed({
     serviceName,
     executionDate,
@@ -66,7 +66,6 @@ const CustomerServiceContext = createContext<CustomerServiceContextData>(
 
 const CustomerServiceProvider: React.FC = ({ children }) => {
   const { customAlert } = useAlert();
-  const { addToast } = useToast();
   const { user } = useAuth();
 
   const [serviceStarted, setServiceStarted] = useState(false);
@@ -214,23 +213,15 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
 
   const saveAttendanceLog = useCallback(
     async (attendanceTime: string) => {
-      try {
-        await eqtlBarApi.post('/logs', {
-          user_id: user.id,
-          username: user.name,
-          contractAccount: customerServiceData.customer.contractAccount,
-          attendanceTime,
-          services: servicesPerformed,
-        });
-      } catch (err) {
-        addToast({
-          type: 'error',
-          title: 'Registro de logs',
-          description: 'Ocorreu um erro ao salvar o log do atendimento.',
-        });
-      }
+      await eqtlBarApi.post('/logs', {
+        user_id: user.id,
+        username: user.name,
+        contractAccount: customerServiceData.customer.contractAccount,
+        attendanceTime,
+        services: servicesPerformed,
+      });
     },
-    [user, customerServiceData.customer, servicesPerformed, addToast],
+    [user, customerServiceData.customer, servicesPerformed],
   );
 
   const finishService = useCallback(

@@ -33,6 +33,7 @@ import logoWhiteImg from '../../assets/logo-white.svg';
 
 import { useAuth } from '../../hooks/auth';
 import { useCustomerService } from '../../hooks/customerService';
+import { useToast } from '../../hooks/toast';
 
 interface StartServiceFormData {
   state: string;
@@ -42,6 +43,7 @@ interface StartServiceFormData {
 
 const LeftBar: React.FC = () => {
   const { user, signOut } = useAuth();
+  const { addToast } = useToast();
   const [{ isLoading, message }, { start, stop }] = useLoading();
 
   const {
@@ -105,15 +107,32 @@ const LeftBar: React.FC = () => {
   const formattedTime = useMemo(() => {
     return format(new Date(0, 0, 0, hours, minutes, seconds), 'mm:ss');
   }, [hours, minutes, seconds]);
-  const handleFinishService = useCallback(() => {
-    finishService(formattedTime);
-  }, [finishService, formattedTime]);
+
+  const handleFinishService = useCallback(async () => {
+    try {
+      start('Finalizando atendimento ...');
+
+      await finishService(formattedTime);
+    } catch {
+      addToast({
+        type: 'error',
+        title: 'Registro de logs',
+        description: 'Ocorreu um erro ao salvar o log do atendimento.',
+      });
+    } finally {
+      stop();
+    }
+  }, [finishService, formattedTime, addToast, start, stop]);
 
   useEffect(() => {
     if (serviceStarted && !isRunning) {
       startTimer();
     }
-  }, [serviceStarted, startTimer, isRunning]);
+
+    if (!serviceStarted) {
+      resetTimer();
+    }
+  }, [serviceStarted, startTimer, isRunning, resetTimer]);
 
   return (
     <Container>
