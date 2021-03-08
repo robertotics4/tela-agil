@@ -14,7 +14,6 @@ import getValidationErrors from '../../../utils/getValidationErrors';
 import getUnformattedPhone from '../../../utils/getUnformattedPhone';
 
 import { useCustomerService } from '../../../hooks/customerService';
-import { useToast } from '../../../hooks/toast';
 import { useWhatsappSending } from '../../../hooks/whatsappSending';
 import { useAlert } from '../../../hooks/alert';
 
@@ -49,7 +48,12 @@ const InstallmentPaymentModal: React.FC<ModalProps> = ({
     undefined,
   );
 
-  const { debits, customer, operatingCompany } = useCustomerService();
+  const {
+    debits,
+    customer,
+    operatingCompany,
+    registerServicePerformed,
+  } = useCustomerService();
   const { customAlert } = useAlert();
   const { sendInstallmentPayment } = useWhatsappSending();
   const [{ isLoading, message }, { start, stop }] = useLoading();
@@ -152,6 +156,13 @@ const InstallmentPaymentModal: React.FC<ModalProps> = ({
     setCodeBarValue(undefined);
     setSelectedInstallmentDebit(undefined);
   }, [setIsOpen]);
+
+  useEffect(() => {
+    registerServicePerformed({
+      serviceName: 'Envio de entrada de parcelamento',
+      executionDate: new Date(),
+    });
+  }, [registerServicePerformed]);
 
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>

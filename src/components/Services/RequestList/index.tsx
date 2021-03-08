@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { format } from 'date-fns';
 import { Column } from 'react-table';
 import { useCustomerService } from '../../../hooks/customerService';
@@ -25,7 +25,7 @@ interface Note {
 }
 
 const RequestList: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
-  const { serviceNotes } = useCustomerService();
+  const { serviceNotes, registerServicePerformed } = useCustomerService();
 
   const columns: Column<Note>[] = useMemo(
     () =>
@@ -99,6 +99,13 @@ const RequestList: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
 
     return [...mappedOpenNotes, ...mappedClosedNotes];
   }, [serviceNotes]);
+
+  useEffect(() => {
+    registerServicePerformed({
+      serviceName: 'Acompanhamento de protocolos',
+      executionDate: new Date(),
+    });
+  }, [registerServicePerformed]);
 
   return (
     <Modal

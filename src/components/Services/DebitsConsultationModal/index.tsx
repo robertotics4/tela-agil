@@ -45,7 +45,12 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
     InstallmentDebit | InvoiceDebit | undefined
   >(undefined);
 
-  const { debits, customer, operatingCompany } = useCustomerService();
+  const {
+    debits,
+    customer,
+    operatingCompany,
+    registerServicePerformed,
+  } = useCustomerService();
   const { customAlert } = useAlert();
   const { getInvoiceUrl } = useDebitsConsultation();
   const { sendInvoiceDebit, sendInstallmentPayment } = useWhatsappSending();
@@ -149,6 +154,13 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
   const handleClickDebit = useCallback(debit => {
     setSelectedDebit(debit);
   }, []);
+
+  useEffect(() => {
+    registerServicePerformed({
+      serviceName: 'Consulta de débitos',
+      executionDate: new Date(),
+    });
+  }, [registerServicePerformed]);
 
   const generateInstallmentRows = useMemo(() => {
     const installmentRows = debits.installmentDebits.installmentDebitDetails.map(

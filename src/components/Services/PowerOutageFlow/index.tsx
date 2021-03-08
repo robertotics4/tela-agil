@@ -1,6 +1,8 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import StepModal, { Question } from './StepModal';
+
+import { useCustomerService } from '../../../hooks/customerService';
 
 import powerOutageQuestions from './questions/PowerOutageQuestions';
 
@@ -13,6 +15,8 @@ const PowerOutageFlow: React.FC<FlowComponentProps> = ({
   modalOpen,
   toggleModal,
 }) => {
+  const { registerServicePerformed } = useCustomerService();
+
   const [questions, setQuestions] = useState<Question[]>(powerOutageQuestions);
   const [currentQuestion, setCurrentQuestion] = useState(questions[0]);
 
@@ -32,6 +36,13 @@ const PowerOutageFlow: React.FC<FlowComponentProps> = ({
   const handleClearFlow = useCallback(() => {
     setCurrentQuestion(questions[0]);
   }, [questions]);
+
+  useEffect(() => {
+    registerServicePerformed({
+      serviceName: 'Falta de energia',
+      executionDate: new Date(),
+    });
+  }, [registerServicePerformed]);
 
   return (
     <StepModal

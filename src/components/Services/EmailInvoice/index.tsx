@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
 
 import { useLoading } from 'react-use-loading';
@@ -25,7 +25,11 @@ interface RegisterInvoiceByEmailProps {
 const EmailInvoiceModal: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
   const [{ isLoading, message }, { start, stop }] = useLoading();
 
-  const { customer, operatingCompany } = useCustomerService();
+  const {
+    customer,
+    operatingCompany,
+    registerServicePerformed,
+  } = useCustomerService();
   const { customAlert } = useAlert();
 
   const registerInvoiceByEmail = useCallback(
@@ -96,6 +100,13 @@ const EmailInvoiceModal: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
     start,
     stop,
   ]);
+
+  useEffect(() => {
+    registerServicePerformed({
+      serviceName: 'Cadastro de fatura por e-mail',
+      executionDate: new Date(),
+    });
+  }, [registerServicePerformed]);
 
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>

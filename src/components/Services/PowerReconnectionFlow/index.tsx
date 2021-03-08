@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import DebitsValidationModal, { Question } from './DebitsValidationModal';
 
@@ -15,7 +15,7 @@ const PowerReconnectionFlow: React.FC<FlowComponentProps> = ({
   modalOpen,
   toggleModal,
 }) => {
-  const { debits } = useCustomerService();
+  const { debits, registerServicePerformed } = useCustomerService();
 
   const powerReconnectionQuestions: Question[] = [
     {
@@ -88,6 +88,13 @@ const PowerReconnectionFlow: React.FC<FlowComponentProps> = ({
   const handleClearFlow = useCallback(() => {
     setCurrentQuestion(questions[0]);
   }, [questions]);
+
+  useEffect(() => {
+    registerServicePerformed({
+      serviceName: 'Religação',
+      executionDate: new Date(),
+    });
+  }, [registerServicePerformed]);
 
   return (
     <>

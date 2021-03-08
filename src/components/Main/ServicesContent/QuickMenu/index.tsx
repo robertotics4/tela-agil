@@ -35,8 +35,6 @@ const QuickMenu: React.FC = () => {
   const { ableToPowerOutage } = usePowerOutageService();
   const { ableToReconnection } = usePowerReconnectionService();
 
-  console.log(ableToPowerOutage());
-
   function toggleOutagePower(): void {
     if (!ableToPowerOutage()) {
       customAlert({

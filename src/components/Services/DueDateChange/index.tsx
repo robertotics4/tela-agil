@@ -52,7 +52,11 @@ interface OptionProps {
 const DueDateChange: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
   const [{ isLoading, message }, { start, stop }] = useLoading();
 
-  const { customer, operatingCompany } = useCustomerService();
+  const {
+    customer,
+    operatingCompany,
+    registerServicePerformed,
+  } = useCustomerService();
   const { customAlert } = useAlert();
 
   const [validDates, setValidDates] = useState<ValidDate[]>([]);
@@ -176,6 +180,13 @@ const DueDateChange: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
   useEffect(() => {
     setSelectedDate(undefined);
   }, [setIsOpen]);
+
+  useEffect(() => {
+    registerServicePerformed({
+      serviceName: 'Alteração de Data Certa',
+      executionDate: new Date(),
+    });
+  }, [registerServicePerformed]);
 
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>

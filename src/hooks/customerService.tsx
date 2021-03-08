@@ -2,6 +2,8 @@ import React, { createContext, useCallback, useContext, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 
 import { useAlert } from './alert';
+import { useAuth } from './auth';
+import { useToast } from './toast';
 
 import Customer from '../types/Customer';
 import Installation from '../types/Installation';
@@ -10,7 +12,6 @@ import Debits from '../types/Debits';
 import extractResponseData from '../utils/extractResponseData';
 import ServiceNotes from '../types/ServiceNotes';
 import eqtlBarApi from '../services/eqtlBarApi';
-import { useAuth } from './auth';
 
 interface CustomerServiceState {
   operatingCompany: string;
@@ -43,11 +44,20 @@ interface CustomerServiceContextData {
   getCustomer(customerData: GetCustomerData): Promise<void>;
   startService({ stateCode, contract, cpf }: GetCustomerData): Promise<void>;
   finishService(attendanceTime: string): void;
+  registerServicePerformed({
+    serviceName,
+    executionDate,
+  }: ServicePerformed): void;
 }
 
 interface GenerateProtocolProps {
   operatingCompany: string;
   contract: string;
+}
+
+interface ServicePerformed {
+  serviceName: string;
+  executionDate: Date;
 }
 
 const CustomerServiceContext = createContext<CustomerServiceContextData>(
@@ -56,9 +66,13 @@ const CustomerServiceContext = createContext<CustomerServiceContextData>(
 
 const CustomerServiceProvider: React.FC = ({ children }) => {
   const { customAlert } = useAlert();
+  const { addToast } = useToast();
   const { user } = useAuth();
 
   const [serviceStarted, setServiceStarted] = useState(false);
+  const [servicesPerformed, setServicesPerformed] = useState<
+    ServicePerformed[]
+  >([]);
 
   const [
     customerServiceData,
@@ -206,12 +220,17 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
           username: user.name,
           contractAccount: customerServiceData.customer.contractAccount,
           attendanceTime,
+          services: servicesPerformed,
         });
       } catch (err) {
-        console.log(err);
+        addToast({
+          type: 'error',
+          title: 'Registro de logs',
+          description: 'Ocorreu um erro ao salvar o log do atendimento.',
+        });
       }
     },
-    [user, customerServiceData.customer],
+    [user, customerServiceData.customer, servicesPerformed, addToast],
   );
 
   const finishService = useCallback(
@@ -223,9 +242,21 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
 
       setCustomerServiceData({} as CustomerServiceContextData);
 
+      setServicesPerformed([]);
+
       setServiceStarted(false);
     },
     [saveAttendanceLog],
+  );
+
+  const registerServicePerformed = useCallback(
+    ({ serviceName, executionDate }: ServicePerformed) => {
+      setServicesPerformed(oldServices => [
+        ...oldServices,
+        { serviceName, executionDate },
+      ]);
+    },
+    [],
   );
 
   return (
@@ -241,6 +272,7 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
         getCustomer,
         startService,
         finishService,
+        registerServicePerformed,
       }}
     >
       {children}
