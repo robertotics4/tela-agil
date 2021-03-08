@@ -110,29 +110,25 @@ const EmailInvoiceModal: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
 
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
-      {customer.contacts.email ? (
-        <ModalContent>
-          <h2>Fatura por e-mail</h2>
-          <p>
-            {`Autorizo o envio mensal das faturas de energia elétrica e de eventuais
+      <ModalContent>
+        <h2>Fatura por e-mail</h2>
+        <p>
+          {`Autorizo o envio mensal das faturas de energia elétrica e de eventuais
           notificações referentes à conta contrato especificada, ao e-mail do
           meu cadastro: ${customer.contacts.email}, dispensando a necessidade de envio
           impresso em papel.`}
-          </p>
+        </p>
 
-          <OptionsContainer>
-            <OptionButton type="button" onClick={() => setIsOpen()}>
-              Não
-            </OptionButton>
+        <OptionsContainer>
+          <OptionButton type="button" onClick={() => setIsOpen()}>
+            Não
+          </OptionButton>
 
-            <OptionButton type="button" onClick={handleClickAutorize}>
-              Sim, autorizo
-            </OptionButton>
-          </OptionsContainer>
-        </ModalContent>
-      ) : (
-        <p>O usuário não possui e-mail cadastrado.</p>
-      )}
+          <OptionButton type="button" onClick={handleClickAutorize}>
+            Sim, autorizo
+          </OptionButton>
+        </OptionsContainer>
+      </ModalContent>
 
       {isLoading && (
         <Loading isOpen={isLoading} message={message} setIsOpen={stop} />

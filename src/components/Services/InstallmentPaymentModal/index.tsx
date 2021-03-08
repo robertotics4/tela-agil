@@ -166,48 +166,44 @@ const InstallmentPaymentModal: React.FC<ModalProps> = ({
 
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
-      {debits.installmentDebits.installmentDebitDetails.length ? (
-        <ModalContent>
-          <h2>Entrada de parcelamento</h2>
+      <ModalContent>
+        <h2>Entrada de parcelamento</h2>
 
-          <div>
-            <table>
-              <tbody>{generateInstallmentRows}</tbody>
-            </table>
-          </div>
+        <div>
+          <table>
+            <tbody>{generateInstallmentRows}</tbody>
+          </table>
+        </div>
 
-          <Form
-            ref={formRef}
-            onSubmit={handleSubmit}
-            initialData={{
-              phone: customer.contacts.phones?.cellPhone,
-            }}
-          >
-            {codeBarValue ? (
-              <CodeBarContent>
-                <span>Código para pagamento</span>
-                <strong>{codeBarValue}</strong>
-              </CodeBarContent>
-            ) : (
-              <span>Nenhum documento selecionado</span>
-            )}
+        <Form
+          ref={formRef}
+          onSubmit={handleSubmit}
+          initialData={{
+            phone: customer.contacts.phones?.cellPhone,
+          }}
+        >
+          {codeBarValue ? (
+            <CodeBarContent>
+              <span>Código para pagamento</span>
+              <strong>{codeBarValue}</strong>
+            </CodeBarContent>
+          ) : (
+            <span>Nenhum documento selecionado</span>
+          )}
 
-            <InputMask
-              name="phone"
-              mask="(99) 99999-9999"
-              type="text"
-              placeholder="Telefone do cliente"
-              autoComplete="off"
-            />
+          <InputMask
+            name="phone"
+            mask="(99) 99999-9999"
+            type="text"
+            placeholder="Telefone do cliente"
+            autoComplete="off"
+          />
 
-            <SendButton type="submit" disabled={!selectedInstallmentDebit}>
-              Enviar código
-            </SendButton>
-          </Form>
-        </ModalContent>
-      ) : (
-        <p>O cliente não possui negociações.</p>
-      )}
+          <SendButton type="submit" disabled={!selectedInstallmentDebit}>
+            Enviar código
+          </SendButton>
+        </Form>
+      </ModalContent>
 
       {isLoading && (
         <Loading isOpen={isLoading} message={message} setIsOpen={stop} />

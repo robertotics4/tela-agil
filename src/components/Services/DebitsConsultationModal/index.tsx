@@ -243,57 +243,52 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
 
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
-      {debits.installmentDebits.totalAmountInstallmentDebits > 0 ||
-      debits.invoiceDebits.totalAmountInvoiceDebits > 0 ? (
-        <ModalContent>
-          <h2>Consulta de débitos</h2>
+      <ModalContent>
+        <h2>Consulta de débitos</h2>
 
-          <div>
-            <table>
-              <tbody>
-                {generateInstallmentRows}
-                {generateInvoiceRows}
-              </tbody>
-            </table>
-          </div>
+        <div>
+          <table>
+            <tbody>
+              {generateInstallmentRows}
+              {generateInvoiceRows}
+            </tbody>
+          </table>
+        </div>
 
-          <Form
-            ref={formRef}
-            onSubmit={handleSubmit}
-            initialData={{
-              phone: customer.contacts.phones?.cellPhone,
-            }}
-          >
-            {selectedDebit ? (
-              <DebitContainer>
-                <p>Débito selecionado</p>
+        <Form
+          ref={formRef}
+          onSubmit={handleSubmit}
+          initialData={{
+            phone: customer.contacts.phones?.cellPhone,
+          }}
+        >
+          {selectedDebit ? (
+            <DebitContainer>
+              <p>Débito selecionado</p>
 
-                <strong>{`Referente a: ${selectedDebitReference}`}</strong>
+              <strong>{`Referente a: ${selectedDebitReference}`}</strong>
 
-                <strong>
-                  {`Valor: ${currencyMask(selectedDebit.invoiceAmount)}`}
-                </strong>
-              </DebitContainer>
-            ) : (
-              <span>Nenhum débito selecionado</span>
-            )}
+              <strong>
+                {`Valor: ${currencyMask(selectedDebit.invoiceAmount)}`}
+              </strong>
+            </DebitContainer>
+          ) : (
+            <span>Nenhum débito selecionado</span>
+          )}
 
-            <InputMask
-              name="phone"
-              mask="(99) 99999-9999"
-              type="text"
-              placeholder="Telefone do cliente"
-              autoComplete="off"
-            />
+          <InputMask
+            name="phone"
+            mask="(99) 99999-9999"
+            type="text"
+            placeholder="Telefone do cliente"
+            autoComplete="off"
+          />
 
-            <SendButton type="submit" disabled={!selectedDebit}>
-              Enviar fatura
-            </SendButton>
-          </Form>
-        </ModalContent>
-      ) : (
-        <span>O cliente não possui débitos.</span>
-      )}
+          <SendButton type="submit" disabled={!selectedDebit}>
+            Enviar fatura
+          </SendButton>
+        </Form>
+      </ModalContent>
 
       {isLoading && (
         <Loading isOpen={isLoading} message={message} setIsOpen={stop} />

@@ -31,7 +31,7 @@ const QuickMenu: React.FC = () => {
   const [requestListOpen, setRequestListOpen] = useState(false);
 
   const { customAlert } = useAlert();
-  const { serviceNotes } = useCustomerService();
+  const { serviceNotes, debits, customer } = useCustomerService();
   const { ableToPowerOutage } = usePowerOutageService();
   const { ableToReconnection } = usePowerReconnectionService();
 
@@ -64,14 +64,43 @@ const QuickMenu: React.FC = () => {
   }
 
   function toggleDebitsConsultation(): void {
-    setDebitsConsultationOpen(!debitsConsultationOpen);
+    if (
+      !debits.installmentDebits.installmentDebitDetails.length ||
+      !debits.invoiceDebits.invoiceDebitDetails.length
+    ) {
+      customAlert({
+        type: 'warning',
+        title: 'Consulta de débitos',
+        description: 'O cliente não possui débitos',
+        confirmationText: 'OK',
+      });
+    } else {
+      setDebitsConsultationOpen(!debitsConsultationOpen);
+    }
   }
 
   function toggleInstallmentPayment(): void {
-    setInstallmentPaymentOpen(!installmentPaymentOpen);
+    if (!debits.installmentDebits.installmentDebitDetails.length) {
+      customAlert({
+        type: 'warning',
+        title: 'Parcelamento',
+        description: 'O cliente não possui negociações de parcelamento',
+        confirmationText: 'OK',
+      });
+    } else {
+      setInstallmentPaymentOpen(!installmentPaymentOpen);
+    }
   }
 
   function toggleEmailInvoice(): void {
+    if (!customer.contacts.email) {
+      customAlert({
+        type: 'warning',
+        title: 'Fatura por e-mail',
+        description: 'O cliente não possui um e-mail cadastrado',
+        confirmationText: 'OK',
+      });
+    }
     setEmailInvoiceOpen(!emailInvoiceOpen);
   }
 
