@@ -10,6 +10,7 @@ import Debits from '../types/Debits';
 import extractResponseData from '../utils/extractResponseData';
 import ServiceNotes from '../types/ServiceNotes';
 import eqtlBarApi from '../services/eqtlBarApi';
+import { useAuth } from './auth';
 
 interface CustomerServiceState {
   operatingCompany: string;
@@ -41,7 +42,7 @@ interface CustomerServiceContextData {
   serviceStarted: boolean;
   getCustomer(customerData: GetCustomerData): Promise<void>;
   startService({ stateCode, contract, cpf }: GetCustomerData): Promise<void>;
-  finishService(): void;
+  finishService(attendanceTime: string): void;
 }
 
 interface GenerateProtocolProps {
@@ -55,6 +56,7 @@ const CustomerServiceContext = createContext<CustomerServiceContextData>(
 
 const CustomerServiceProvider: React.FC = ({ children }) => {
   const { customAlert } = useAlert();
+  const { user } = useAuth();
 
   const [serviceStarted, setServiceStarted] = useState(false);
 
@@ -196,14 +198,35 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
     [getCustomer, generateProtocol, customAlert],
   );
 
-  const finishService = useCallback(() => {
-    localStorage.removeItem('@TelaAgil:protocol');
-    localStorage.removeItem('@TelaAgil:customerServiceData');
+  const saveAttendanceLog = useCallback(
+    async (attendanceTime: string) => {
+      try {
+        await eqtlBarApi.post('/logs', {
+          user_id: user.id,
+          username: user.name,
+          contractAccount: customerServiceData.customer.contractAccount,
+          attendanceTime,
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    [user, customerServiceData.customer],
+  );
 
-    setCustomerServiceData({} as CustomerServiceContextData);
+  const finishService = useCallback(
+    async (attendanceTime: string) => {
+      await saveAttendanceLog(attendanceTime);
 
-    setServiceStarted(false);
-  }, []);
+      localStorage.removeItem('@TelaAgil:protocol');
+      localStorage.removeItem('@TelaAgil:customerServiceData');
+
+      setCustomerServiceData({} as CustomerServiceContextData);
+
+      setServiceStarted(false);
+    },
+    [saveAttendanceLog],
+  );
 
   return (
     <CustomerServiceContext.Provider

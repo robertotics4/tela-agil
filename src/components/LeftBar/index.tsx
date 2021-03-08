@@ -5,6 +5,7 @@ import { Form } from '@unform/web';
 import * as Yup from 'yup';
 import { useLoading } from 'react-use-loading';
 import { format } from 'date-fns';
+import { useStopwatch } from 'react-timer-hook';
 
 import getValidationErrors from '../../utils/getValidationErrors';
 
@@ -32,7 +33,6 @@ import logoWhiteImg from '../../assets/logo-white.svg';
 
 import { useAuth } from '../../hooks/auth';
 import { useCustomerService } from '../../hooks/customerService';
-import { useTimer } from '../../hooks/timer';
 
 interface StartServiceFormData {
   state: string;
@@ -42,8 +42,18 @@ interface StartServiceFormData {
 
 const LeftBar: React.FC = () => {
   const { user, signOut } = useAuth();
-  const { hours, minutes, seconds } = useTimer();
   const [{ isLoading, message }, { start, stop }] = useLoading();
+
+  const {
+    start: startTimer,
+    reset: resetTimer,
+    isRunning,
+    hours,
+    seconds,
+    minutes,
+  } = useStopwatch({
+    autoStart: false,
+  });
 
   const {
     startService,
@@ -92,13 +102,18 @@ const LeftBar: React.FC = () => {
     [startService, start, stop],
   );
 
-  const handleFinishService = useCallback(() => {
-    finishService();
-  }, [finishService]);
-
   const formattedTime = useMemo(() => {
     return format(new Date(0, 0, 0, hours, minutes, seconds), 'mm:ss');
   }, [hours, minutes, seconds]);
+  const handleFinishService = useCallback(() => {
+    finishService(formattedTime);
+  }, [finishService, formattedTime]);
+
+  useEffect(() => {
+    if (serviceStarted && !isRunning) {
+      startTimer();
+    }
+  }, [serviceStarted, startTimer, isRunning]);
 
   return (
     <Container>
