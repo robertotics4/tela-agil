@@ -3,7 +3,6 @@ import { v4 as uuid } from 'uuid';
 
 import { useAlert } from './alert';
 import { useAuth } from './auth';
-import { useToast } from './toast';
 
 import Customer from '../types/Customer';
 import Installation from '../types/Installation';
@@ -12,6 +11,7 @@ import Debits from '../types/Debits';
 import extractResponseData from '../utils/extractResponseData';
 import ServiceNotes from '../types/ServiceNotes';
 import eqtlBarApi from '../services/eqtlBarApi';
+import Address from '../types/Address';
 
 interface CustomerServiceState {
   operatingCompany: string;
@@ -20,12 +20,12 @@ interface CustomerServiceState {
   debits: Debits;
   serviceNotes: ServiceNotes;
   protocol?: string;
+  contracts?: Contract[];
 }
 
 interface GetCustomerData {
   stateCode: string;
-  contract?: string;
-  cpf?: string;
+  contract: string;
 }
 
 interface StartServiceProps {
@@ -40,14 +40,16 @@ interface CustomerServiceContextData {
   installation: Installation;
   debits: Debits;
   serviceNotes: ServiceNotes;
+  contracts: Contract[] | undefined;
   serviceStarted: boolean;
   getCustomer(customerData: GetCustomerData): Promise<void>;
-  startService({ stateCode, contract, cpf }: GetCustomerData): Promise<void>;
+  startService({ stateCode, contract }: GetCustomerData): Promise<void>;
   finishService(attendanceTime: string): Promise<void>;
   registerServicePerformed({
     serviceName,
     executionDate,
   }: ServicePerformed): void;
+  findAllContracts({ stateCode, cpf }: FindAllContractsProps): Promise<void>;
 }
 
 interface GenerateProtocolProps {
@@ -55,9 +57,19 @@ interface GenerateProtocolProps {
   contract: string;
 }
 
+interface FindAllContractsProps {
+  stateCode: string;
+  cpf: string;
+}
+
 interface ServicePerformed {
   serviceName: string;
   executionDate: Date;
+}
+
+interface Contract {
+  contractAccount: string;
+  address: Address;
 }
 
 const CustomerServiceContext = createContext<CustomerServiceContextData>(
@@ -90,6 +102,7 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
         installation,
         debits,
         serviceNotes,
+        contracts,
       } = JSON.parse(storagedCustomerServiceData);
 
       const customerServiceState: CustomerServiceState = {
@@ -98,6 +111,7 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
         installation,
         debits,
         serviceNotes,
+        contracts,
       };
 
       if (storagedProtocol) {
@@ -110,29 +124,63 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
     return {} as CustomerServiceState;
   });
 
+  const findAllContracts = useCallback(
+    async ({ stateCode, cpf }: FindAllContractsProps) => {
+      const response = await eqtlBarApi.get('/atendimento/v1/clientes', {
+        params: {
+          cpf,
+          flagDadosCliente: true,
+          empresaOperadora: stateCode,
+          codigoTransacao: uuid(),
+        },
+      });
+
+      const contracts = response.data.data.cliente.map((contract: any) => ({
+        contractAccount: contract.contaContrato,
+        address: {
+          publicArea: contract.endereco.logradouro,
+          number: contract.endereco.numero,
+          neighborhood: contract.endereco.bairro,
+          city: contract.endereco.cidade,
+          uf: contract.endereco.uf,
+          postalCode: contract.endereco.cep,
+          referencePoint: contract.endereco.pontoReferencia,
+        },
+      }));
+
+      localStorage.setItem(
+        '@TelaAgil:customerServiceData',
+        JSON.stringify({
+          ...customerServiceData,
+          contracts,
+        }),
+      );
+
+      setCustomerServiceData({
+        ...customerServiceData,
+        contracts,
+      });
+    },
+    [customerServiceData],
+  );
+
   const getCustomer = useCallback(
-    async ({ stateCode, contract, cpf }: GetCustomerData) => {
-      let url;
-
-      if (cpf && contract) {
-        customAlert({
-          type: 'error',
-          title: 'Erro no formulário',
-          description:
-            'Utilize apenas um dos campos (Conta contrato ou CPF / CNPJ)',
-          confirmationText: 'OK',
-        });
-
-        return;
-      }
-
-      if (cpf) {
-        url = `/atendimento/v1/clientes?cpf=${cpf}&flagDadosCliente=true&flagStatusInstalacao=true&flagPossuiDebitos=true&flagDadosTecnicos=false&empresaOperadora=${stateCode}&flagNotasAbertas=true&flagNotasEncerradas=true&flagDetalheDebitoCobranca=true&flagDetalheDebitoFatura=true&codigoTransacao=123`;
-      } else {
-        url = `/atendimento/v1/clientes?contrato=${contract}&flagDadosCliente=true&flagStatusInstalacao=true&flagPossuiDebitos=true&flagDadosTecnicos=true&empresaOperadora=${stateCode}&flagNotasAbertas=true&flagNotasEncerradas=true&flagDetalheDebitoCobranca=true&flagDetalheDebitoFatura=true&codigoTransacao=123`;
-      }
-
-      const response = await eqtlBarApi.get(url);
+    async ({ stateCode, contract }: GetCustomerData) => {
+      const response = await eqtlBarApi.get('/atendimento/v1/clientes', {
+        params: {
+          codigoTransacao: uuid(),
+          contrato: contract,
+          empresaOperadora: stateCode,
+          flagDadosCliente: true,
+          flagStatusInstalacao: true,
+          flagPossuiDebitos: true,
+          flagDadosTecnicos: true,
+          flagNotasAbertas: true,
+          flagNotasEncerradas: true,
+          flagDetalheDebitoCobranca: true,
+          flagDetalheDebitoFatura: true,
+        },
+      });
 
       const {
         customer,
@@ -160,7 +208,7 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
         serviceNotes,
       });
     },
-    [customAlert],
+    [],
   );
 
   const generateProtocol = useCallback(
@@ -259,11 +307,13 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
         installation: customerServiceData.installation,
         debits: customerServiceData.debits,
         serviceNotes: customerServiceData.serviceNotes,
+        contracts: customerServiceData.contracts,
         serviceStarted,
         getCustomer,
         startService,
         finishService,
         registerServicePerformed,
+        findAllContracts,
       }}
     >
       {children}

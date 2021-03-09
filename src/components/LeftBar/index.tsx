@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { FiPower } from 'react-icons/fi';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
@@ -28,12 +34,14 @@ import OutlineInputMask from '../OutlineInputMask';
 import CustomRadioGroup from '../CustomRadioGroup';
 import RadioOptions from '../CustomRadioGroup/RadioOptions';
 import Loading from '../Loading';
+import FindContractModal from '../FindContractModal';
 
 import logoWhiteImg from '../../assets/logo-white.svg';
 
 import { useAuth } from '../../hooks/auth';
 import { useCustomerService } from '../../hooks/customerService';
 import { useToast } from '../../hooks/toast';
+import { useAlert } from '../../hooks/alert';
 
 interface StartServiceFormData {
   state: string;
@@ -44,6 +52,7 @@ interface StartServiceFormData {
 const LeftBar: React.FC = () => {
   const { user, signOut } = useAuth();
   const { addToast } = useToast();
+  const { customAlert } = useAlert();
   const [{ isLoading, message }, { start, stop }] = useLoading();
 
   const {
@@ -62,9 +71,16 @@ const LeftBar: React.FC = () => {
     customer,
     finishService,
     serviceStarted,
+    findAllContracts,
   } = useCustomerService();
 
+  const [openModalFindContract, setOpenModalFindContract] = useState(false);
+
   const formRef = useRef<FormHandles>(null);
+
+  const toggleModalFindContract = () => {
+    setOpenModalFindContract(!openModalFindContract);
+  };
 
   const handleSubmit = useCallback(
     async (data: StartServiceFormData) => {
@@ -86,11 +102,33 @@ const LeftBar: React.FC = () => {
           abortEarly: false,
         });
 
-        await startService({
-          stateCode: data.state[0],
-          contract: data.contract,
-          cpf: data.cpf.replaceAll('-', '').replaceAll('.', ''),
-        });
+        if (data.contract && data.cpf) {
+          customAlert({
+            type: 'error',
+            title: 'Erro no formulário',
+            description:
+              'Utilize apenas um dos campos (Conta contrato ou CPF / CNPJ)',
+            confirmationText: 'OK',
+          });
+
+          return;
+        }
+
+        if (!data.contract && data.cpf) {
+          const unformattedCpf = data.cpf.replace(/\D/gim, '');
+
+          await findAllContracts({
+            stateCode: data.state[0],
+            cpf: unformattedCpf,
+          });
+
+          toggleModalFindContract();
+        } else {
+          await startService({
+            stateCode: data.state[0],
+            contract: data.contract,
+          });
+        }
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
@@ -101,7 +139,7 @@ const LeftBar: React.FC = () => {
         stop();
       }
     },
-    [startService, start, stop],
+    [startService, start, stop, customAlert, findAllContracts],
   );
 
   const formattedTime = useMemo(() => {
@@ -204,6 +242,11 @@ const LeftBar: React.FC = () => {
           )}
         </Form>
       </ServiceForm>
+
+      <FindContractModal
+        isOpen={openModalFindContract}
+        setIsOpen={toggleModalFindContract}
+      />
 
       {isLoading && (
         <Loading isOpen={isLoading} message={message} setIsOpen={stop} />
