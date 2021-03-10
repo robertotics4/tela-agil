@@ -68,6 +68,7 @@ interface ServicePerformed {
 }
 
 interface Contract {
+  owner: string;
   contractAccount: string;
   address: Address;
 }
@@ -141,6 +142,7 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
 
       const contracts: Contract[] = response.data.data.cliente.map(
         (contract: any) => ({
+          owner: `${contract.nome} ${contract.sobrenome}`,
           contractAccount: contract.contaContrato,
           address: {
             publicArea: contract.endereco.logradouro,
