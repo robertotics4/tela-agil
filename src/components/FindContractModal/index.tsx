@@ -5,7 +5,7 @@ import { useCustomerService } from '../../hooks/customerService';
 import Modal from '../Modal';
 import Table from './ContractsTable';
 
-import { ModalContent, Title } from './styles';
+import { ModalContent, OwnerContainer, OwnerLabel, OwnerName } from './styles';
 
 interface ModalProps {
   isOpen: boolean;
@@ -59,9 +59,12 @@ const FindContractModal: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
       }}
     >
       <ModalContent>
-        <Title>Acompanhamento de protocolos</Title>
+        <OwnerContainer>
+          <OwnerLabel>Nome do titular:</OwnerLabel>
+          <OwnerName>Maria Ferreira da Silva Campos</OwnerName>
+        </OwnerContainer>
 
-        {/* <Table columns={columns} data={data} /> */}
+        {contracts && <Table columns={columns} data={data} />}
       </ModalContent>
     </Modal>
   );

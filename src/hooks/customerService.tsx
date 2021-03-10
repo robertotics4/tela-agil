@@ -20,7 +20,7 @@ interface CustomerServiceState {
   debits: Debits;
   serviceNotes: ServiceNotes;
   protocol?: string;
-  contracts?: Contract[];
+  contracts: Contract[];
 }
 
 interface GetCustomerData {
@@ -40,7 +40,7 @@ interface CustomerServiceContextData {
   installation: Installation;
   debits: Debits;
   serviceNotes: ServiceNotes;
-  contracts: Contract[] | undefined;
+  contracts: Contract[];
   serviceStarted: boolean;
   getCustomer(customerData: GetCustomerData): Promise<void>;
   startService({ stateCode, contract }: GetCustomerData): Promise<void>;
@@ -94,6 +94,7 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
     );
 
     const storagedProtocol = localStorage.getItem('@TelaAgil:protocol');
+    const storagedContracts = localStorage.getItem('@TelaAgil:contracts');
 
     if (storagedCustomerServiceData) {
       const {
@@ -102,7 +103,6 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
         installation,
         debits,
         serviceNotes,
-        contracts,
       } = JSON.parse(storagedCustomerServiceData);
 
       const customerServiceState: CustomerServiceState = {
@@ -111,11 +111,15 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
         installation,
         debits,
         serviceNotes,
-        contracts,
+        contracts: [],
       };
 
       if (storagedProtocol) {
         customerServiceState.protocol = storagedProtocol;
+      }
+
+      if (storagedContracts) {
+        customerServiceState.contracts = JSON.parse(storagedContracts);
       }
 
       return customerServiceState;
@@ -135,31 +139,31 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
         },
       });
 
-      const contracts = response.data.data.cliente.map((contract: any) => ({
-        contractAccount: contract.contaContrato,
-        address: {
-          publicArea: contract.endereco.logradouro,
-          number: contract.endereco.numero,
-          neighborhood: contract.endereco.bairro,
-          city: contract.endereco.cidade,
-          uf: contract.endereco.uf,
-          postalCode: contract.endereco.cep,
-          referencePoint: contract.endereco.pontoReferencia,
-        },
-      }));
-
-      localStorage.setItem(
-        '@TelaAgil:customerServiceData',
-        JSON.stringify({
-          ...customerServiceData,
-          contracts,
+      const contracts: Contract[] = response.data.data.cliente.map(
+        (contract: any) => ({
+          contractAccount: contract.contaContrato,
+          address: {
+            publicArea: contract.endereco.logradouro,
+            number: contract.endereco.numero,
+            neighborhood: contract.endereco.bairro,
+            city: contract.endereco.cidade,
+            uf: contract.endereco.uf,
+            postalCode: contract.endereco.cep,
+            referencePoint: contract.endereco.pontoReferencia,
+          },
         }),
       );
 
-      setCustomerServiceData({
-        ...customerServiceData,
-        contracts,
-      });
+      if (!contracts.length) {
+        throw new Error();
+      } else {
+        localStorage.setItem('@TelaAgil:contracts', JSON.stringify(contracts));
+
+        setCustomerServiceData({
+          ...customerServiceData,
+          contracts,
+        });
+      }
     },
     [customerServiceData],
   );
@@ -197,6 +201,7 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
           installation,
           debits,
           serviceNotes,
+          contracts: [],
         }),
       );
 
@@ -206,6 +211,7 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
         installation,
         debits,
         serviceNotes,
+        contracts: [],
       });
     },
     [],

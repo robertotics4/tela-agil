@@ -72,6 +72,7 @@ const LeftBar: React.FC = () => {
     finishService,
     serviceStarted,
     findAllContracts,
+    contracts,
   } = useCustomerService();
 
   const [openModalFindContract, setOpenModalFindContract] = useState(false);
@@ -134,12 +135,28 @@ const LeftBar: React.FC = () => {
           const errors = getValidationErrors(err);
 
           formRef.current?.setErrors(errors);
+          return;
         }
+
+        customAlert({
+          type: 'error',
+          title: 'Erro no atendimento',
+          description:
+            'Não foi possível localizar o cliente, cheque as informações',
+          confirmationText: 'OK',
+        });
       } finally {
         stop();
       }
     },
-    [startService, start, stop, customAlert, findAllContracts],
+    [
+      startService,
+      start,
+      stop,
+      customAlert,
+      findAllContracts,
+      toggleModalFindContract,
+    ],
   );
 
   const formattedTime = useMemo(() => {
