@@ -42,7 +42,7 @@ interface CustomerServiceContextData {
   serviceNotes: ServiceNotes;
   contracts: Contract[];
   serviceStarted: boolean;
-  getCustomer(customerData: GetCustomerData): Promise<void>;
+  fetchServiceData(customerData: GetCustomerData): Promise<void>;
   startService({ stateCode, contract }: GetCustomerData): Promise<void>;
   finishService(attendanceTime: string): Promise<void>;
   registerServicePerformed({
@@ -170,7 +170,7 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
     [customerServiceData],
   );
 
-  const getCustomer = useCallback(
+  const fetchServiceData = useCallback(
     async ({ stateCode, contract }: GetCustomerData) => {
       const response = await eqtlBarApi.get('/atendimento/v1/clientes', {
         params: {
@@ -243,7 +243,7 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
   const startService = useCallback(
     async ({ stateCode, contract }: StartServiceProps) => {
       try {
-        await getCustomer({
+        await fetchServiceData({
           stateCode,
           contract,
         });
@@ -264,7 +264,7 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
         });
       }
     },
-    [getCustomer, generateProtocol, customAlert],
+    [fetchServiceData, generateProtocol, customAlert],
   );
 
   const saveAttendanceLog = useCallback(
@@ -317,7 +317,7 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
         serviceNotes: customerServiceData.serviceNotes,
         contracts: customerServiceData.contracts,
         serviceStarted,
-        getCustomer,
+        fetchServiceData,
         startService,
         finishService,
         registerServicePerformed,

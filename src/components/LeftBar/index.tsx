@@ -124,12 +124,13 @@ const LeftBar: React.FC = () => {
           });
 
           toggleModalFindContract();
-        } else {
-          await startService({
-            stateCode: data.state[0],
-            contract: data.contract,
-          });
+          return;
         }
+
+        await startService({
+          stateCode: data.state[0],
+          contract: data.contract,
+        });
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);
