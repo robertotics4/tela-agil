@@ -49,6 +49,13 @@ export const TableColumnTitle = styled.th`
 `;
 
 export const TableRow = styled.tr`
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background: #f5f5f5;
+  }
+
   & + tr {
     td {
       border-top: 1px solid #bdbdbd;

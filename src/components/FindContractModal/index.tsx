@@ -61,7 +61,7 @@ const FindContractModal: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
       <ModalContent>
         <OwnerContainer>
           <OwnerLabel>Nome do titular:</OwnerLabel>
-          <OwnerName>Teste</OwnerName>
+          {/* <OwnerName>{contracts && contracts[0].owner}</OwnerName> */}
         </OwnerContainer>
 
         {contracts && <Table columns={columns} data={data} />}

@@ -65,8 +65,8 @@ const QuickMenu: React.FC = () => {
 
   function toggleDebitsConsultation(): void {
     if (
-      !debits.installmentDebits.installmentDebitDetails.length ||
-      !debits.invoiceDebits.invoiceDebitDetails.length
+      debits.installmentDebits.totalAmountInstallmentDebits === 0 &&
+      debits.invoiceDebits.totalAmountInvoiceDebits === 0
     ) {
       customAlert({
         type: 'warning',

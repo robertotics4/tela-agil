@@ -49,7 +49,10 @@ interface CustomerServiceContextData {
     serviceName,
     executionDate,
   }: ServicePerformed): void;
-  findAllContracts({ stateCode, cpf }: FindAllContractsProps): Promise<void>;
+  findAllContracts({
+    stateCode,
+    cpf,
+  }: FindAllContractsProps): Promise<Contract[]>;
 }
 
 interface GenerateProtocolProps {
@@ -165,6 +168,8 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
           ...customerServiceData,
           contracts,
         });
+
+        return contracts;
       }
     },
     [customerServiceData],
@@ -285,6 +290,7 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
       await saveAttendanceLog(attendanceTime);
 
       localStorage.removeItem('@TelaAgil:protocol');
+      localStorage.removeItem('@TelaAgil:contracts');
       localStorage.removeItem('@TelaAgil:customerServiceData');
 
       setCustomerServiceData({} as CustomerServiceContextData);

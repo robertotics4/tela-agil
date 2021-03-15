@@ -43,6 +43,8 @@ import { useCustomerService } from '../../hooks/customerService';
 import { useToast } from '../../hooks/toast';
 import { useAlert } from '../../hooks/alert';
 
+import Address from '../../types/Address';
+
 interface StartServiceFormData {
   state: string;
   contract: string;
@@ -79,9 +81,9 @@ const LeftBar: React.FC = () => {
 
   const formRef = useRef<FormHandles>(null);
 
-  const toggleModalFindContract = () => {
+  const toggleModalFindContract = useCallback(() => {
     setOpenModalFindContract(!openModalFindContract);
-  };
+  }, [openModalFindContract]);
 
   const handleSubmit = useCallback(
     async (data: StartServiceFormData) => {
@@ -118,12 +120,21 @@ const LeftBar: React.FC = () => {
         if (!data.contract && data.cpf) {
           const unformattedCpf = data.cpf.replace(/\D/gim, '');
 
-          await findAllContracts({
+          const responseContracts = await findAllContracts({
             stateCode: data.state[0],
             cpf: unformattedCpf,
           });
 
-          toggleModalFindContract();
+          if (responseContracts.length > 1) {
+            toggleModalFindContract();
+            return;
+          }
+
+          await startService({
+            stateCode: data.state[0],
+            contract: responseContracts[0].contractAccount,
+          });
+
           return;
         }
 
@@ -261,10 +272,12 @@ const LeftBar: React.FC = () => {
         </Form>
       </ServiceForm>
 
-      <FindContractModal
-        isOpen={openModalFindContract}
-        setIsOpen={toggleModalFindContract}
-      />
+      {contracts && (
+        <FindContractModal
+          isOpen={openModalFindContract}
+          setIsOpen={toggleModalFindContract}
+        />
+      )}
 
       {isLoading && (
         <Loading isOpen={isLoading} message={message} setIsOpen={stop} />

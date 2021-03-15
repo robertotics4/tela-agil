@@ -183,12 +183,13 @@ function getDebits(responseDebits: any, stateCode: string): Debits {
   const debits: Debits = {
     invoiceDebits: {
       invoiceDebitDetails: invoiceDebits,
-      totalAmountInvoiceDebits: debitosFatura.valorTotalDebitoFatura,
+      totalAmountInvoiceDebits: Number(debitosFatura.valorTotalDebitoFatura),
     },
     installmentDebits: {
       installmentDebitDetails: installmentDebits,
-      totalAmountInstallmentDebits:
+      totalAmountInstallmentDebits: Number(
         debitosParcelamento.valorTotalDebitoParcelamento,
+      ),
     },
   };
 
