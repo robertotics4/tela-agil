@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { useTable, Column } from 'react-table';
 
 import {
@@ -30,6 +30,8 @@ const ContractsTable: React.FC<ContractTableProps> = ({ columns, data }) => {
     rows,
     prepareRow,
   } = useTable({ columns, data });
+
+  const [selectedContract, setSelectedContract] = useState(null);
 
   return (
     <Container>

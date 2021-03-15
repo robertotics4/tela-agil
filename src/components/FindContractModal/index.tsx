@@ -4,6 +4,7 @@ import { useCustomerService } from '../../hooks/customerService';
 
 import Modal from '../Modal';
 import Table from './ContractsTable';
+import SuiteTable from './SuiteTable';
 
 import { ModalContent, OwnerContainer, OwnerLabel, OwnerName } from './styles';
 
@@ -64,7 +65,8 @@ const FindContractModal: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
           {/* <OwnerName>{contracts && contracts[0].owner}</OwnerName> */}
         </OwnerContainer>
 
-        {contracts && <Table columns={columns} data={data} />}
+        {/* {contracts && <Table columns={columns} data={data} />} */}
+        <SuiteTable />
       </ModalContent>
     </Modal>
   );

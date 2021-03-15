@@ -98,7 +98,6 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
     );
 
     const storagedProtocol = localStorage.getItem('@TelaAgil:protocol');
-    const storagedContracts = localStorage.getItem('@TelaAgil:contracts');
 
     if (storagedCustomerServiceData) {
       const {
@@ -120,10 +119,6 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
 
       if (storagedProtocol) {
         customerServiceState.protocol = storagedProtocol;
-      }
-
-      if (storagedContracts) {
-        customerServiceState.contracts = JSON.parse(storagedContracts);
       }
 
       return customerServiceState;
@@ -162,8 +157,6 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
       if (!contracts.length) {
         throw new Error();
       } else {
-        localStorage.setItem('@TelaAgil:contracts', JSON.stringify(contracts));
-
         setCustomerServiceData({
           ...customerServiceData,
           contracts,
