@@ -1,69 +1,91 @@
-import React, { useCallback, useState } from 'react';
-import { useTable, Column } from 'react-table';
+import React, { useCallback } from 'react';
+import { useLoading } from 'react-use-loading';
 
-import {
-  Container,
-  TableContainer,
-  TableHeadContainer,
-  TableColumnsTitleContainer,
-  TableColumnTitle,
-  TableRow,
-  TableBody,
-  TableDataCell,
-} from './styles';
+import { Container, RCTable } from './styles';
+import { useCustomerService } from '../../../hooks/customerService';
+import { useAlert } from '../../../hooks/alert';
+
+import Loading from '../../Loading';
 
 interface Contract {
   contractAccount: string;
   address: string;
 }
 
-interface ContractTableProps {
-  columns: Column<Contract>[];
+interface TableProps {
   data: Contract[];
+  closeModal(): void;
 }
 
-const ContractsTable: React.FC<ContractTableProps> = ({ columns, data }) => {
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow,
-  } = useTable({ columns, data });
+const ContractsTable: React.FC<TableProps> = ({ data, closeModal }) => {
+  const { customAlert } = useAlert();
+  const [
+    { isLoading, message },
+    { start: startLoading, stop: stopLoading },
+  ] = useLoading();
+  const { startService, operatingCompany } = useCustomerService();
 
-  const [selectedContract, setSelectedContract] = useState(null);
+  const columns = [
+    {
+      title: 'Conta contrato',
+      dataIndex: 'contractAccount',
+      key: 'contractAccount',
+    },
+    {
+      title: 'Endereço',
+      dataIndex: 'address',
+      key: 'address',
+    },
+  ];
+
+  const onRowClick = useCallback(
+    async (record, index, event) => {
+      try {
+        startLoading('Iniciando atendimento ...');
+
+        if (record.contractAccount) {
+          await startService({
+            stateCode: operatingCompany,
+            contract: record.contractAccount,
+          });
+        }
+      } catch (err) {
+        customAlert({
+          type: 'error',
+          title: 'Erro no atendimento',
+          description: 'Não foi iniciar o atendimento.',
+          confirmationText: 'OK',
+        });
+      } finally {
+        closeModal();
+        stopLoading();
+      }
+    },
+    [
+      closeModal,
+      customAlert,
+      operatingCompany,
+      startService,
+      startLoading,
+      stopLoading,
+    ],
+  );
 
   return (
     <Container>
-      <TableContainer {...getTableProps()}>
-        <TableHeadContainer>
-          {headerGroups.map(headerGroup => (
-            <TableColumnsTitleContainer {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map(column => (
-                <TableColumnTitle {...column.getHeaderProps()}>
-                  {column.render('Header')}
-                </TableColumnTitle>
-              ))}
-            </TableColumnsTitleContainer>
-          ))}
-        </TableHeadContainer>
-        <TableBody {...getTableBodyProps()}>
-          {rows.map((row, i) => {
-            prepareRow(row);
-            return (
-              <TableRow {...row.getRowProps()}>
-                {row.cells.map(cell => {
-                  return (
-                    <TableDataCell {...cell.getCellProps()}>
-                      {cell.render('Cell')}
-                    </TableDataCell>
-                  );
-                })}
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </TableContainer>
+      <RCTable
+        columns={columns}
+        data={data}
+        tableLayout="auto"
+        rowKey="contractAccount"
+        onRow={(record, index) => ({
+          onClick: onRowClick.bind(null, record, index),
+        })}
+      />
+
+      {isLoading && (
+        <Loading isOpen={isLoading} message={message} setIsOpen={stopLoading} />
+      )}
     </Container>
   );
 };
