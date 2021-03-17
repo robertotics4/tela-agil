@@ -33,35 +33,34 @@ const PowerOutageServiceProvider: React.FC = ({ children }) => {
 
   const ableToPowerOutage = useCallback(() => {
     const reconnectionNotes = serviceNotes.openServiceNotes.find(
-      note => note.type === 'RL',
+      note =>
+        note.type === 'RL' &&
+        (note.status === 'RECE' || note.status === 'ABER'),
     );
 
     const suspensionNotes = serviceNotes.openServiceNotes.find(
-      note => note.type === 'SUSPENSÃO',
-    ); // HARD CODDED
-
-    const highVoltageNotes = serviceNotes.openServiceNotes.find(
-      note => note.type === 'AT',
+      note =>
+        note.type === 'SF' &&
+        (note.status === 'RECE' || note.status === 'ABER'),
     );
 
-    const powerOutageNotes = serviceNotes.openServiceNotes.find(
-      note => note.type === 'FE',
-    );
-
-    const newEnergyConnection = serviceNotes.openServiceNotes.find(
-      note => note.type === 'FE',
+    const newEnergyConnectionNotes = serviceNotes.openServiceNotes.find(
+      note =>
+        note.type === 'LN' &&
+        (note.status === 'RECE' || note.status === 'ABER'),
     );
 
     if (
       reconnectionNotes ||
-      installation.cutInProgress ||
       suspensionNotes ||
-      installation.status !== 'Ligada' ||
+      newEnergyConnectionNotes ||
+      installation.cutInProgress ||
       installation.scheduledShutdown ||
       installation.powerPhaseOutage ||
-      highVoltageNotes ||
-      powerOutageNotes ||
-      newEnergyConnection
+      installation.powerOutageTechnicalEvaluation ||
+      installation.individualPowerOutage ||
+      installation.status === 'Religa em andamento' ||
+      installation.status === 'Reativa em andamento'
     ) {
       return false;
     }
