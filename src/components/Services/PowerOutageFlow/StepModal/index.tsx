@@ -65,7 +65,11 @@ const Modal: React.FC<ModalProps> = ({
   const callPowerOutageService = useCallback(
     async (action: string) => {
       if (action) {
-        let type: 'complete' | 'power surge' | 'lack of phase';
+        let type:
+          | 'complete'
+          | 'power surge'
+          | 'lack of phase'
+          | 'information note';
 
         switch (action) {
           case 'falta-energia-completa':
@@ -77,6 +81,9 @@ const Modal: React.FC<ModalProps> = ({
           case 'falta-energia-oscilacao':
             type = 'power surge';
             break;
+          case 'falta-energia-nota-informativa':
+            type = 'information note';
+            break;
           default:
             return;
         }
@@ -86,13 +93,13 @@ const Modal: React.FC<ModalProps> = ({
 
           await generatePowerOutageService({
             type,
-            contract: customer.contractAccount,
-            protocol: protocol || '00',
             descriptionText: `Gerado pela Tela Ágil - Usuário: ${user}`,
             reference: customer.address.referencePoint
               ? customer.address.referencePoint
               : '',
+            contractAccount: customer.contractAccount,
             operatingCompany,
+            protocol: protocol || '00',
           });
 
           customAlert({

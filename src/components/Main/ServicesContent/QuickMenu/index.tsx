@@ -31,20 +31,30 @@ const QuickMenu: React.FC = () => {
   const [requestListOpen, setRequestListOpen] = useState(false);
 
   const { customAlert } = useAlert();
-  const { serviceNotes, debits, customer } = useCustomerService();
+  const {
+    serviceNotes,
+    debits,
+    customer,
+    installation,
+    operatingCompany,
+    protocol,
+  } = useCustomerService();
   const { ableToPowerOutage } = usePowerOutageService();
   const { ableToReconnection } = usePowerReconnectionService();
 
-  function toggleOutagePower(): void {
-    if (!ableToPowerOutage()) {
-      customAlert({
-        type: 'warning',
-        title: 'Falta de energia',
-        description:
-          'O cliente não está habilitado para o serviço de falta de energia.',
-        confirmationText: 'OK',
-      });
-    } else {
+  async function toggleOutagePower(): Promise<void> {
+    if (
+      await ableToPowerOutage({
+        contractAccount: customer.contractAccount,
+        installation,
+        operatingCompany,
+        protocol: protocol || '00',
+        reference: customer.address.referencePoint
+          ? customer.address.referencePoint
+          : '',
+        serviceNotes,
+      })
+    ) {
       setOutagePowerOpen(!outagePowerOpen);
     }
   }
