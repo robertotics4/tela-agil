@@ -121,7 +121,11 @@ const PowerOutageServiceProvider: React.FC = ({ children }) => {
       const reconnectionNotes = serviceNotes.openServiceNotes.every(
         note =>
           note.type === 'RL' &&
-          (note.status === 'RECE' || note.status === 'ABER'),
+          (note.status === 'RECE' ||
+            note.status === 'ABER' ||
+            note.status === 'REJE' ||
+            note.status === 'ATIV' ||
+            note.status === 'DEVO'),
       );
 
       const suspensionNotes = serviceNotes.openServiceNotes.every(
