@@ -60,12 +60,19 @@ const QuickMenu: React.FC = () => {
   }
 
   function togglePowerReconnection(): void {
-    if (!ableToReconnection()) {
+    const responseAbleToReconnection = ableToReconnection({
+      contractAccount: customer.contractAccount,
+      serviceNotes,
+      installation,
+    });
+
+    if (!responseAbleToReconnection.ok) {
       customAlert({
         type: 'warning',
         title: 'Religação',
         description:
-          'O cliente não está habilitado para o serviço de religação.',
+          responseAbleToReconnection.error ||
+          'Não foi possível gerar a sua solicitação de religação.',
         confirmationText: 'OK',
       });
     } else {
