@@ -6,10 +6,15 @@ import { IoDocumentText } from 'react-icons/io5';
 import { IoMdMail } from 'react-icons/io';
 import { MdReceipt } from 'react-icons/md';
 
-import { Container, Content } from './styles';
+import {
+  Container,
+  Content,
+  MenuItem,
+  MenuItemButton,
+  MenuItemText,
+} from './styles';
 
 import PowerOutageFlow from '../../../Services/PowerOutageFlow';
-import PowerReconnectionFlow from '../../../Services/PowerReconnectionFlow';
 import DebitsConsultationModal from '../../../Services/DebitsConsultationModal';
 import InstallmentPaymentModal from '../../../Services/InstallmentPaymentModal';
 import EmailInvoice from '../../../Services/EmailInvoice';
@@ -23,7 +28,6 @@ import { usePowerOutageService } from '../../../../hooks/powerOutageService';
 
 const QuickMenu: React.FC = () => {
   const [outagePowerOpen, setOutagePowerOpen] = useState(false);
-  const [powerReconnectionOpen, setPowerReconnectionOpen] = useState(false);
   const [debitsConsultationOpen, setDebitsConsultationOpen] = useState(false);
   const [installmentPaymentOpen, setInstallmentPaymentOpen] = useState(false);
   const [emailInvoiceOpen, setEmailInvoiceOpen] = useState(false);
@@ -155,79 +159,74 @@ const QuickMenu: React.FC = () => {
       <h3>Menu rápido</h3>
 
       <Content>
-        <div>
-          <button type="button" onClick={toggleOutagePower}>
+        <MenuItem>
+          <MenuItemButton type="button" onClick={toggleOutagePower}>
             <BsLightningFill size={20} />
-          </button>
+          </MenuItemButton>
 
-          <span>Falta de energia</span>
-        </div>
+          <MenuItemText>Falta de energia</MenuItemText>
+        </MenuItem>
 
-        <div>
-          <button type="button" onClick={togglePowerReconnection}>
+        <MenuItem>
+          <MenuItemButton type="button" onClick={togglePowerReconnection}>
             <FaPlug size={20} />
-          </button>
+          </MenuItemButton>
 
-          <span>Religação</span>
-        </div>
+          <MenuItemText>Religação</MenuItemText>
+        </MenuItem>
 
-        <div>
-          <button type="button" onClick={toggleDebitsConsultation}>
+        <MenuItem>
+          <MenuItemButton type="button" onClick={toggleDebitsConsultation}>
             <IoDocumentText size={20} />
-          </button>
+          </MenuItemButton>
 
-          <span>Consulta de débitos</span>
-        </div>
+          <MenuItemText>Consulta de débitos</MenuItemText>
+        </MenuItem>
 
-        <div>
-          <button type="button">
+        <MenuItem>
+          <MenuItemButton type="button">
             <FaDollarSign size={20} />
-          </button>
+          </MenuItemButton>
 
-          <span>Baixa Renda</span>
-        </div>
+          <MenuItemText>Baixa Renda</MenuItemText>
+        </MenuItem>
 
-        <div>
-          <button type="button" onClick={toggleInstallmentPayment}>
+        <MenuItem>
+          <MenuItemButton type="button" onClick={toggleInstallmentPayment}>
             <FaDivide size={20} />
-          </button>
+          </MenuItemButton>
 
-          <span>Entrada de parcelamento</span>
-        </div>
+          <MenuItemText>Entrada de parcelamento</MenuItemText>
+        </MenuItem>
 
-        <div>
-          <button type="button" onClick={toggleEmailInvoice}>
+        <MenuItem>
+          <MenuItemButton type="button" onClick={toggleEmailInvoice}>
             <IoMdMail size={20} />
-          </button>
+          </MenuItemButton>
 
-          <span>Fatura por e-mail</span>
-        </div>
+          <MenuItemText>Fatura por e-mail</MenuItemText>
+        </MenuItem>
 
-        <div>
-          <button type="button" onClick={toggleExpirationChange}>
+        <MenuItem>
+          <MenuItemButton type="button" onClick={toggleExpirationChange}>
             <FaCalendarAlt size={20} />
-          </button>
+          </MenuItemButton>
 
-          <span>Data certa</span>
-        </div>
+          <MenuItemText>Data certa</MenuItemText>
+        </MenuItem>
 
-        <div>
-          <button type="button" onClick={toggleRequestList}>
+        <MenuItem>
+          <MenuItemButton type="button" onClick={toggleRequestList}>
             <MdReceipt size={20} />
-          </button>
+          </MenuItemButton>
 
-          <span>Acompanhamento de protocolos</span>
-        </div>
+          <MenuItemText>Acompanhamento de protocolos</MenuItemText>
+        </MenuItem>
       </Content>
 
       <PowerOutageFlow
         modalOpen={outagePowerOpen}
         toggleModal={toggleOutagePower}
-      />
-
-      <PowerReconnectionFlow
-        modalOpen={powerReconnectionOpen}
-        toggleModal={togglePowerReconnection}
       />
 
       <DebitsConsultationModal
