@@ -22,6 +22,15 @@ export const AlertDescription = styled.p`
   margin-top: 16px;
 `;
 
+export const ButtonsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+
+  button + button {
+    margin-left: 16px;
+  }
+`;
+
 export const ConfirmationButton = styled.button`
   display: flex;
   justify-content: center;
@@ -39,7 +48,30 @@ export const ConfirmationButton = styled.button`
   }
 `;
 
+export const CancelButton = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 10px;
+  background: #eb5757;
+  border: none;
+
+  margin-top: 24px;
+  padding: 12px 24px;
+
+  &:hover {
+    background: ${shade(0.2, '#eb5757')};
+  }
+`;
+
 export const ConfirmationButtonText = styled.span`
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+`;
+
+export const CancelButtonText = styled.span`
   color: #fff;
   font-size: 18px;
   font-weight: bold;

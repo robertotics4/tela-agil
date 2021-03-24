@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Rodal from 'rodal';
 import { FiCheck, FiAlertTriangle, FiXCircle } from 'react-icons/fi';
 import { GoInfo } from 'react-icons/go';
@@ -11,8 +11,11 @@ import {
   AlertContent,
   AlertTitle,
   AlertDescription,
+  ButtonsContainer,
   ConfirmationButton,
   ConfirmationButtonText,
+  CancelButton,
+  CancelButtonText,
 } from './styles';
 
 interface AlertProps {
@@ -35,6 +38,22 @@ const AlertModal: React.FC<AlertProps> = ({ message, isOpen, setIsOpen }) => {
     setAlertStatus(isOpen);
   }, [isOpen]);
 
+  const handleConfirmationClick = useCallback(async () => {
+    if (message.confirmationAction) {
+      message.confirmationAction();
+    }
+
+    setIsOpen();
+  }, [setIsOpen, message]);
+
+  const handleCancelClick = useCallback(() => {
+    if (message.cancelAction) {
+      message.cancelAction();
+    }
+
+    setIsOpen();
+  }, [setIsOpen, message]);
+
   return (
     <Rodal
       visible={alertStatus}
@@ -55,11 +74,19 @@ const AlertModal: React.FC<AlertProps> = ({ message, isOpen, setIsOpen }) => {
         <AlertTitle>{message.title}</AlertTitle>
         <AlertDescription>{message.description}</AlertDescription>
 
-        <ConfirmationButton onClick={setIsOpen}>
-          <ConfirmationButtonText>
-            {message.confirmationText}
-          </ConfirmationButtonText>
-        </ConfirmationButton>
+        <ButtonsContainer>
+          {message.cancelButtonText && (
+            <CancelButton onClick={handleCancelClick}>
+              <CancelButtonText>{message.cancelButtonText}</CancelButtonText>
+            </CancelButton>
+          )}
+
+          <ConfirmationButton onClick={handleConfirmationClick}>
+            <ConfirmationButtonText>
+              {message.confirmationText}
+            </ConfirmationButtonText>
+          </ConfirmationButton>
+        </ButtonsContainer>
       </AlertContent>
     </Rodal>
   );

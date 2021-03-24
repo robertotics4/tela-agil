@@ -11,6 +11,9 @@ export interface AlertMessage {
   title: string;
   description: string;
   confirmationText: string;
+  cancelButtonText?: string;
+  confirmationAction?(): void;
+  cancelAction?(): void;
 }
 
 const AlertContext = createContext<AlertContextData>({} as AlertContextData);
@@ -37,7 +40,7 @@ const AlertProvider: React.FC = ({ children }) => {
     <AlertContext.Provider value={{ customAlert }}>
       {children}
 
-      {alert && (
+      {alertOpen && (
         <AlertModal
           message={alertMessage}
           isOpen={alertOpen}

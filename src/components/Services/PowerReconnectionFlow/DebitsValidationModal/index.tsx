@@ -151,27 +151,6 @@ const DebitsValidationModal: React.FC<ModalProps> = ({
     clearFlow();
   }, [isOpen, clearFlow]);
 
-  useEffect(() => {
-    async function getInfo() {
-      const reconnectionInfo = await getReconnectionInfo({
-        installationNumber: customer.installationNumber,
-        phaseNumber: customer.phaseNumber,
-        locality: installation.technicalData.locality,
-        operatingCompany,
-      });
-
-      console.log(reconnectionInfo);
-    }
-
-    getInfo();
-  }, [
-    customer.installationNumber,
-    customer.phaseNumber,
-    getReconnectionInfo,
-    installation.technicalData.locality,
-    operatingCompany,
-  ]);
-
   return (
     <Rodal
       visible={modalStatus}

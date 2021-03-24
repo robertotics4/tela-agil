@@ -1,10 +1,20 @@
 import React, { createContext, useCallback, useContext } from 'react';
+import { useLoading } from 'react-use-loading';
 import { v4 as uuid } from 'uuid';
+import Swal from 'sweetalert2';
 
 import eqtlBarApi from '../services/eqtlBarApi';
 
+import Customer from '../types/Customer';
 import Installation from '../types/Installation';
 import ServiceNotes from '../types/ServiceNotes';
+
+import { currencyMask } from '../utils/inputMasks';
+
+import { useAlert } from './alert';
+
+import Loading from '../components/Loading';
+import Debits from '../types/Debits';
 
 interface PowerReconnectionContextData {
   ableToReconnection({
@@ -18,6 +28,20 @@ interface PowerReconnectionContextData {
     locality,
     operatingCompany,
   }: GetReconnectionInfoProps): Promise<ReconnectionInfo>;
+  startPowerReconnectionFlow({
+    attendanceData,
+    installation,
+    debits,
+    operatingCompany,
+  }: GeneratePowerReconnectionProps): void;
+  generateReconnection({
+    type,
+    operatingCompany,
+    contractAccount,
+    protocol,
+    descriptionText,
+    reference,
+  }: GenerateReconnectionProps): Promise<void>;
 }
 
 interface AbleToReconnectionResponse {
@@ -51,11 +75,32 @@ interface GetReconnectionInfoProps {
   operatingCompany: string;
 }
 
+interface GeneratePowerReconnectionProps {
+  attendanceData: Customer;
+  installation: Installation;
+  debits: Debits;
+  operatingCompany: string;
+}
+
+interface GenerateReconnectionProps {
+  type: 'common' | 'emergency';
+  operatingCompany: string;
+  contractAccount: string;
+  protocol: string;
+  descriptionText: string;
+  reference: string;
+}
+
 const PowerReconnectionServiceContext = createContext<PowerReconnectionContextData>(
   {} as PowerReconnectionContextData,
 );
 
 const PowerReconnectionProvider: React.FC = ({ children }) => {
+  const [
+    { isLoading, message },
+    { start: startLoading, stop: stopLoading },
+  ] = useLoading();
+
   const ableForEmergencyReconnection = useCallback(
     async ({
       operatingCompany,
@@ -459,11 +504,192 @@ const PowerReconnectionProvider: React.FC = ({ children }) => {
     [],
   );
 
+  const generateReconnection = useCallback(
+    async ({
+      type,
+      operatingCompany,
+      contractAccount,
+      protocol,
+      descriptionText,
+      reference,
+    }: GenerateReconnectionProps) => {
+      let path;
+
+      switch (type) {
+        case 'common':
+          path = '/servico/v1/religa/comum';
+          break;
+        case 'emergency':
+          path = '/servico/v1/religa/urgente';
+          break;
+        default:
+          return;
+      }
+
+      await eqtlBarApi.post(
+        path,
+        {
+          codigoTransacao: uuid(),
+          data: {
+            contaContrato: contractAccount,
+            protocolo: protocol,
+            textoDescritivo: descriptionText,
+            referencia: reference,
+          },
+        },
+        {
+          params: {
+            empresaOperadora: operatingCompany,
+          },
+        },
+      );
+    },
+    [],
+  );
+
+  const startPowerReconnectionFlow = useCallback(
+    async ({
+      attendanceData,
+      installation,
+      debits,
+      operatingCompany,
+    }: GeneratePowerReconnectionProps) => {
+      if (
+        debits.invoiceDebits.totalAmountInvoiceDebits > 0 ||
+        debits.installmentDebits.totalAmountInstallmentDebits > 0
+      ) {
+        Swal.fire({
+          icon: 'warning',
+          title: `Você possui ${
+            debits.invoiceDebits.invoiceDebitDetails.length
+          } faturas com um débito de ${currencyMask(
+            debits.invoiceDebits.totalAmountInvoiceDebits,
+          )}. Estão pagas?`,
+          showDenyButton: true,
+          confirmButtonText: `Sim`,
+          denyButtonText: `Não`,
+          confirmButtonColor: '#3c1490',
+          denyButtonColor: '#eb5757',
+        }).then(async resultHasDebits => {
+          if (resultHasDebits.isConfirmed) {
+            try {
+              startLoading('Analisando informações da instalação ...');
+              const reconnectionInfo = await getReconnectionInfo({
+                installationNumber: attendanceData.installationNumber,
+                locality: installation.technicalData.locality,
+                operatingCompany,
+                phaseNumber: attendanceData.phaseNumber,
+              });
+
+              if (
+                !reconnectionInfo.tariffs.emergencyTariff &&
+                reconnectionInfo.tariffs.commonTariff
+              ) {
+                Swal.fire({
+                  title: `Você gostaria de solicitar uma Religação Comum com prazo de até ${
+                    reconnectionInfo.deadlineForReconnection.hours
+                  } horas para atendimento no valor de ${currencyMask(
+                    reconnectionInfo.tariffs.commonTariff,
+                  )} a serem cobrados em sua próxima fatura?`,
+                  showDenyButton: true,
+                  confirmButtonText: `Sim, gostaria`,
+                  denyButtonText: `Não`,
+                  confirmButtonColor: '#3c1490',
+                  denyButtonColor: '#eb5757',
+                }).then(resultCommonTariff => {
+                  if (resultCommonTariff.isConfirmed) {
+                    // CÓDIGO PARA GERAR RELIGAÇÃO COMUM
+                    console.log('religação tarifa comum');
+                  } else if (resultCommonTariff.isDenied) {
+                    Swal.fire({
+                      icon: 'info',
+                      title: 'Sua solicitação não foi realizada',
+                      confirmButtonText: `Sim`,
+                      confirmButtonColor: '#3c1490',
+                    });
+                  }
+                });
+              } else if (
+                reconnectionInfo.tariffs.emergencyTariff &&
+                reconnectionInfo.tariffs.commonTariff
+              ) {
+                const inputOptions = {
+                  COMUM: `Comum = ${currencyMask(
+                    reconnectionInfo.tariffs.commonTariff || 0,
+                  )}`,
+                  URGENCIA: `Urgência = ${currencyMask(
+                    reconnectionInfo.tariffs.emergencyTariff || 0,
+                  )}`,
+                };
+
+                const { value: reconnectionOption } = await Swal.fire({
+                  title:
+                    'Você gostaria de solicitar uma Religação que será cobrada somente na sua próxima fatura? Caso seja sim, selecione o tipo de religação',
+                  input: 'radio',
+                  inputOptions,
+                  inputValidator: value => {
+                    if (!value) {
+                      return 'Selecione uma opção para continuar.';
+                    }
+
+                    return null;
+                  },
+                });
+
+                if (reconnectionOption) {
+                  if (reconnectionOption === 'COMUM') {
+                    try {
+                      startLoading('Geran');
+                    } catch {
+
+                    } finally {
+
+                    }
+                  } else if (reconnectionOption === 'COMUM') {
+                    console.log('Gerar religação urgente');
+                  }
+                }
+              }
+            } catch {
+              Swal.fire({
+                icon: 'error',
+                title: 'Falha ao gerar o serviço de religação.',
+                confirmButtonText: `Sim`,
+                confirmButtonColor: '#3c1490',
+              });
+            } finally {
+              stopLoading();
+            }
+          } else if (resultHasDebits.isDenied) {
+            Swal.fire({
+              icon: 'info',
+              title: 'Efetue o pagamento e retorne para solicitar a religação.',
+              confirmButtonText: `Sim`,
+              confirmButtonColor: '#3c1490',
+            });
+          }
+        });
+      } else {
+        console.log('Gera religação sem débitos');
+      }
+    },
+    [getReconnectionInfo, startLoading, stopLoading],
+  );
+
   return (
     <PowerReconnectionServiceContext.Provider
-      value={{ ableToReconnection, getReconnectionInfo }}
+      value={{
+        ableToReconnection,
+        getReconnectionInfo,
+        startPowerReconnectionFlow,
+        generateReconnection,
+      }}
     >
       {children}
+
+      {isLoading && (
+        <Loading isOpen={isLoading} message={message} setIsOpen={stopLoading} />
+      )}
     </PowerReconnectionServiceContext.Provider>
   );
 };
