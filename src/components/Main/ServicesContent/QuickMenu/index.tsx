@@ -42,7 +42,7 @@ const QuickMenu: React.FC = () => {
   const { ableToPowerOutage } = usePowerOutageService();
   const {
     ableToReconnection,
-    startPowerReconnectionFlow,
+    prepareForPowerReconnection,
   } = usePowerReconnectionService();
 
   async function toggleOutagePower(): Promise<void> {
@@ -63,33 +63,30 @@ const QuickMenu: React.FC = () => {
   }
 
   async function togglePowerReconnection(): Promise<void> {
-    await startPowerReconnectionFlow({
-      attendanceData: customer,
+    const responseAbleToReconnection = ableToReconnection({
+      contractAccount: customer.contractAccount,
+      serviceNotes,
       installation,
-      debits,
-      operatingCompany,
     });
-    // const responseAbleToReconnection = ableToReconnection({
-    //   contractAccount: customer.contractAccount,
-    //   serviceNotes,
-    //   installation,
-    // });
 
-    // if (!responseAbleToReconnection.ok) {
-    //   customAlert({
-    //     type: 'warning',
-    //     title: 'Religação',
-    //     description:
-    //       responseAbleToReconnection.error ||
-    //       'O cliente não está habilitado para gerar uma religação',
-    //     confirmationText: 'OK',
-    //   });
-    // } else {
-    //   generatePowerReconnection({
-    //     contractAccount: customer.contractAccount,
-    //     debits,
-    //   });
-    // }
+    if (!responseAbleToReconnection.ok) {
+      customAlert({
+        type: 'warning',
+        title: 'Religação',
+        description:
+          responseAbleToReconnection.error ||
+          'O cliente não está habilitado para gerar uma religação',
+        confirmationText: 'OK',
+      });
+    } else {
+      await prepareForPowerReconnection({
+        attendanceData: customer,
+        installation,
+        debits,
+        operatingCompany,
+        protocol: protocol || '00',
+      });
+    }
   }
 
   function toggleDebitsConsultation(): void {
