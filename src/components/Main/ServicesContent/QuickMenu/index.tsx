@@ -5,6 +5,7 @@ import { FaPlug, FaDollarSign, FaDivide, FaCalendarAlt } from 'react-icons/fa';
 import { IoDocumentText } from 'react-icons/io5';
 import { IoMdMail } from 'react-icons/io';
 import { MdReceipt } from 'react-icons/md';
+import Swal from 'sweetalert2';
 
 import {
   Container,
@@ -22,7 +23,6 @@ import ExpirationChange from '../../../Services/DueDateChange';
 import RequestList from '../../../Services/RequestList';
 
 import { useCustomerService } from '../../../../hooks/customerService';
-import { useAlert } from '../../../../hooks/alert';
 import { usePowerReconnectionService } from '../../../../hooks/powerReconnectionService';
 import { usePowerOutageService } from '../../../../hooks/powerOutageService';
 
@@ -34,7 +34,6 @@ const QuickMenu: React.FC = () => {
   const [expirationChangeOpen, setExpirationChangeOpen] = useState(false);
   const [requestListOpen, setRequestListOpen] = useState(false);
 
-  const { customAlert } = useAlert();
   const {
     serviceNotes,
     debits,
@@ -74,13 +73,15 @@ const QuickMenu: React.FC = () => {
     });
 
     if (!responseAbleToReconnection.ok) {
-      customAlert({
-        type: 'warning',
+      Swal.fire({
+        icon: 'warning',
         title: 'Religação',
-        description:
+        html: `<p>${
           responseAbleToReconnection.error ||
-          'O cliente não está habilitado para gerar uma religação',
-        confirmationText: 'OK',
+          'O cliente não está habilitado para gerar uma religação'
+        }</p>`,
+        confirmButtonText: `OK`,
+        confirmButtonColor: '#3c1490',
       });
     } else {
       await prepareForPowerReconnection({
@@ -98,11 +99,12 @@ const QuickMenu: React.FC = () => {
       debits.installmentDebits.totalAmountInstallmentDebits === 0 &&
       debits.invoiceDebits.totalAmountInvoiceDebits === 0
     ) {
-      customAlert({
-        type: 'warning',
+      Swal.fire({
+        icon: 'warning',
         title: 'Consulta de débitos',
-        description: 'O cliente não possui débitos',
-        confirmationText: 'OK',
+        html: '<p>O cliente não possui débitos</p>',
+        confirmButtonText: `OK`,
+        confirmButtonColor: '#3c1490',
       });
     } else {
       setDebitsConsultationOpen(!debitsConsultationOpen);
@@ -111,11 +113,12 @@ const QuickMenu: React.FC = () => {
 
   function toggleInstallmentPayment(): void {
     if (!debits.installmentDebits.installmentDebitDetails.length) {
-      customAlert({
-        type: 'warning',
+      Swal.fire({
+        icon: 'warning',
         title: 'Parcelamento',
-        description: 'O cliente não possui negociações de parcelamento',
-        confirmationText: 'OK',
+        html: '<p>O cliente não possui negociações de parcelamento</p>',
+        confirmButtonText: `OK`,
+        confirmButtonColor: '#3c1490',
       });
     } else {
       setInstallmentPaymentOpen(!installmentPaymentOpen);
@@ -124,14 +127,16 @@ const QuickMenu: React.FC = () => {
 
   function toggleEmailInvoice(): void {
     if (!customer.contacts.email) {
-      customAlert({
-        type: 'warning',
+      Swal.fire({
+        icon: 'warning',
         title: 'Fatura por e-mail',
-        description: 'O cliente não possui um e-mail cadastrado',
-        confirmationText: 'OK',
+        html: '<p>O cliente não possui um e-mail cadastrado</p>',
+        confirmButtonText: `OK`,
+        confirmButtonColor: '#3c1490',
       });
+    } else {
+      setEmailInvoiceOpen(!emailInvoiceOpen);
     }
-    setEmailInvoiceOpen(!emailInvoiceOpen);
   }
 
   function toggleExpirationChange(): void {
@@ -143,11 +148,12 @@ const QuickMenu: React.FC = () => {
       !serviceNotes.openServiceNotes.length &&
       !serviceNotes.closedServiceNotes.length
     ) {
-      customAlert({
-        type: 'info',
+      Swal.fire({
+        icon: 'warning',
         title: 'Acompanhamento de protocolos',
-        description: 'O cliente não possui notas para serem exibidas.',
-        confirmationText: 'OK',
+        html: '<p>O cliente não possui notas para serem exibidas.</p>',
+        confirmButtonText: `OK`,
+        confirmButtonColor: '#3c1490',
       });
     } else {
       setRequestListOpen(!requestListOpen);

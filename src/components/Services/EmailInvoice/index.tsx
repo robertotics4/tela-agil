@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
+import Swal from 'sweetalert2';
 
 import { useLoading } from 'react-use-loading';
 import { useCustomerService } from '../../../hooks/customerService';
-import { useAlert } from '../../../hooks/alert';
 
 import Loading from '../../Loading';
 import Modal from '../../Modal';
@@ -30,7 +30,6 @@ const EmailInvoiceModal: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
     operatingCompany,
     registerServicePerformed,
   } = useCustomerService();
-  const { customAlert } = useAlert();
 
   const registerInvoiceByEmail = useCallback(
     async ({ contract, email, stateCode }: RegisterInvoiceByEmailProps) => {
@@ -74,25 +73,26 @@ const EmailInvoiceModal: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
         stateCode: operatingCompany,
       });
 
-      customAlert({
-        type: 'success',
-        title: 'Serviço ativado',
-        description: 'Serviço de fatura por e-mail ativado com sucesso.',
-        confirmationText: 'OK',
+      Swal.fire({
+        icon: 'success',
+        title: 'Fatura por e-mail',
+        html: '<p>Serviço de fatura por e-mail ativado com sucesso.</p>',
+        confirmButtonText: `OK`,
+        confirmButtonColor: '#3c1490',
       });
     } catch (err) {
-      customAlert({
-        type: 'error',
-        title: 'Erro na ativação',
-        description: err.message,
-        confirmationText: 'OK',
+      Swal.fire({
+        icon: 'success',
+        title: 'Fatura por e-mail',
+        html: `<p>${err.message}</p>`,
+        confirmButtonText: `OK`,
+        confirmButtonColor: '#3c1490',
       });
     } finally {
       setIsOpen();
       stop();
     }
   }, [
-    customAlert,
     customer,
     operatingCompany,
     registerInvoiceByEmail,

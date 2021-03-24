@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { lighten } from 'polished';
 
 export const Container = styled.div`
   width: 1100px;
@@ -31,7 +32,7 @@ export const MenuItem = styled.div`
 
   &:hover {
     button {
-      background: #3c1491;
+      background: ${lighten(0.2, '#3c1491')};
     }
 
     svg {
@@ -55,7 +56,7 @@ export const MenuItemButton = styled.button`
   border-radius: 50%;
   border: 0;
 
-  background: #bdbdbd;
+  background: #3c1491;
   transition: background-color 0.2s;
 
   svg {
@@ -67,7 +68,7 @@ export const MenuItemText = styled.span`
   height: 32px;
 
   font-size: 14px;
-  color: #444444;
+  color: #3c1491;
   text-align: center;
 
   margin-top: 8px;

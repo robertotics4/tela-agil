@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Rodal from 'rodal';
 import { useLoading } from 'react-use-loading';
+import Swal from 'sweetalert2';
 
 import 'rodal/lib/rodal.css';
 
@@ -9,7 +10,6 @@ import Loading from '../../../Loading';
 import { useAuth } from '../../../../hooks/auth';
 import { useCustomerService } from '../../../../hooks/customerService';
 import { usePowerOutageService } from '../../../../hooks/powerOutageService';
-import { useAlert } from '../../../../hooks/alert';
 
 import {
   Content,
@@ -58,7 +58,6 @@ const Modal: React.FC<ModalProps> = ({
     registerServicePerformed,
   } = useCustomerService();
   const { user } = useAuth();
-  const { customAlert } = useAlert();
 
   const [{ isLoading, message }, { start, stop }] = useLoading();
 
@@ -102,18 +101,20 @@ const Modal: React.FC<ModalProps> = ({
             protocol: protocol || '00',
           });
 
-          customAlert({
-            type: 'success',
-            title: 'Serviço gerado',
-            description: 'Solicitação gerada com sucesso.',
-            confirmationText: 'OK',
+          Swal.fire({
+            icon: 'success',
+            title: 'Falta de energia',
+            html: '<p>Solicitação gerada com sucesso.</p>',
+            confirmButtonText: `OK`,
+            confirmButtonColor: '#3c1490',
           });
         } catch (err) {
-          customAlert({
-            type: 'error',
-            title: 'Falha ao gerar solicitação',
-            description: err.message,
-            confirmationText: 'OK',
+          Swal.fire({
+            icon: 'error',
+            title: 'Falta de energia',
+            html: '<p>Falha ao gerar solicitação</p>',
+            confirmButtonText: `OK`,
+            confirmButtonColor: '#3c1490',
           });
         } finally {
           stop();
@@ -122,7 +123,6 @@ const Modal: React.FC<ModalProps> = ({
       }
     },
     [
-      customAlert,
       customer,
       generatePowerOutageService,
       protocol,

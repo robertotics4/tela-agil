@@ -5,6 +5,7 @@ import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
 import { useHistory } from 'react-router-dom';
 import { useLoading } from 'react-use-loading';
+import Swal from 'sweetalert2';
 
 import Loading from '../../components/Loading';
 
@@ -18,7 +19,6 @@ import logoImg from '../../assets/logo.svg';
 
 import Input from '../../components/Input';
 import Button from '../../components/Button';
-import { useAlert } from '../../hooks/alert';
 
 interface SignInFormData {
   username: string;
@@ -29,7 +29,6 @@ const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
 
   const { signIn } = useAuth();
-  const { customAlert } = useAlert();
   const [{ isLoading, message }, { start, stop }] = useLoading();
 
   const history = useHistory();
@@ -64,18 +63,19 @@ const SignIn: React.FC = () => {
           return;
         }
 
-        customAlert({
-          type: 'error',
+        Swal.fire({
+          icon: 'error',
           title: 'Erro na autenticação',
-          description:
-            'Ocorreu um erro ao fazer o login, cheque as credenciais',
-          confirmationText: 'OK',
+          html:
+            '<p>Ocorreu um erro ao fazer o login, cheque as credenciais</p>',
+          confirmButtonText: `OK`,
+          confirmButtonColor: '#3c1490',
         });
       } finally {
         stop();
       }
     },
-    [signIn, customAlert, history, start, stop],
+    [signIn, history, start, stop],
   );
 
   useEffect(() => {

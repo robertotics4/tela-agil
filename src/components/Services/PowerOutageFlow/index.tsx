@@ -1,8 +1,6 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import StepModal, { Question } from './StepModal';
-
-import { useCustomerService } from '../../../hooks/customerService';
 
 import powerOutageQuestions from './questions/PowerOutageQuestions';
 

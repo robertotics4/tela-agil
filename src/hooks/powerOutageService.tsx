@@ -1,12 +1,14 @@
 import React, { createContext, useCallback, useContext } from 'react';
 import { v4 as uuid } from 'uuid';
 import { useLoading } from 'react-use-loading';
+import Swal from 'sweetalert2';
 
 import eqtlBarApi from '../services/eqtlBarApi';
 
 import Loading from '../components/Loading';
-import { useAlert } from './alert';
+
 import { useAuth } from './auth';
+
 import Installation from '../types/Installation';
 import ServiceNotes from '../types/ServiceNotes';
 
@@ -56,7 +58,6 @@ const PowerOutageServiceProvider: React.FC = ({ children }) => {
     { isLoading, message },
     { start: startLoading, stop: stopLoading },
   ] = useLoading();
-  const { customAlert } = useAlert();
 
   const { user } = useAuth();
 
@@ -235,20 +236,21 @@ const PowerOutageServiceProvider: React.FC = ({ children }) => {
             operatingCompany,
             protocol,
           });
-
-          customAlert({
-            type: 'warning',
+          Swal.fire({
+            icon: 'warning',
             title: 'Nota informativa',
-            description: alertDescription,
-            confirmationText: 'OK',
+            html: `<p>${alertDescription}`,
+            confirmButtonText: `OK`,
+            confirmButtonColor: '#3c1490',
           });
         } catch {
-          customAlert({
-            type: 'error',
+          Swal.fire({
+            icon: 'error',
             title: 'Falta de energia',
-            description:
-              'Ocorreu um erro ao tentar gerar um serviço de Falta de Energia.',
-            confirmationText: 'OK',
+            html:
+              '<p>Ocorreu um erro ao tentar gerar um serviço de Falta de Energia.',
+            confirmButtonText: `OK`,
+            confirmButtonColor: '#3c1490',
           });
         } finally {
           stopLoading();
@@ -259,7 +261,7 @@ const PowerOutageServiceProvider: React.FC = ({ children }) => {
 
       return true;
     },
-    [customAlert, generatePowerOutageService, user, startLoading, stopLoading],
+    [generatePowerOutageService, user, startLoading, stopLoading],
   );
 
   return (

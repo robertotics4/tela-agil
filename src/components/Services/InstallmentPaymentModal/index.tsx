@@ -9,13 +9,13 @@ import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 import { useLoading } from 'react-use-loading';
 import * as Yup from 'yup';
+import Swal from 'sweetalert2';
 
 import getValidationErrors from '../../../utils/getValidationErrors';
 import getUnformattedPhone from '../../../utils/getUnformattedPhone';
 
 import { useCustomerService } from '../../../hooks/customerService';
 import { useWhatsappSending } from '../../../hooks/whatsappSending';
-import { useAlert } from '../../../hooks/alert';
 
 import Loading from '../../Loading';
 import Modal from '../../Modal';
@@ -54,7 +54,6 @@ const InstallmentPaymentModal: React.FC<ModalProps> = ({
     operatingCompany,
     registerServicePerformed,
   } = useCustomerService();
-  const { customAlert } = useAlert();
   const { sendInstallmentPayment } = useWhatsappSending();
   const [{ isLoading, message }, { start, stop }] = useLoading();
 
@@ -85,11 +84,12 @@ const InstallmentPaymentModal: React.FC<ModalProps> = ({
             contract: customer.contractAccount,
           });
 
-          customAlert({
-            type: 'success',
-            title: 'Código enviado',
-            description: 'O código para pagamento foi enviado com sucesso.',
-            confirmationText: 'OK',
+          Swal.fire({
+            icon: 'success',
+            title: 'Parcelamento',
+            html: '<p>O código para pagamento foi enviado com sucesso.</p>',
+            confirmButtonText: `OK`,
+            confirmButtonColor: '#3c1490',
           });
         }
       } catch (err) {
@@ -100,12 +100,13 @@ const InstallmentPaymentModal: React.FC<ModalProps> = ({
           return;
         }
 
-        customAlert({
-          type: 'error',
-          title: 'Erro no envio',
-          description:
-            'Ocorreu um erro ao enviar o código, cheque o número de telefone',
-          confirmationText: 'OK',
+        Swal.fire({
+          icon: 'error',
+          title: 'Parcelamento',
+          html:
+            '<p>Ocorreu um erro ao enviar o código, cheque o número de telefone</p>',
+          confirmButtonText: `OK`,
+          confirmButtonColor: '#3c1490',
         });
       } finally {
         setSelectedInstallmentDebit(undefined);
@@ -114,7 +115,6 @@ const InstallmentPaymentModal: React.FC<ModalProps> = ({
       }
     },
     [
-      customAlert,
       selectedInstallmentDebit,
       customer,
       operatingCompany,

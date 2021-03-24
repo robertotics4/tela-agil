@@ -1,7 +1,7 @@
 import React, { createContext, useCallback, useContext, useState } from 'react';
 import { v4 as uuid } from 'uuid';
+import Swal from 'sweetalert2';
 
-import { useAlert } from './alert';
 import { useAuth } from './auth';
 
 import Customer from '../types/Customer';
@@ -80,7 +80,6 @@ const CustomerServiceContext = createContext<CustomerServiceContextData>(
 );
 
 const CustomerServiceProvider: React.FC = ({ children }) => {
-  const { customAlert } = useAlert();
   const { user } = useAuth();
 
   const [serviceStarted, setServiceStarted] = useState(false);
@@ -252,16 +251,17 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
 
         setServiceStarted(true);
       } catch {
-        customAlert({
-          type: 'error',
+        Swal.fire({
+          icon: 'error',
           title: 'Erro no atendimento',
-          description:
-            'Ocorreu um erro ao iniciar o atendimento, cheque as informações do cliente',
-          confirmationText: 'OK',
+          html:
+            '<p>Ocorreu um erro ao iniciar o atendimento, cheque as informações do cliente</p>',
+          confirmButtonText: `OK`,
+          confirmButtonColor: '#3c1490',
         });
       }
     },
-    [fetchServiceData, generateProtocol, customAlert],
+    [fetchServiceData, generateProtocol],
   );
 
   const saveAttendanceLog = useCallback(

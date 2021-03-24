@@ -10,6 +10,7 @@ import { FormHandles } from '@unform/core';
 import { format } from 'date-fns';
 import { useLoading } from 'react-use-loading';
 import * as Yup from 'yup';
+import Swal from 'sweetalert2';
 
 import getValidationErrors from '../../../utils/getValidationErrors';
 import getUnformattedPhone from '../../../utils/getUnformattedPhone';
@@ -17,7 +18,6 @@ import getUnformattedPhone from '../../../utils/getUnformattedPhone';
 import { useCustomerService } from '../../../hooks/customerService';
 import { useDebitsConsultation } from '../../../hooks/debitsConsultation';
 import { useWhatsappSending } from '../../../hooks/whatsappSending';
-import { useAlert } from '../../../hooks/alert';
 
 import Loading from '../../Loading';
 import Modal from '../../Modal';
@@ -51,7 +51,6 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
     operatingCompany,
     registerServicePerformed,
   } = useCustomerService();
-  const { customAlert } = useAlert();
   const { getInvoiceUrl } = useDebitsConsultation();
   const { sendInvoiceDebit, sendInstallmentPayment } = useWhatsappSending();
   const [{ isLoading, message }, { start, stop }] = useLoading();
@@ -87,11 +86,12 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
                 phoneNumber: getUnformattedPhone(data.phone),
               });
 
-              customAlert({
-                type: 'success',
+              Swal.fire({
+                icon: 'success',
                 title: 'Fatura enviada',
-                description: 'Fatura foi enviada com sucesso.',
-                confirmationText: 'OK',
+                html: '<p>Fatura foi enviada com sucesso.</p>',
+                confirmButtonText: `OK`,
+                confirmButtonColor: '#3c1490',
               });
             }
 
@@ -108,11 +108,12 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
               contract: customer.contractAccount,
             });
 
-            customAlert({
-              type: 'success',
+            Swal.fire({
+              icon: 'success',
               title: 'Código enviado',
-              description: 'O código para pagamento foi enviado com sucesso.',
-              confirmationText: 'OK',
+              html: '<p>O código para pagamento foi enviado com sucesso.</p>',
+              confirmButtonText: `OK`,
+              confirmButtonColor: '#3c1490',
             });
           }
         }
@@ -124,12 +125,13 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
           return;
         }
 
-        customAlert({
-          type: 'error',
+        Swal.fire({
+          icon: 'error',
           title: 'Erro no envio',
-          description:
-            'Ocorreu um erro ao enviar a fatura, cheque o número de telefone',
-          confirmationText: 'OK',
+          html:
+            '<p>Ocorreu um erro ao enviar a fatura, cheque o número de telefone</p>',
+          confirmButtonText: `OK`,
+          confirmButtonColor: '#3c1490',
         });
       } finally {
         setSelectedDebit(undefined);
@@ -138,7 +140,6 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
       }
     },
     [
-      customAlert,
       selectedDebit,
       customer,
       getInvoiceUrl,

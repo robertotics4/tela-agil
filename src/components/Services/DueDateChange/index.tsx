@@ -1,5 +1,6 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { v4 as uuid } from 'uuid';
+import Swal from 'sweetalert2';
 
 import { useLoading } from 'react-use-loading';
 
@@ -16,7 +17,6 @@ import {
 } from './styles';
 
 import { useCustomerService } from '../../../hooks/customerService';
-import { useAlert } from '../../../hooks/alert';
 
 interface ModalProps {
   isOpen: boolean;
@@ -57,7 +57,6 @@ const DueDateChange: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
     operatingCompany,
     registerServicePerformed,
   } = useCustomerService();
-  const { customAlert } = useAlert();
 
   const [validDates, setValidDates] = useState<ValidDate[]>([]);
   const [selectOptions, setSelectOptions] = useState<OptionProps[]>([]);
@@ -117,26 +116,27 @@ const DueDateChange: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
           requestedDate: selectedDate.value,
         });
 
-        customAlert({
-          type: 'success',
-          title: 'Sucesso na alteração',
-          description: 'Data certa alterada com sucesso.',
-          confirmationText: 'OK',
+        Swal.fire({
+          icon: 'success',
+          title: 'Data Certa',
+          html: '<p>Data certa alterada com sucesso.</p>',
+          confirmButtonText: `OK`,
+          confirmButtonColor: '#3c1490',
         });
       }
     } catch (err) {
-      customAlert({
-        type: 'error',
-        title: 'Erro na alteração',
-        description: err.message,
-        confirmationText: 'OK',
+      Swal.fire({
+        icon: 'error',
+        title: 'Data Certa',
+        html: `<p>${err.message}</p>`,
+        confirmButtonText: `OK`,
+        confirmButtonColor: '#3c1490',
       });
     } finally {
       setIsOpen();
       stop();
     }
   }, [
-    customAlert,
     selectedDate,
     setDueDate,
     setIsOpen,
