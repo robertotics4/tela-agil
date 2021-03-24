@@ -18,6 +18,7 @@ import {
   QuestionTitle,
   QuestionContent,
 } from './styles';
+import { usePowerReconnectionService } from '../../../../hooks/powerReconnectionService';
 
 interface Option {
   answer: string;
@@ -51,7 +52,13 @@ const DebitsValidationModal: React.FC<ModalProps> = ({
   const [modalStatus, setModalStatus] = useState(isOpen);
 
   const { generatePowerOutageService } = usePowerOutageService();
-  const { customer, operatingCompany, protocol } = useCustomerService();
+  const { getReconnectionInfo } = usePowerReconnectionService();
+  const {
+    customer,
+    operatingCompany,
+    protocol,
+    installation,
+  } = useCustomerService();
   const { user } = useAuth();
   const { customAlert } = useAlert();
 
@@ -143,6 +150,27 @@ const DebitsValidationModal: React.FC<ModalProps> = ({
     setModalStatus(isOpen);
     clearFlow();
   }, [isOpen, clearFlow]);
+
+  useEffect(() => {
+    async function getInfo() {
+      const reconnectionInfo = await getReconnectionInfo({
+        installationNumber: customer.installationNumber,
+        phaseNumber: customer.phaseNumber,
+        locality: installation.technicalData.locality,
+        operatingCompany,
+      });
+
+      console.log(reconnectionInfo);
+    }
+
+    getInfo();
+  }, [
+    customer.installationNumber,
+    customer.phaseNumber,
+    getReconnectionInfo,
+    installation.technicalData.locality,
+    operatingCompany,
+  ]);
 
   return (
     <Rodal

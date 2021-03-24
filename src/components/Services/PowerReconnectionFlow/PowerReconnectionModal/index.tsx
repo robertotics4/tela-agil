@@ -18,6 +18,7 @@ import {
   QuestionTitle,
   QuestionContent,
 } from './styles';
+import { usePowerReconnectionService } from '../../../../hooks/powerReconnectionService';
 
 interface Option {
   answer: string;
@@ -50,8 +51,13 @@ const PowerReconnectionModal: React.FC<ModalProps> = ({
 }) => {
   const [modalStatus, setModalStatus] = useState(isOpen);
 
-  const { generatePowerOutageService } = usePowerOutageService();
-  const { customer, operatingCompany, protocol } = useCustomerService();
+  const { getReconnectionInfo } = usePowerReconnectionService();
+  const {
+    customer,
+    operatingCompany,
+    protocol,
+    installation,
+  } = useCustomerService();
   const { user } = useAuth();
   const { customAlert } = useAlert();
 

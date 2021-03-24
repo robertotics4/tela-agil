@@ -4,7 +4,6 @@ import { v4 as uuid } from 'uuid';
 import eqtlBarApi from '../services/eqtlBarApi';
 
 import Installation from '../types/Installation';
-import Debits from '../types/Debits';
 import ServiceNotes from '../types/ServiceNotes';
 
 interface PowerReconnectionContextData {
@@ -13,12 +12,25 @@ interface PowerReconnectionContextData {
     installation,
     serviceNotes,
   }: AbleToReconnectionProps): AbleToReconnectionResponse;
-  suitableForEmergencyReconnection(): boolean;
+  getReconnectionInfo({
+    installationNumber,
+    phaseNumber,
+    locality,
+    operatingCompany,
+  }: GetReconnectionInfoProps): Promise<ReconnectionInfo>;
 }
 
 interface AbleToReconnectionResponse {
   ok: boolean;
   error?: string;
+}
+
+interface ReconnectionInfo {
+  tariffs: {
+    commonTariff?: number;
+    emergencyTariff?: number;
+  };
+  deadlineForReconnection: { hours: number };
 }
 
 interface AbleForEmergencyReconnectionProps {
@@ -30,6 +42,13 @@ interface AbleToReconnectionProps {
   contractAccount: string;
   installation: Installation;
   serviceNotes: ServiceNotes;
+}
+
+interface GetReconnectionInfoProps {
+  installationNumber: string;
+  phaseNumber: number;
+  locality: string;
+  operatingCompany: string;
 }
 
 const PowerReconnectionServiceContext = createContext<PowerReconnectionContextData>(
@@ -62,7 +81,145 @@ const PowerReconnectionProvider: React.FC = ({ children }) => {
     [],
   );
 
-  const checkReconnectionValue = useCallback(() => {}, []);
+  const getReconnectionInfo = useCallback(
+    async ({
+      installationNumber,
+      phaseNumber,
+      locality,
+      operatingCompany,
+    }: GetReconnectionInfoProps) => {
+      const hasEmergencyReconnection = await ableForEmergencyReconnection({
+        installationNumber,
+        operatingCompany,
+      });
+
+      const reconnectionInfo = {} as ReconnectionInfo;
+
+      if (hasEmergencyReconnection) {
+        if (phaseNumber === 1) {
+          switch (operatingCompany) {
+            case '98':
+              reconnectionInfo.tariffs = { commonTariff: 8.23 };
+              break;
+            case '95':
+              reconnectionInfo.tariffs = {
+                commonTariff: 8.24,
+                emergencyTariff: 41.31,
+              };
+              break;
+            case '82':
+              reconnectionInfo.tariffs = { commonTariff: 8.25 };
+              break;
+            case '86':
+              reconnectionInfo.tariffs = { commonTariff: 7.88 };
+              break;
+            default:
+              break;
+          }
+        }
+
+        if (phaseNumber === 2) {
+          switch (operatingCompany) {
+            case '98':
+              reconnectionInfo.tariffs = { commonTariff: 11.34 };
+              break;
+            case '95':
+              reconnectionInfo.tariffs = {
+                commonTariff: 11.34,
+                emergencyTariff: 61.98,
+              };
+              break;
+            case '82':
+              reconnectionInfo.tariffs = { commonTariff: 34.12 };
+              break;
+            case '86':
+              reconnectionInfo.tariffs = { commonTariff: 32.6 };
+              break;
+            default:
+              break;
+          }
+        }
+
+        if (phaseNumber === 3) {
+          switch (operatingCompany) {
+            case '98':
+              reconnectionInfo.tariffs = { commonTariff: 34.06 };
+              break;
+            case '95':
+              reconnectionInfo.tariffs = {
+                commonTariff: 34.07,
+                emergencyTariff: 103.32,
+              };
+              break;
+            default:
+              break;
+          }
+        }
+      }
+
+      if (!hasEmergencyReconnection) {
+        if (locality === 'RURAL') {
+          reconnectionInfo.deadlineForReconnection = { hours: 48 };
+        } else {
+          reconnectionInfo.deadlineForReconnection = { hours: 24 };
+        }
+
+        if (phaseNumber === 1) {
+          switch (operatingCompany) {
+            case '98':
+              reconnectionInfo.tariffs = { commonTariff: 8.23 };
+              break;
+            case '95':
+              reconnectionInfo.tariffs = { commonTariff: 8.24 };
+              break;
+            case '82':
+              reconnectionInfo.tariffs = { commonTariff: 8.25 };
+              break;
+            case '86':
+              reconnectionInfo.tariffs = { commonTariff: 7.88 };
+              break;
+            default:
+              break;
+          }
+        }
+
+        if (phaseNumber === 2) {
+          switch (operatingCompany) {
+            case '98':
+              reconnectionInfo.tariffs = { commonTariff: 11.34 };
+              break;
+            case '95':
+              reconnectionInfo.tariffs = { commonTariff: 11.34 };
+              break;
+            default:
+              break;
+          }
+        }
+
+        if (phaseNumber === 3) {
+          switch (operatingCompany) {
+            case '98':
+              reconnectionInfo.tariffs = { commonTariff: 34.06 };
+              break;
+            case '95':
+              reconnectionInfo.tariffs = { commonTariff: 34.07 };
+              break;
+            case '82':
+              reconnectionInfo.tariffs = { commonTariff: 34.12 };
+              break;
+            case '86':
+              reconnectionInfo.tariffs = { commonTariff: 32.6 };
+              break;
+            default:
+              break;
+          }
+        }
+      }
+
+      return reconnectionInfo;
+    },
+    [ableForEmergencyReconnection],
+  );
 
   const ableToReconnection = useCallback(
     ({
@@ -302,13 +459,9 @@ const PowerReconnectionProvider: React.FC = ({ children }) => {
     [],
   );
 
-  const suitableForEmergencyReconnection = useCallback(() => {
-    return false; // HARD CODDED
-  }, []);
-
   return (
     <PowerReconnectionServiceContext.Provider
-      value={{ ableToReconnection, suitableForEmergencyReconnection }}
+      value={{ ableToReconnection, getReconnectionInfo }}
     >
       {children}
     </PowerReconnectionServiceContext.Provider>
