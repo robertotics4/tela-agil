@@ -299,12 +299,6 @@ const PowerReconnectionProvider: React.FC = ({ children }) => {
         note => note.type === 'RL',
       );
 
-      console.log(reconnectionNote);
-      console.log(shutdownNote);
-      console.log(oversightNote);
-      console.log(suspensionNote);
-      console.log(newEnergyConnectionNote);
-
       if (installation.status === 'Potencial') {
         return {
           ok: false,
@@ -593,6 +587,7 @@ const PowerReconnectionProvider: React.FC = ({ children }) => {
           reconnectionInfo.tariffs.commonTariff
         ) {
           Swal.fire({
+            icon: 'question',
             title: 'Religação',
             html: `<p>Você gostaria de solicitar uma Religação Comum com prazo de até ${
               reconnectionInfo.deadlineForReconnection.hours
@@ -704,7 +699,7 @@ const PowerReconnectionProvider: React.FC = ({ children }) => {
         debits.installmentDebits.totalAmountInstallmentDebits > 0
       ) {
         Swal.fire({
-          icon: 'warning',
+          icon: 'question',
           title: 'Religação',
           html: `<p>Você possui ${
             debits.invoiceDebits.invoiceDebitDetails.length
