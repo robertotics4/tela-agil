@@ -551,14 +551,16 @@ const PowerReconnectionProvider: React.FC = ({ children }) => {
 
         Swal.fire({
           icon: 'success',
-          title: 'Religação comum gerada com sucesso.',
+          title: 'Religação',
+          html: '<p>Religação comum gerada com sucesso.</p>',
           confirmButtonText: `OK`,
           confirmButtonColor: '#3c1490',
         });
       } catch {
         Swal.fire({
           icon: 'error',
-          title: 'Falha ao gerar a solicitação de Religação.',
+          title: 'Religação',
+          html: '<p>Falha ao gerar a solicitação de Religação.</p>',
           confirmButtonText: `OK`,
           confirmButtonColor: '#3c1490',
         });
@@ -591,11 +593,12 @@ const PowerReconnectionProvider: React.FC = ({ children }) => {
           reconnectionInfo.tariffs.commonTariff
         ) {
           Swal.fire({
-            title: `Você gostaria de solicitar uma Religação Comum com prazo de até ${
+            title: 'Religação',
+            html: `<p>Você gostaria de solicitar uma Religação Comum com prazo de até ${
               reconnectionInfo.deadlineForReconnection.hours
             } horas para atendimento no valor de ${currencyMask(
               reconnectionInfo.tariffs.commonTariff,
-            )} a serem cobrados em sua próxima fatura?`,
+            )} a serem cobrados em sua próxima fatura?</p>`,
             showDenyButton: true,
             confirmButtonText: `Sim, gostaria`,
             denyButtonText: `Não`,
@@ -616,7 +619,8 @@ const PowerReconnectionProvider: React.FC = ({ children }) => {
             } else if (resultCommonTariff.isDenied) {
               Swal.fire({
                 icon: 'info',
-                title: 'Sua solicitação não foi realizada',
+                title: 'Religação',
+                html: '<p>Sua solicitação não foi realizada.</p>',
                 confirmButtonText: `Sim`,
                 confirmButtonColor: '#3c1490',
               });
@@ -636,8 +640,9 @@ const PowerReconnectionProvider: React.FC = ({ children }) => {
           };
 
           const { value: reconnectionOption } = await Swal.fire({
-            title:
-              'Você gostaria de solicitar uma Religação que será cobrada somente na sua próxima fatura? Caso seja sim, selecione o tipo de religação',
+            title: 'Religação',
+            html:
+              '<p>Você gostaria de solicitar uma Religação que será cobrada somente na sua próxima fatura? Caso seja sim, selecione o tipo de religação:</p>',
             input: 'radio',
             inputOptions,
             inputValidator: value => {
@@ -668,7 +673,8 @@ const PowerReconnectionProvider: React.FC = ({ children }) => {
       } catch {
         Swal.fire({
           icon: 'error',
-          title: 'Falha ao gerar o serviço de religação.',
+          title: 'Religação',
+          html: '<p>Falha ao gerar o serviço de religação.</p>',
           confirmButtonText: `OK`,
           confirmButtonColor: '#3c1490',
         });
@@ -699,11 +705,12 @@ const PowerReconnectionProvider: React.FC = ({ children }) => {
       ) {
         Swal.fire({
           icon: 'warning',
-          title: `Você possui ${
+          title: 'Religação',
+          html: `<p>Você possui ${
             debits.invoiceDebits.invoiceDebitDetails.length
           } faturas com um débito de ${currencyMask(
             debits.invoiceDebits.totalAmountInvoiceDebits,
-          )}. Estão pagas?`,
+          )}. Estão pagas?</p>`,
           showDenyButton: true,
           confirmButtonText: `Sim`,
           denyButtonText: `Não`,
@@ -720,7 +727,9 @@ const PowerReconnectionProvider: React.FC = ({ children }) => {
           } else if (resultHasDebits.isDenied) {
             Swal.fire({
               icon: 'info',
-              title: 'Efetue o pagamento e retorne para solicitar a religação.',
+              title: 'Religação',
+              html:
+                '<p>Efetue o pagamento e retorne para solicitar a religação.</p>',
               confirmButtonText: `Sim`,
               confirmButtonColor: '#3c1490',
             });
