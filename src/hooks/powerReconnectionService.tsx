@@ -13,7 +13,9 @@ import { currencyMask } from '../utils/inputMasks';
 
 import Loading from '../components/Loading';
 import Debits from '../types/Debits';
+
 import { useAuth } from './auth';
+import { useCustomerService } from './customerService';
 
 interface PowerReconnectionContextData {
   ableToReconnection({
@@ -102,6 +104,7 @@ const PowerReconnectionProvider: React.FC = ({ children }) => {
   ] = useLoading();
 
   const { user } = useAuth();
+  const { fetchServiceData } = useCustomerService();
 
   const ableForEmergencyReconnection = useCallback(
     async ({
@@ -542,6 +545,11 @@ const PowerReconnectionProvider: React.FC = ({ children }) => {
             },
           },
         );
+
+        await fetchServiceData({
+          contract: contractAccount,
+          stateCode: operatingCompany,
+        });
 
         Swal.fire({
           icon: 'success',

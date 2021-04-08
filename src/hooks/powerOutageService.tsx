@@ -11,6 +11,7 @@ import { useAuth } from './auth';
 
 import Installation from '../types/Installation';
 import ServiceNotes from '../types/ServiceNotes';
+import { useCustomerService } from './customerService';
 
 interface PowerOutageServiceContextData {
   ableToPowerOutage({
@@ -54,6 +55,8 @@ const PowerOutageServiceContext = createContext<PowerOutageServiceContextData>(
 );
 
 const PowerOutageServiceProvider: React.FC = ({ children }) => {
+  const { fetchServiceData } = useCustomerService();
+
   const [
     { isLoading, message },
     { start: startLoading, stop: stopLoading },
@@ -106,8 +109,13 @@ const PowerOutageServiceProvider: React.FC = ({ children }) => {
           },
         },
       );
+
+      await fetchServiceData({
+        contract: contractAccount,
+        stateCode: operatingCompany,
+      });
     },
-    [],
+    [fetchServiceData],
   );
 
   const ableToPowerOutage = useCallback(
