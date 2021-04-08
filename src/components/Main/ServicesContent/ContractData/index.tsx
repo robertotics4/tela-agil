@@ -4,6 +4,8 @@ import { Container, Content } from './styles';
 
 import { useCustomerService } from '../../../../hooks/customerService';
 
+import hasSocialTariff from '../../../../utils/hasSocialTariff';
+
 const ContractData: React.FC = () => {
   const { customer, installation } = useCustomerService();
 
@@ -39,7 +41,11 @@ const ContractData: React.FC = () => {
 
           <label>
             BAIXA RENDA
-            <p> </p>
+            <p>
+              {hasSocialTariff(installation.technicalData.subclass)
+                ? 'Sim'
+                : 'Não'}
+            </p>
           </label>
 
           <label>
