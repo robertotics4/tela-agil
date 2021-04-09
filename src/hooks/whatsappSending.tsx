@@ -179,7 +179,7 @@ const WhatsappSendingProvider: React.FC = ({ children }) => {
       await yaloApi.post(
         `/accounts/equatorial/bots/${id}/notifications`,
         {
-          type: 'segundavia',
+          type: 'segunda-via',
           users: [
             {
               phone: `+55${phoneNumber}`,

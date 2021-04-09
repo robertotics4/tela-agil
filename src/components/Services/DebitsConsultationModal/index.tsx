@@ -62,12 +62,26 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
       if (Object.keys(selectedDebit).includes('overdueInvoiceNumber')) {
         const invoiceDebit: InvoiceDebit = selectedDebit as InvoiceDebit;
 
-        const monthReference = Number(
-          invoiceDebit.overdueInvoiceNumber.substr(5, 2),
-        );
-        const yearReference = Number(
-          invoiceDebit.overdueInvoiceNumber.substr(1, 4),
-        );
+        let monthReference;
+        let yearReference;
+
+        if (operatingCompany === '98' || operatingCompany === '95') {
+          yearReference = Number(
+            invoiceDebit.overdueInvoiceNumber.substr(1, 4),
+          );
+
+          monthReference = Number(
+            invoiceDebit.overdueInvoiceNumber.substr(5, 2),
+          );
+        } else {
+          yearReference = Number(
+            invoiceDebit.overdueInvoiceNumber.substr(8, 4),
+          );
+
+          monthReference = Number(
+            invoiceDebit.overdueInvoiceNumber.substr(12, 2),
+          );
+        }
 
         const referenceDate = new Date(yearReference, monthReference - 1);
 
@@ -78,7 +92,7 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
     }
 
     return null;
-  }, [selectedDebit]);
+  }, [selectedDebit, operatingCompany]);
 
   const handleSubmit = useCallback(
     async (data: SendDebitFormData) => {
@@ -214,8 +228,18 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
 
   const generateInvoiceRows = useMemo(() => {
     const invoiceRows = debits.invoiceDebits.invoiceDebitDetails.map(debit => {
-      const monthReference = Number(debit.overdueInvoiceNumber.substr(5, 2));
-      const yearReference = Number(debit.overdueInvoiceNumber.substr(1, 4));
+      let monthReference;
+      let yearReference;
+
+      if (operatingCompany === '98' || operatingCompany === '95') {
+        yearReference = Number(debit.overdueInvoiceNumber.substr(1, 4));
+
+        monthReference = Number(debit.overdueInvoiceNumber.substr(5, 2));
+      } else {
+        yearReference = Number(debit.overdueInvoiceNumber.substr(8, 4));
+
+        monthReference = Number(debit.overdueInvoiceNumber.substr(12, 2));
+      }
 
       const referenceDate = new Date(yearReference, monthReference - 1);
 
