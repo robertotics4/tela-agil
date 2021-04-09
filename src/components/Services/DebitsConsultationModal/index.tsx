@@ -57,6 +57,29 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
 
   const formRef = useRef<FormHandles>(null);
 
+  const selectedDebitReference = useMemo(() => {
+    if (selectedDebit) {
+      if (Object.keys(selectedDebit).includes('overdueInvoiceNumber')) {
+        const invoiceDebit: InvoiceDebit = selectedDebit as InvoiceDebit;
+
+        const monthReference = Number(
+          invoiceDebit.overdueInvoiceNumber.substr(5, 2),
+        );
+        const yearReference = Number(
+          invoiceDebit.overdueInvoiceNumber.substr(1, 4),
+        );
+
+        const referenceDate = new Date(yearReference, monthReference - 1);
+
+        return format(referenceDate, 'MM/yyyy');
+      }
+
+      return 'Parcelamento';
+    }
+
+    return null;
+  }, [selectedDebit]);
+
   const handleSubmit = useCallback(
     async (data: SendDebitFormData) => {
       try {
@@ -79,10 +102,11 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
               operatingCompany,
             });
 
-            if (invoiceUrl) {
+            if (invoiceUrl && selectedDebitReference) {
               await sendInvoiceDebit({
                 invoiceUrl,
                 operatingCompany,
+                reference: selectedDebitReference,
                 phoneNumber: getUnformattedPhone(data.phone),
               });
 
@@ -146,6 +170,7 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
       operatingCompany,
       start,
       sendInvoiceDebit,
+      selectedDebitReference,
       sendInstallmentPayment,
       stop,
       setIsOpen,
@@ -192,7 +217,7 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
       const monthReference = Number(debit.overdueInvoiceNumber.substr(5, 2));
       const yearReference = Number(debit.overdueInvoiceNumber.substr(1, 4));
 
-      const referenceDate = new Date(yearReference, monthReference);
+      const referenceDate = new Date(yearReference, monthReference - 1);
 
       return (
         <tr
@@ -217,28 +242,6 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
 
     return invoiceRows;
   }, [debits, handleClickDebit]);
-
-  const selectedDebitReference = useMemo(() => {
-    if (selectedDebit) {
-      if (Object.keys(selectedDebit).includes('overdueInvoiceNumber')) {
-        const invoiceDebit: InvoiceDebit = selectedDebit as InvoiceDebit;
-
-        const monthReference = Number(
-          invoiceDebit.overdueInvoiceNumber.substr(5, 2),
-        );
-        const yearReference = Number(
-          invoiceDebit.overdueInvoiceNumber.substr(1, 4),
-        );
-
-        const referenceDate = new Date(yearReference, monthReference);
-
-        return format(referenceDate, 'MM/yyyy ');
-      }
-      return 'Parcelamento';
-    }
-
-    return null;
-  }, [selectedDebit]);
 
   useEffect(() => {
     setSelectedDebit(undefined);

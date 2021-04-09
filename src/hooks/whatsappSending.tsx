@@ -59,6 +59,7 @@ interface WhatsappSendingContextData {
   sendInvoiceDebit({
     operatingCompany,
     invoiceUrl,
+    reference,
     phoneNumber,
   }: SendInvoiceDebitProps): Promise<void>;
   sendInstallmentPayment({
@@ -74,6 +75,7 @@ interface WhatsappSendingContextData {
 interface SendInvoiceDebitProps {
   operatingCompany: string;
   invoiceUrl: string;
+  reference: string;
   phoneNumber: string;
 }
 
@@ -169,36 +171,36 @@ const WhatsappSendingProvider: React.FC = ({ children }) => {
     async ({
       operatingCompany,
       invoiceUrl,
+      reference,
       phoneNumber,
     }: SendInvoiceDebitProps) => {
       const { id, token } = urlVariations[operatingCompany];
 
-      await sendNotification({
-        operatingCompany,
-        phoneNumber,
-      });
-
       await yaloApi.post(
-        `/outgoing_webhook/bots/${id}/messages`,
+        `/accounts/equatorial/bots/${id}/notifications`,
         {
-          id: uuid(),
-          preview_url: true,
-          type: 'document',
-          document: {
-            url: invoiceUrl,
-            type: 'document',
-            caption: '2ª via de fatura',
-          },
-          userId: `55${phoneNumber}`,
+          type: 'segundavia',
+          users: [
+            {
+              phone: `+55${phoneNumber}`,
+              params: {
+                document: {
+                  caption: `2ª via de fatura (${reference})`,
+                  link: invoiceUrl,
+                },
+              },
+            },
+          ],
         },
         {
           headers: {
-            Authorization: `Bearer ${token.activeSession}`,
+            Authorization: `Bearer ${token.noSession}`,
+            'Content-Type': 'application/json',
           },
         },
       );
     },
-    [sendNotification],
+    [],
   );
 
   return (
