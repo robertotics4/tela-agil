@@ -8,9 +8,9 @@ import React, {
 import { FiPower } from 'react-icons/fi';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
+import { format } from 'date-fns';
 import * as Yup from 'yup';
 import { useLoading } from 'react-use-loading';
-import { format } from 'date-fns';
 import { useStopwatch } from 'react-timer-hook';
 
 import getValidationErrors from '../../utils/getValidationErrors';
@@ -42,8 +42,6 @@ import { useAuth } from '../../hooks/auth';
 import { useCustomerService } from '../../hooks/customerService';
 import { useToast } from '../../hooks/toast';
 import { useAlert } from '../../hooks/alert';
-
-import Address from '../../types/Address';
 
 interface StartServiceFormData {
   state: string;

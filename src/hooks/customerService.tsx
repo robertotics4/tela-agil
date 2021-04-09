@@ -241,7 +241,7 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
       try {
         await fetchServiceData({
           stateCode,
-          contract,
+          contract: contract.toString().replace(/^0+/, ''),
         });
 
         await generateProtocol({
