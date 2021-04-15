@@ -238,14 +238,16 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
 
   const startService = useCallback(
     async ({ stateCode, contract }: StartServiceProps) => {
+      const formattedContract = contract.toString().replace(/^0+/, '');
+
       try {
         await fetchServiceData({
           stateCode,
-          contract: contract.toString().replace(/^0+/, ''),
+          contract: formattedContract,
         });
 
         await generateProtocol({
-          contract,
+          contract: formattedContract,
           operatingCompany: stateCode,
         });
 
