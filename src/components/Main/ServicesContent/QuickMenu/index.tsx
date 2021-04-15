@@ -189,13 +189,13 @@ const QuickMenu: React.FC = () => {
           <MenuItemText>Consulta de débitos</MenuItemText>
         </MenuItem>
 
-        <MenuItem>
+        {/* <MenuItem>
           <MenuItemButton type="button">
             <FaDollarSign size={20} />
           </MenuItemButton>
 
           <MenuItemText>Baixa Renda</MenuItemText>
-        </MenuItem>
+        </MenuItem> */}
 
         <MenuItem>
           <MenuItemButton type="button" onClick={toggleInstallmentPayment}>

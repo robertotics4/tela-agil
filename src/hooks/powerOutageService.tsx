@@ -11,7 +11,6 @@ import { useAuth } from './auth';
 
 import Installation from '../types/Installation';
 import ServiceNotes from '../types/ServiceNotes';
-import { useCustomerService } from './customerService';
 
 interface PowerOutageServiceContextData {
   ableToPowerOutage({
@@ -55,8 +54,6 @@ const PowerOutageServiceContext = createContext<PowerOutageServiceContextData>(
 );
 
 const PowerOutageServiceProvider: React.FC = ({ children }) => {
-  const { fetchServiceData } = useCustomerService();
-
   const [
     { isLoading, message },
     { start: startLoading, stop: stopLoading },
@@ -109,13 +106,8 @@ const PowerOutageServiceProvider: React.FC = ({ children }) => {
           },
         },
       );
-
-      await fetchServiceData({
-        contract: contractAccount,
-        stateCode: operatingCompany,
-      });
     },
-    [fetchServiceData],
+    [],
   );
 
   const ableToPowerOutage = useCallback(
@@ -127,23 +119,19 @@ const PowerOutageServiceProvider: React.FC = ({ children }) => {
       reference,
       serviceNotes,
     }: AbleToPowerOutageProps) => {
-      const reconnectionNotes = serviceNotes.openServiceNotes.every(
+      const reconnectionNotes = serviceNotes.openServiceNotes.some(
         note =>
           note.type === 'RL' &&
-          (note.status === 'RECE' ||
-            note.status === 'ABER' ||
-            note.status === 'REJE' ||
-            note.status === 'ATIV' ||
-            note.status === 'DEVO'),
+          (note.status === 'RECE' || note.status === 'ABER'),
       );
 
-      const suspensionNotes = serviceNotes.openServiceNotes.every(
+      const suspensionNotes = serviceNotes.openServiceNotes.some(
         note =>
           note.type === 'SF' &&
           (note.status === 'RECE' || note.status === 'ABER'),
       );
 
-      const newEnergyConnectionNotes = serviceNotes.openServiceNotes.every(
+      const newEnergyConnectionNotes = serviceNotes.openServiceNotes.some(
         note =>
           note.type === 'LN' &&
           (note.status === 'RECE' || note.status === 'ABER'),

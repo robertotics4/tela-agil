@@ -104,7 +104,6 @@ const PowerReconnectionProvider: React.FC = ({ children }) => {
   ] = useLoading();
 
   const { user } = useAuth();
-  const { fetchServiceData } = useCustomerService();
 
   const ableForEmergencyReconnection = useCallback(
     async ({
@@ -325,8 +324,6 @@ const PowerReconnectionProvider: React.FC = ({ children }) => {
         installation.status === 'Corte executado' ||
         installation.status === 'Corte em andamento'
       ) {
-        console.log('corteExecutado');
-
         if (reconnectionNote) {
           if (
             reconnectionNote.status === 'REJE' ||
@@ -409,8 +406,6 @@ const PowerReconnectionProvider: React.FC = ({ children }) => {
         installation.status === 'Reativa em Andamento' ||
         installation.status === 'Religa em Andamento'
       ) {
-        console.log('religa andamento');
-
         if (newEnergyConnectionNote) {
           return {
             ok: false,
@@ -545,11 +540,6 @@ const PowerReconnectionProvider: React.FC = ({ children }) => {
             },
           },
         );
-
-        await fetchServiceData({
-          contract: contractAccount,
-          stateCode: operatingCompany,
-        });
 
         Swal.fire({
           icon: 'success',
