@@ -262,4 +262,4 @@ function extractResponseData(
   };
 }
 
-export { extractResponseData, getInstallationData };
+export { extractResponseData, getInstallationData, getServiceNotes };

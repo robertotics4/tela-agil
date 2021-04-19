@@ -11,6 +11,7 @@ import Debits from '../types/Debits';
 import {
   extractResponseData,
   getInstallationData,
+  getServiceNotes,
 } from '../utils/extractResponseData';
 
 import ServiceNotes from '../types/ServiceNotes';
@@ -265,26 +266,32 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
           empresaOperadora: operatingCompany,
           flagStatusInstalacao: true,
           flagDadosTecnicos: true,
+          flagNotasAbertas: true,
+          flagNotasEncerradas: true,
         },
       });
 
       const responseInstallationData = response.data.data.instalacao;
 
-      const responseInstallation = getInstallationData(
+      const installationData = getInstallationData(
         responseInstallationData,
         operatingCompany,
       );
 
+      const serviceNotesData = getServiceNotes(response);
+
       setCustomerServiceData({
         ...customerServiceData,
-        installation: responseInstallation,
+        installation: installationData,
+        serviceNotes: serviceNotesData,
       });
 
       localStorage.setItem(
         '@TelaAgil:customerServiceData',
         JSON.stringify({
           ...customerServiceData,
-          installation: responseInstallation,
+          installation: installationData,
+          serviceNotes: serviceNotesData,
         }),
       );
     },
