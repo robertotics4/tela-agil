@@ -11,6 +11,7 @@ import { useAuth } from './auth';
 
 import Installation from '../types/Installation';
 import ServiceNotes from '../types/ServiceNotes';
+import { useCustomerService } from './customerService';
 
 interface PowerOutageServiceContextData {
   ableToPowerOutage({
@@ -60,6 +61,7 @@ const PowerOutageServiceProvider: React.FC = ({ children }) => {
   ] = useLoading();
 
   const { user } = useAuth();
+  const { fetchInstallationData } = useCustomerService();
 
   const generatePowerOutageService = useCallback(
     async ({
@@ -106,8 +108,13 @@ const PowerOutageServiceProvider: React.FC = ({ children }) => {
           },
         },
       );
+
+      await fetchInstallationData({
+        contractAccount,
+        operatingCompany,
+      });
     },
-    [],
+    [fetchInstallationData],
   );
 
   const ableToPowerOutage = useCallback(
@@ -120,34 +127,60 @@ const PowerOutageServiceProvider: React.FC = ({ children }) => {
       serviceNotes,
     }: AbleToPowerOutageProps) => {
       const reconnectionNotes = serviceNotes.openServiceNotes.some(
-        note =>
-          note.type === 'RL' &&
-          (note.status === 'RECE' || note.status === 'ABER'),
+        note => note.type === 'RL',
       );
 
       const suspensionNotes = serviceNotes.openServiceNotes.some(
-        note =>
-          note.type === 'SF' &&
-          (note.status === 'RECE' || note.status === 'ABER'),
+        note => note.type === 'SF',
       );
 
       const newEnergyConnectionNotes = serviceNotes.openServiceNotes.some(
-        note =>
-          note.type === 'LN' &&
-          (note.status === 'RECE' || note.status === 'ABER'),
+        note => note.type === 'LN',
+      );
+
+      const hasPowerCut = !!(
+        installation.cutInProgress ||
+        installation.status === 'Corte em Andamento' ||
+        installation.status === 'Corte executado' ||
+        installation.status === 'Cortada'
+      );
+
+      const hasActiveSuspension = !!(
+        suspensionNotes ||
+        installation.cutInProgress ||
+        installation.status === 'Corte em Andamento' ||
+        installation.status === 'Corte executado'
+      );
+
+      const CCIsDisconnected = !!(
+        installation.status === 'Desligada' ||
+        installation.status === 'Desligada em Andamento' ||
+        installation.status === 'Desliga em Andamento' ||
+        installation.status === 'Desliga em andamento'
+      );
+
+      const hasPowerReconnection = !!(
+        reconnectionNotes || installation.status === 'Religa em Andamento'
+      );
+
+      const hasPowerReactivation = !!(
+        installation.status === 'Reativação em Andamento' ||
+        installation.status === 'Reativa em Andamento'
       );
 
       if (
-        reconnectionNotes ||
-        suspensionNotes ||
-        newEnergyConnectionNotes ||
-        installation.cutInProgress ||
-        installation.turnOffInProgress ||
+        hasPowerReconnection ||
+        hasActiveSuspension ||
+        hasPowerCut ||
+        CCIsDisconnected ||
+        hasPowerReactivation ||
         installation.scheduledShutdown ||
         installation.powerPhaseOutage ||
         installation.powerOutageTechnicalEvaluation ||
         installation.individualPowerOutage ||
-        installation.status !== 'Ligada'
+        installation.collectivePowerOutage ||
+        installation.turnOffInProgress ||
+        newEnergyConnectionNotes
       ) {
         try {
           startLoading('Analisando dados do cliente ...');
@@ -155,17 +188,16 @@ const PowerOutageServiceProvider: React.FC = ({ children }) => {
           let serviceName = '';
           let alertDescription = '';
 
-          if (reconnectionNotes) {
-            alertDescription = 'O cliente possui notas de RELIGAÇÃO abertas.';
+          if (hasPowerReconnection) {
+            alertDescription = 'O cliente possui uma RELIGAÇÃO em andamento';
           }
 
-          if (suspensionNotes) {
-            alertDescription = 'O cliente possui notas de SUSPENSÃO abertas.';
+          if (hasActiveSuspension) {
+            alertDescription = 'O cliente possui uma SUSPENSÃO em andamento';
           }
 
           if (newEnergyConnectionNotes) {
-            alertDescription =
-              'O cliente possui notas de LIGAÇÃO NOVA abertas.';
+            alertDescription = 'O cliente possui uma LIGAÇÃO NOVA em andamento';
           }
 
           if (installation.cutInProgress) {

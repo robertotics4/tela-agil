@@ -262,4 +262,4 @@ function extractResponseData(
   };
 }
 
-export default extractResponseData;
+export { extractResponseData, getInstallationData };

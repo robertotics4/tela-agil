@@ -8,7 +8,11 @@ import Customer from '../types/Customer';
 import Installation from '../types/Installation';
 import Debits from '../types/Debits';
 
-import extractResponseData from '../utils/extractResponseData';
+import {
+  extractResponseData,
+  getInstallationData,
+} from '../utils/extractResponseData';
+
 import ServiceNotes from '../types/ServiceNotes';
 import eqtlBarApi from '../services/eqtlBarApi';
 import Address from '../types/Address';
@@ -43,6 +47,10 @@ interface CustomerServiceContextData {
   contracts: Contract[];
   serviceStarted: boolean;
   fetchServiceData(customerData: GetCustomerData): Promise<void>;
+  fetchInstallationData({
+    contractAccount,
+    operatingCompany,
+  }: FetchInstallationDataProps): Promise<void>;
   startService({ stateCode, contract }: GetCustomerData): Promise<void>;
   finishService(attendanceTime: string): Promise<void>;
   registerServicePerformed({
@@ -63,6 +71,11 @@ interface GenerateProtocolProps {
 interface FindAllContractsProps {
   stateCode: string;
   cpf: string;
+}
+
+interface FetchInstallationDataProps {
+  contractAccount: string;
+  operatingCompany: string;
 }
 
 interface ServicePerformed {
@@ -236,6 +249,48 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
     [],
   );
 
+  const fetchInstallationData = useCallback(
+    async ({
+      contractAccount,
+      operatingCompany,
+    }: FetchInstallationDataProps) => {
+      const formattedContractAccount = contractAccount
+        .toString()
+        .replace(/^0+/, '');
+
+      const response = await eqtlBarApi.get('/atendimento/v1/clientes', {
+        params: {
+          codigoTransacao: uuid(),
+          contrato: formattedContractAccount,
+          empresaOperadora: operatingCompany,
+          flagStatusInstalacao: true,
+          flagDadosTecnicos: true,
+        },
+      });
+
+      const responseInstallationData = response.data.data.instalacao;
+
+      const responseInstallation = getInstallationData(
+        responseInstallationData,
+        operatingCompany,
+      );
+
+      setCustomerServiceData({
+        ...customerServiceData,
+        installation: responseInstallation,
+      });
+
+      localStorage.setItem(
+        '@TelaAgil:customerServiceData',
+        JSON.stringify({
+          ...customerServiceData,
+          installation: responseInstallation,
+        }),
+      );
+    },
+    [customerServiceData],
+  );
+
   const startService = useCallback(
     async ({ stateCode, contract }: StartServiceProps) => {
       const formattedContract = contract.toString().replace(/^0+/, '');
@@ -318,6 +373,7 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
         contracts: customerServiceData.contracts,
         serviceStarted,
         fetchServiceData,
+        fetchInstallationData,
         startService,
         finishService,
         registerServicePerformed,
