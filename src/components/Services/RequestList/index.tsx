@@ -45,6 +45,13 @@ const RequestList: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
         {
           Header: 'Atendido em',
           accessor: 'conclusionDate',
+          Cell: ({ value }) => {
+            if (!value) {
+              return '-';
+            }
+
+            return value;
+          },
         },
         {
           Header: 'Status',
@@ -54,7 +61,12 @@ const RequestList: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
               return <StatusIndicator type="concluded" title="Concluído" />;
             }
 
-            if (value === 'AGUA' || value === 'RECE' || value === 'ATIV') {
+            if (
+              value === 'AGUA' ||
+              value === 'RECE' ||
+              value === 'ATIV' ||
+              value === 'ABER'
+            ) {
               return <StatusIndicator type="open" title="Aberto" />;
             }
 
@@ -81,7 +93,7 @@ const RequestList: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
       (note: OpenNote) =>
         ({
           protocol: '',
-          service: note.typeDescription,
+          service: note.codeDescription,
           openingDate: format(note.openingDate, 'dd/MM/yyyy'),
           status: note.status,
         } as Note),
@@ -91,7 +103,7 @@ const RequestList: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
       (note: ClosedNote) =>
         ({
           protocol: '',
-          service: note.typeDescription,
+          service: note.codeDescription,
           openingDate: format(note.openingDate, 'dd/MM/yyyy'),
           conclusionDate: format(note.conclusionDate, 'dd/MM/yyyy'),
         } as Note),

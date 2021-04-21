@@ -104,6 +104,7 @@ const PowerReconnectionProvider: React.FC = ({ children }) => {
   ] = useLoading();
 
   const { user } = useAuth();
+  const { fetchInstallationData } = useCustomerService();
 
   const ableForEmergencyReconnection = useCallback(
     async ({
@@ -540,6 +541,11 @@ const PowerReconnectionProvider: React.FC = ({ children }) => {
             },
           },
         );
+
+        await fetchInstallationData({
+          contractAccount,
+          operatingCompany,
+        });
 
         Swal.fire({
           icon: 'success',
