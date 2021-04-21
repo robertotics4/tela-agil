@@ -130,7 +130,7 @@ const LeftBar: React.FC = () => {
 
           await startService({
             stateCode: data.state[0],
-            contract: responseContracts[0].contractAccount,
+            contractAccount: responseContracts[0].contractAccount,
           });
 
           return;
@@ -138,7 +138,7 @@ const LeftBar: React.FC = () => {
 
         await startService({
           stateCode: data.state[0],
-          contract: data.contract,
+          contractAccount: data.contract,
         });
       } catch (err) {
         if (err instanceof Yup.ValidationError) {

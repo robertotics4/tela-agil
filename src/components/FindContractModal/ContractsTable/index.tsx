@@ -46,7 +46,7 @@ const ContractsTable: React.FC<TableProps> = ({ data, closeModal }) => {
         if (record.contractAccount) {
           await startService({
             stateCode: operatingCompany,
-            contract: record.contractAccount,
+            contractAccount: record.contractAccount,
           });
         }
       } catch (err) {

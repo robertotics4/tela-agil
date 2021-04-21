@@ -566,7 +566,7 @@ const PowerReconnectionProvider: React.FC = ({ children }) => {
         stopLoading();
       }
     },
-    [startLoading, stopLoading],
+    [startLoading, stopLoading, fetchInstallationData],
   );
 
   const startPowerReconnectionFlow = useCallback(
