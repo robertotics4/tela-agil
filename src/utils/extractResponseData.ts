@@ -26,7 +26,10 @@ function getCustomerData(response: AxiosResponse, stateCode: string): Customer {
   const responseCustomer = response.data.data.cliente[0];
 
   const customer: Customer = {
-    contractAccount: responseCustomer.contaContrato,
+    contractAccount:
+      typeof responseCustomer.contaContrato === 'string'
+        ? responseCustomer.contaContrato.replace(/^0+/, '')
+        : responseCustomer.contaContrato.toString().replace(/^0+/, ''),
     name: responseCustomer.nome,
     surname: responseCustomer.sobrenome,
     motherName: responseCustomer.nomeMae,
@@ -50,8 +53,6 @@ function getCustomerData(response: AxiosResponse, stateCode: string): Customer {
   };
 
   if (stateCode === '82' || stateCode === '86') {
-    customer.contractAccount = responseCustomer.contaContrato.toString();
-
     const landline = responseCustomer.contatos.telefones
       .filter(
         (telefone: ResponsePhone) =>
