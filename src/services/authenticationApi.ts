@@ -5,7 +5,7 @@ import axios from 'axios';
 // };
 
 const devConfig = {
-  url: 'http://localhost:3333',
+  url: process.env.REACT_APP_API_URL,
 };
 
 const authenticationApi = axios.create({
