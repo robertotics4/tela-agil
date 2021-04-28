@@ -233,8 +233,12 @@ const DebitsConsultationModal: React.FC<ModalProps> = ({
 
       if (operatingCompany === '98' || operatingCompany === '95') {
         yearReference = Number(debit.overdueInvoiceNumber.substr(1, 4));
-
         monthReference = Number(debit.overdueInvoiceNumber.substr(5, 2));
+
+        if (yearReference < 2016) {
+          yearReference = debit.dueDate.getFullYear();
+          monthReference = debit.dueDate.getMonth() + 1;
+        }
       } else {
         yearReference = Number(debit.overdueInvoiceNumber.substr(8, 4));
 

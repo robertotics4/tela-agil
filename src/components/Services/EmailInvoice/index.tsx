@@ -52,13 +52,15 @@ const EmailInvoiceModal: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
         },
       );
 
-      if (response.data.data.codigoErro !== '00') {
-        if (response.data.data.codigoErro === '09') {
-          throw new Error('Fatura por e-mail já cadastrada');
-        } else {
-          throw new Error(response.data.data.mensagem);
+      if (Object.keys(response.data).includes('codigoErro')) {
+        if (response.data.data.codigoErro !== '00') {
+          if (response.data.data.codigoErro === '09') {
+            throw new Error('Fatura por e-mail já cadastrada');
+          } else {
+            throw new Error(response.data.data.mensagem);
+          }
         }
-      } else if (Object.keys(response.data).includes('erro')) {
+      } else {
         throw new Error('Falha ao cadastrar a fatura por e-mail');
       }
     },
@@ -84,7 +86,7 @@ const EmailInvoiceModal: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
       });
     } catch (err) {
       Swal.fire({
-        icon: 'success',
+        icon: 'warning',
         title: 'Fatura por e-mail',
         html: `<p>${err.message}</p>`,
         confirmButtonText: `OK`,
