@@ -5,6 +5,7 @@ import { FaPlug, FaDollarSign, FaDivide, FaCalendarAlt } from 'react-icons/fa';
 import { IoDocumentText } from 'react-icons/io5';
 import { IoMdMail } from 'react-icons/io';
 import { MdReceipt } from 'react-icons/md';
+import { useLoading } from 'react-use-loading';
 import Swal from 'sweetalert2';
 
 import {
@@ -22,16 +23,19 @@ import EmailInvoice from '../../../Services/EmailInvoice';
 import ExpirationChange from '../../../Services/DueDateChange';
 import RequestList from '../../../Services/RequestList';
 
+import Loading from '../../../Loading';
+
 import { useCustomerService } from '../../../../hooks/customerService';
 import { usePowerReconnectionService } from '../../../../hooks/powerReconnectionService';
 import { usePowerOutageService } from '../../../../hooks/powerOutageService';
+import { useChangeDueDateService } from '../../../../hooks/changeDueDateService';
 
 const QuickMenu: React.FC = () => {
   const [outagePowerOpen, setOutagePowerOpen] = useState(false);
   const [debitsConsultationOpen, setDebitsConsultationOpen] = useState(false);
   const [installmentPaymentOpen, setInstallmentPaymentOpen] = useState(false);
   const [emailInvoiceOpen, setEmailInvoiceOpen] = useState(false);
-  const [expirationChangeOpen, setExpirationChangeOpen] = useState(false);
+  const [changeDueDateOpen, setChangeDueDateOpen] = useState(false);
   const [requestListOpen, setRequestListOpen] = useState(false);
 
   const {
@@ -47,6 +51,13 @@ const QuickMenu: React.FC = () => {
     ableToReconnection,
     prepareForPowerReconnection,
   } = usePowerReconnectionService();
+
+  const { ableToChangeDueDate } = useChangeDueDateService();
+
+  const [
+    { isLoading, message },
+    { start: startLoading, stop: stopLoading },
+  ] = useLoading();
 
   async function toggleOutagePower(): Promise<void> {
     if (
@@ -139,8 +150,34 @@ const QuickMenu: React.FC = () => {
     }
   }
 
-  function toggleExpirationChange(): void {
-    setExpirationChangeOpen(!expirationChangeOpen);
+  async function toggleChangeDueDate(): Promise<void> {
+    if (!changeDueDateOpen) {
+      startLoading('Verificando datas disponíveis ...');
+
+      const responseAbleToChangeDueDate = await ableToChangeDueDate({
+        contractAccount: customer.contractAccount,
+        stateCode: operatingCompany,
+      });
+
+      stopLoading();
+
+      if (!responseAbleToChangeDueDate.ok) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Alteração de Data Certa',
+          html: `<p>${
+            responseAbleToChangeDueDate.error ||
+            'O cliente não está habilitado para alteração de Data Certa'
+          }</p>`,
+          confirmButtonText: `OK`,
+          confirmButtonColor: '#3c1490',
+        });
+      } else {
+        setChangeDueDateOpen(!changeDueDateOpen);
+      }
+    } else {
+      setChangeDueDateOpen(!changeDueDateOpen);
+    }
   }
 
   function toggleRequestList(): void {
@@ -216,7 +253,7 @@ const QuickMenu: React.FC = () => {
         </MenuItem>
 
         <MenuItem>
-          <MenuItemButton type="button" onClick={toggleExpirationChange}>
+          <MenuItemButton type="button" onClick={toggleChangeDueDate}>
             <FaCalendarAlt size={20} />
           </MenuItemButton>
 
@@ -249,11 +286,15 @@ const QuickMenu: React.FC = () => {
       <EmailInvoice isOpen={emailInvoiceOpen} setIsOpen={toggleEmailInvoice} />
 
       <ExpirationChange
-        isOpen={expirationChangeOpen}
-        setIsOpen={toggleExpirationChange}
+        isOpen={changeDueDateOpen}
+        setIsOpen={toggleChangeDueDate}
       />
 
       <RequestList isOpen={requestListOpen} setIsOpen={toggleRequestList} />
+
+      {isLoading && (
+        <Loading isOpen={isLoading} message={message} setIsOpen={stopLoading} />
+      )}
     </Container>
   );
 };

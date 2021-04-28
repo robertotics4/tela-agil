@@ -55,8 +55,6 @@ const EmailInvoiceModal: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
         },
       );
 
-      console.log(response.data);
-
       if (Object.keys(response.data.data).includes('codigoErro')) {
         if (response.data.data.codigoErro !== '00') {
           throw new Error(response.data.data.mensagem);

@@ -9,11 +9,10 @@ import Customer from '../types/Customer';
 import Installation from '../types/Installation';
 import ServiceNotes from '../types/ServiceNotes';
 
-import { currencyMask } from '../utils/inputMasks';
-
 import Loading from '../components/Loading';
 import Debits from '../types/Debits';
 
+import { currencyMask } from '../utils/inputMasks';
 import { useAuth } from './auth';
 import { useCustomerService } from './customerService';
 

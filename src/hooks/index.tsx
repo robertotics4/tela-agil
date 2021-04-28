@@ -7,6 +7,7 @@ import { DebitsConsultationProvider } from './debitsConsultation';
 import { WhatsappSendingProvider } from './whatsappSending';
 import { PowerOutageServiceProvider } from './powerOutageService';
 import { PowerReconnectionProvider } from './powerReconnectionService';
+import { ChangeDueDateServiceProvider } from './changeDueDateService';
 import { AlertProvider } from './alert';
 import { TimerProvider } from './timer';
 
@@ -19,7 +20,11 @@ const AppProvider: React.FC = ({ children }) => (
             <DebitsConsultationProvider>
               <PowerOutageServiceProvider>
                 <PowerReconnectionProvider>
-                  <WhatsappSendingProvider>{children}</WhatsappSendingProvider>
+                  <ChangeDueDateServiceProvider>
+                    <WhatsappSendingProvider>
+                      {children}
+                    </WhatsappSendingProvider>
+                  </ChangeDueDateServiceProvider>
                 </PowerReconnectionProvider>
               </PowerOutageServiceProvider>
             </DebitsConsultationProvider>
