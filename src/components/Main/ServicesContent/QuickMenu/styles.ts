@@ -1,5 +1,9 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { lighten } from 'polished';
+
+interface MenuItemProps {
+  disabled?: boolean;
+}
 
 export const Container = styled.div`
   width: 1100px;
@@ -22,13 +26,20 @@ export const Content = styled.div`
   border: 1px solid #e7e5e5;
 `;
 
-export const MenuItem = styled.div`
+export const MenuItem = styled.div<MenuItemProps>`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 
   width: 75px;
+
+  ${props =>
+    props.disabled &&
+    css`
+      opacity: 0.3;
+      pointer-events: none;
+    `}
 
   &:hover {
     button {

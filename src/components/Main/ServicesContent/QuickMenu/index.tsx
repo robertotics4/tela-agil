@@ -205,7 +205,9 @@ const QuickMenu: React.FC = () => {
           <MenuItemText>Entrada de parcelamento</MenuItemText>
         </MenuItem>
 
-        <MenuItem>
+        <MenuItem
+          disabled={!(operatingCompany === '98' || operatingCompany === '95')}
+        >
           <MenuItemButton type="button" onClick={toggleEmailInvoice}>
             <IoMdMail size={20} />
           </MenuItemButton>

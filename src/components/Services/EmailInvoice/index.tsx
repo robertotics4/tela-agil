@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
-import { v4 as uuid } from 'uuid';
 import Swal from 'sweetalert2';
+import { v4 as uuid } from 'uuid';
 
 import { useLoading } from 'react-use-loading';
 import { useCustomerService } from '../../../hooks/customerService';
@@ -8,8 +8,11 @@ import { useCustomerService } from '../../../hooks/customerService';
 import Loading from '../../Loading';
 import Modal from '../../Modal';
 
-import { ModalContent, OptionsContainer, OptionButton } from './styles';
 import eqtlBarApi from '../../../services/eqtlBarApi';
+
+import addZeroesToContract from '../../../utils/addZeroesToContract';
+
+import { ModalContent, OptionsContainer, OptionButton } from './styles';
 
 interface ModalProps {
   isOpen: boolean;
@@ -40,7 +43,7 @@ const EmailInvoiceModal: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
           data: {
             canalAtendimento: 'S',
             email,
-            contaContrato: contract,
+            contaContrato: addZeroesToContract(contract, 12),
           },
         },
         {
@@ -52,13 +55,11 @@ const EmailInvoiceModal: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
         },
       );
 
-      if (Object.keys(response.data).includes('codigoErro')) {
+      console.log(response.data);
+
+      if (Object.keys(response.data.data).includes('codigoErro')) {
         if (response.data.data.codigoErro !== '00') {
-          if (response.data.data.codigoErro === '09') {
-            throw new Error('Fatura por e-mail já cadastrada');
-          } else {
-            throw new Error(response.data.data.mensagem);
-          }
+          throw new Error(response.data.data.mensagem);
         }
       } else {
         throw new Error('Falha ao cadastrar a fatura por e-mail');
