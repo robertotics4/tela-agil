@@ -56,11 +56,12 @@ const EmailInvoiceModal: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
       );
 
       if (Object.keys(response.data.data).includes('codigoErro')) {
-        if (response.data.data.codigoErro !== '00') {
+        if (
+          response.data.data.codigoErro !== '00' &&
+          Object.keys(response.data.data).includes('mensagem')
+        ) {
           throw new Error(response.data.data.mensagem);
         }
-      } else {
-        throw new Error('Falha ao cadastrar a fatura por e-mail');
       }
     },
     [],

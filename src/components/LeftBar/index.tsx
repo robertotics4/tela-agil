@@ -136,9 +136,11 @@ const LeftBar: React.FC = () => {
           return;
         }
 
+        const unformattedContract = data.contract.replace(/\D/gim, '');
+
         await startService({
           stateCode: data.state[0],
-          contractAccount: data.contract,
+          contractAccount: unformattedContract,
         });
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
@@ -234,8 +236,17 @@ const LeftBar: React.FC = () => {
             />
           </CustomRadioGroup>
 
-          <OutlineInput
+          {/* <OutlineInput
             name="contract"
+            type="text"
+            placeholder="Código único ou conta contrato"
+            autoComplete="off"
+            disabled={serviceStarted}
+          /> */}
+
+          <OutlineInputMask
+            name="contract"
+            mask="999999999999"
             type="text"
             placeholder="Código único ou conta contrato"
             autoComplete="off"
