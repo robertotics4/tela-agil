@@ -523,7 +523,7 @@ const PowerReconnectionProvider: React.FC = ({ children }) => {
             return;
         }
 
-        await eqtlBarApi.post(
+        const response = await eqtlBarApi.post(
           path,
           {
             codigoTransacao: uuid(),
@@ -541,6 +541,8 @@ const PowerReconnectionProvider: React.FC = ({ children }) => {
           },
         );
 
+        const { codigoSR } = response.data.data;
+
         await fetchInstallationData({
           contractAccount,
           operatingCompany,
@@ -549,7 +551,9 @@ const PowerReconnectionProvider: React.FC = ({ children }) => {
         Swal.fire({
           icon: 'success',
           title: 'Religação',
-          html: '<p>Religação comum gerada com sucesso.</p>',
+          html: codigoSR
+            ? `<p>Solicitação gerada com sucesso.<br><br>Código do serviço gerado: <b>${codigoSR}</b></p>`
+            : `<p>Solicitação gerada com sucesso.</p>`,
           confirmButtonText: `OK`,
           confirmButtonColor: '#3c1490',
         });
