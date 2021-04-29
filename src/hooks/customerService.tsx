@@ -188,12 +188,10 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
 
   const fetchServiceData = useCallback(
     async ({ stateCode, contractAccount }: GetCustomerData) => {
-      const formattedContractAccount = contractAccount.replace(/^0+/, '');
-
       const response = await eqtlBarApi.get('/atendimento/v1/clientes', {
         params: {
           codigoTransacao: uuid(),
-          contrato: formattedContractAccount,
+          contrato: contractAccount,
           empresaOperadora: stateCode,
           flagDadosCliente: true,
           flagStatusInstalacao: true,
@@ -239,12 +237,10 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
 
   const generateProtocol = useCallback(
     async ({ operatingCompany, contractAccount }: GenerateProtocolProps) => {
-      const formattedContractAccount = contractAccount.replace(/^0+/, '');
-
       const response = await eqtlBarApi.get('/atendimento/v1/clientes', {
         params: {
           empresaOperadora: operatingCompany,
-          contrato: formattedContractAccount,
+          contrato: contractAccount,
           flagGerarProtocolo: true,
           codigoTransacao: uuid(),
         },
@@ -265,12 +261,10 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
       contractAccount,
       operatingCompany,
     }: FetchInstallationDataProps) => {
-      const formattedContractAccount = contractAccount.replace(/^0+/, '');
-
       const response = await eqtlBarApi.get('/atendimento/v1/clientes', {
         params: {
           codigoTransacao: uuid(),
-          contrato: formattedContractAccount,
+          contrato: contractAccount,
           empresaOperadora: operatingCompany,
           flagStatusInstalacao: true,
           flagDadosTecnicos: true,
@@ -308,14 +302,16 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
 
   const startService = useCallback(
     async ({ stateCode, contractAccount }: StartServiceProps) => {
+      const formattedContractAccount = contractAccount.replace(/^0+/, '');
+
       try {
         await fetchServiceData({
           stateCode,
-          contractAccount,
+          contractAccount: formattedContractAccount,
         });
 
         await generateProtocol({
-          contractAccount,
+          contractAccount: formattedContractAccount,
           operatingCompany: stateCode,
         });
 

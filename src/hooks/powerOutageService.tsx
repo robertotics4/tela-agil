@@ -4,6 +4,7 @@ import { useLoading } from 'react-use-loading';
 import Swal from 'sweetalert2';
 
 import eqtlBarApi from '../services/eqtlBarApi';
+import addZeroesToContract from '../utils/addZeroesToContract';
 
 import Loading from '../components/Loading';
 
@@ -29,7 +30,7 @@ interface PowerOutageServiceContextData {
     protocol,
     operatingCompany,
     contractAccount,
-  }: GeneratePowerOutageProps): Promise<void>;
+  }: GeneratePowerOutageProps): Promise<string | null>;
 }
 
 interface GeneratePowerOutageProps {
@@ -71,7 +72,7 @@ const PowerOutageServiceProvider: React.FC = ({ children }) => {
       protocol,
       operatingCompany,
       contractAccount,
-    }: GeneratePowerOutageProps) => {
+    }: GeneratePowerOutageProps): Promise<string | null> => {
       let path;
 
       switch (type) {
@@ -88,10 +89,10 @@ const PowerOutageServiceProvider: React.FC = ({ children }) => {
           path = '/servico/v1/faltaenergia/notaInformativa';
           break;
         default:
-          return;
+          throw new Error('Falta de energia com tipo inválido');
       }
 
-      await eqtlBarApi.post(
+      const response = await eqtlBarApi.post(
         path,
         {
           codigoTransacao: uuid(),
@@ -113,6 +114,10 @@ const PowerOutageServiceProvider: React.FC = ({ children }) => {
         contractAccount,
         operatingCompany,
       });
+
+      const { codigoSR } = response.data.data;
+
+      return codigoSR;
     },
     [fetchInstallationData],
   );
@@ -200,7 +205,7 @@ const PowerOutageServiceProvider: React.FC = ({ children }) => {
             alertDescription = 'O cliente possui uma LIGAÇÃO NOVA em andamento';
           }
 
-          if (installation.cutInProgress) {
+          if (installation.cutInProgress || hasPowerCut) {
             serviceName = 'Corte em andamento';
             alertDescription =
               'Verifiquei que seu fornecimento de energia está suspenso. Para restabelecer sua energia, preciso que você efetue o pagamento e solicite uma religação.';
@@ -256,7 +261,7 @@ const PowerOutageServiceProvider: React.FC = ({ children }) => {
               'Um dos seus vizinhos já informou sobre essa falta de energia. Fique tranquilo, nossa equipe já está trabalhando para te atender, ok?';
           }
 
-          await generatePowerOutageService({
+          const codigoSR = await generatePowerOutageService({
             type: 'information note',
             descriptionText: `${serviceName} - Gerado pela Tela Ágil - Usuário: ${user}`,
             reference,
@@ -264,10 +269,13 @@ const PowerOutageServiceProvider: React.FC = ({ children }) => {
             operatingCompany,
             protocol,
           });
+
           Swal.fire({
             icon: 'warning',
             title: 'Nota informativa',
-            html: `<p>${alertDescription}`,
+            html: codigoSR
+              ? `<p>${alertDescription}<br><br>Código do serviço gerado: <b>${codigoSR}</b></p>`
+              : `<p> ${alertDescription}</p>`,
             confirmButtonText: `OK`,
             confirmButtonColor: '#3c1490',
           });

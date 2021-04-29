@@ -23,6 +23,7 @@ const ContractsTable: React.FC<TableProps> = ({ data, closeModal }) => {
     { isLoading, message },
     { start: startLoading, stop: stopLoading },
   ] = useLoading();
+
   const { startService, operatingCompany } = useCustomerService();
 
   const columns = [

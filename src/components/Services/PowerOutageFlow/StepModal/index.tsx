@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Rodal from 'rodal';
-import { useLoading } from 'react-use-loading';
 import Swal from 'sweetalert2';
+import { useLoading } from 'react-use-loading';
 
 import 'rodal/lib/rodal.css';
 
@@ -90,7 +90,7 @@ const Modal: React.FC<ModalProps> = ({
         try {
           start('Gerando solicitação de serviço ...');
 
-          await generatePowerOutageService({
+          const codigoSR = await generatePowerOutageService({
             type,
             descriptionText: `Gerado pela Tela Ágil - Usuário: ${user}`,
             reference: customer.address.referencePoint
@@ -104,7 +104,9 @@ const Modal: React.FC<ModalProps> = ({
           Swal.fire({
             icon: 'success',
             title: 'Falta de energia',
-            html: '<p>Solicitação gerada com sucesso.</p>',
+            html: codigoSR
+              ? `<p>Solicitação gerada com sucesso.<br><br>Código do serviço gerado: <b>${codigoSR}</b></p>`
+              : `<p>Solicitação gerada com sucesso.</p>`,
             confirmButtonText: `OK`,
             confirmButtonColor: '#3c1490',
           });
