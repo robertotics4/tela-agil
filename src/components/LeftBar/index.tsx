@@ -30,6 +30,7 @@ import {
 } from './styles';
 
 import OutlineInput from '../OutlineInput';
+import OutlineInputRegex from '../OutlineInputRegex';
 import OutlineInputMask from '../OutlineInputMask';
 import CustomRadioGroup from '../CustomRadioGroup';
 import RadioOptions from '../CustomRadioGroup/RadioOptions';
@@ -236,27 +237,19 @@ const LeftBar: React.FC = () => {
             />
           </CustomRadioGroup>
 
-          {/* <OutlineInput
+          <OutlineInputRegex
             name="contract"
             type="text"
-            placeholder="Código único ou conta contrato"
-            autoComplete="off"
-            disabled={serviceStarted}
-          /> */}
-
-          <OutlineInputMask
-            name="contract"
-            mask="999999999999"
-            type="text"
+            mask="contractAccount"
             placeholder="Código único ou conta contrato"
             autoComplete="off"
             disabled={serviceStarted}
           />
 
-          <OutlineInputMask
+          <OutlineInputRegex
             name="cpf"
-            mask="999.999.999-99"
             type="text"
+            mask="cpfCnpj"
             placeholder="CPF ou CNPJ"
             autoComplete="off"
             disabled={serviceStarted}
