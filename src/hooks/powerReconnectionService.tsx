@@ -322,22 +322,26 @@ const PowerReconnectionProvider: React.FC = ({ children }) => {
       if (
         installation.cutInProgress ||
         installation.status === 'Corte executado' ||
-        installation.status === 'Corte em andamento'
+        installation.status === 'Corte em andamento' ||
+        installation.status === 'Cortada'
       ) {
         if (reconnectionNote) {
           if (
             reconnectionNote.status === 'REJE' ||
             reconnectionNote.status === 'ATIV' ||
+            reconnectionNote.status === 'ABER' || // Validar
             reconnectionNote.status === 'DEVO'
           ) {
             return {
-              // VERIFICAR TEXTO
               ok: false,
-              error: 'Infelizmente não é possível atender este caso por aqui.',
+              error: `Infelizmente não é possível gerar uma religação por aqui, pois esse cliente tem uma nota de religação com o status ${reconnectionNote.status}`,
             };
           }
 
-          if (reconnectionNote.status === 'RECE') {
+          if (
+            reconnectionNote.status === 'RECE'
+            // reconnectionNote.status === 'CONC' // Validar
+          ) {
             if (reconnectionNote.code === 'RELU') {
               return {
                 ok: false,
@@ -365,30 +369,27 @@ const PowerReconnectionProvider: React.FC = ({ children }) => {
           return {
             ok: false,
             error:
-              'Esta conta contrato está desligada. Para restabelecer seu fornecimento de energia você precisa solicitar uma reativação.',
+              'Esta conta contrato está desligada. Para restabelecer seu fornecimento de energia você precisa solicitar uma reativação',
           };
         }
 
         if (oversightNote) {
-          // VERIFICAR ESSA CONDIÇÃO
           return {
             ok: false,
-            error:
-              'Infelizmente não é possível atender este caso por aqui. Você pode solicitar este serviço ligando para o 116 ou indo em uma de nossas agências de atendimento',
+            error: `Infelizmente não é possível atender este caso por aqui, pois esse cliente tem uma nota de fiscalização com status ${oversightNote.status}`,
           };
         }
 
         if (suspensionNote) {
-          // VERIFICAR ESSA CONDIÇÃO
           if (
             suspensionNote.status !== 'RECE' &&
+            // suspensionNote.status !== 'CONC' && // Validar
             suspensionNote.status !== 'FINL'
           ) {
             if (oversightNote) {
               return {
                 ok: false,
-                error:
-                  'Infelizmente não é possível atender este caso por aqui. Você pode solicitar este serviço ligando para o 116 ou indo em uma de nossas agências de atendimento',
+                error: `Infelizmente não é possível atender este caso por aqui, pois esse cliente tem uma nota de fiscalização`,
               };
             }
           }
@@ -398,7 +399,7 @@ const PowerReconnectionProvider: React.FC = ({ children }) => {
       if (newEnergyConnectionNote) {
         return {
           ok: false,
-          error: `Já existe um serviço de reativação em aberto para ${contractAccount}. Por favor, aguarde e logo logo seu fornecimento de energia será restabelecido.`,
+          error: `Já existe um serviço de reativação em aberto para ${contractAccount}. Por favor, aguarde e logo logo seu fornecimento de energia será restabelecido`,
         };
       }
 
@@ -409,7 +410,7 @@ const PowerReconnectionProvider: React.FC = ({ children }) => {
         if (newEnergyConnectionNote) {
           return {
             ok: false,
-            error: `Já existe um serviço de reativação em aberto para ${contractAccount}. Por favor, aguarde e logo logo seu fornecimento de energia será restabelecido.`,
+            error: `Já existe um serviço de reativação em aberto para ${contractAccount}. Por favor, aguarde e logo logo seu fornecimento de energia será restabelecido`,
           };
         }
 
@@ -417,17 +418,18 @@ const PowerReconnectionProvider: React.FC = ({ children }) => {
           if (
             reconnectionNote.status === 'REJE' ||
             reconnectionNote.status === 'ATIV' ||
+            reconnectionNote.status === 'ABER' || // Validar
             reconnectionNote.status === 'DEVO'
           ) {
-            // VERIFICAR ESSE TEXTO
             return {
               ok: false,
-              error: 'Infelizmente não é possível atender este caso por aqui.',
+              error: `Infelizmente não é possível atender este caso por aqui, pois o cliente já possui uma nota de religação com status ${reconnectionNote.status}`,
             };
           }
 
           if (
             reconnectionNote.status === 'RECE' ||
+            // reconnectionNote.status === 'CONC' || // Validar
             reconnectionNote.status === 'ERRO'
           ) {
             if (reconnectionNote.code === 'RELU') {
@@ -457,28 +459,27 @@ const PowerReconnectionProvider: React.FC = ({ children }) => {
           if (
             reconnectionNote.status === 'REJE' ||
             reconnectionNote.status === 'ATIV' ||
+            reconnectionNote.status === 'ABER' || // Validar
             reconnectionNote.status === 'DEVO'
           ) {
-            // VERIFICAR ESSE TEXTO
             return {
               ok: false,
-              error: 'Infelizmente não é possível atender este caso por aqui.',
+              error: `Infelizmente não é possível atender este caso por aqui, pois o cliente já possui uma nota de religação com status ${reconnectionNote.status}`,
             };
           }
 
           return {
             ok: false,
-            error: 'Você já possui uma religação em andamento',
+            error: 'O cliente já possui uma religação em andamento',
           };
         }
       }
 
       if (installation.status === 'Ligada') {
         if (oversightNote) {
-          // VERIFICAR ESSE
           return {
             ok: false,
-            error: 'Infelizmente não é possível atender este caso por aqui.',
+            error: `Infelizmente não é possível atender este caso por aqui, pois o cliente possui uma nota de fiscalização com status ${oversightNote.status}`,
           };
         }
 
@@ -492,7 +493,6 @@ const PowerReconnectionProvider: React.FC = ({ children }) => {
         };
       }
 
-      // AVALIAR ESTE CASO
       return { ok: true };
     },
     [],

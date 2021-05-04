@@ -64,6 +64,7 @@ const RequestList: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
             if (
               value === 'AGUA' ||
               value === 'RECE' ||
+              value === 'CONC' || // Validar
               value === 'ATIV' ||
               value === 'ABER'
             ) {
