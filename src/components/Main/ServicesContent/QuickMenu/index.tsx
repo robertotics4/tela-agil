@@ -252,7 +252,9 @@ const QuickMenu: React.FC = () => {
           <MenuItemText>Fatura por e-mail</MenuItemText>
         </MenuItem>
 
-        <MenuItem>
+        <MenuItem
+          disabled={!(operatingCompany === '98' || operatingCompany === '95')}
+        >
           <MenuItemButton type="button" onClick={toggleChangeDueDate}>
             <FaCalendarAlt size={20} />
           </MenuItemButton>
