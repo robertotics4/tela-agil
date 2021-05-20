@@ -27,10 +27,14 @@ const Header: React.FC = () => {
   } = useCustomerService();
 
   useEffect(() => {
-    generateProtocol({
-      contractAccount: customer.contractAccount,
-      operatingCompany,
-    });
+    async function loadProtocol() {
+      await generateProtocol({
+        contractAccount: customer.contractAccount,
+        operatingCompany,
+      });
+    }
+
+    loadProtocol();
   }, [customer.contractAccount, generateProtocol, operatingCompany]);
 
   return (
