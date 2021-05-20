@@ -24,6 +24,7 @@ const Header: React.FC = () => {
     protocol,
     operatingCompany,
     customer,
+    serviceStarted,
   } = useCustomerService();
 
   useEffect(() => {
@@ -34,8 +35,15 @@ const Header: React.FC = () => {
       });
     }
 
-    loadProtocol();
-  }, [customer.contractAccount, generateProtocol, operatingCompany]);
+    if (serviceStarted) {
+      loadProtocol();
+    }
+  }, [
+    customer.contractAccount,
+    generateProtocol,
+    operatingCompany,
+    serviceStarted,
+  ]);
 
   return (
     <Container>
