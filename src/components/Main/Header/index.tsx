@@ -40,11 +40,11 @@ const Header: React.FC = () => {
         />
         <TagInfo
           type={installation.turnOffInProgress ? 'error' : 'success'}
-          message="Sem desliga em andamento"
+          message="Desliga em andamento"
         />
         <TagInfo
           type={installation.scheduledShutdown ? 'error' : 'success'}
-          message="Sem desligamento programado"
+          message="Desligamento programado"
         />
       </ImportantInfo>
 

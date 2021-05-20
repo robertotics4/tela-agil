@@ -77,8 +77,8 @@ const ClientData: React.FC = () => {
           </label>
 
           <label>
-            FATURA POR E-MAIL
-            <p> </p>
+            NOME DA MÃE
+            <p>{customer.motherName ? customer.motherName : ''}</p>
           </label>
 
           <label>
