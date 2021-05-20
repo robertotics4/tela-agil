@@ -20,6 +20,7 @@ export const ProtocolContainer = styled.div`
   align-items: center;
 
   min-width: 110px;
+  margin-right: 16px;
 `;
 
 export const ProtocolText = styled.h2`
