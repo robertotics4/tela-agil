@@ -14,8 +14,30 @@ export const Container = styled.div`
   border-bottom: 1px solid #e7e5e5;
 `;
 
-export const Protocol = styled.h2`
+export const ProtocolContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  min-width: 110px;
+`;
+
+export const ProtocolText = styled.h2`
   font-size: 24px;
+`;
+
+export const LoadingProtocolContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const LoadingProtocolText = styled.span`
+  font-size: 14px;
+  color: #000;
+
+  margin-right: 16px;
 `;
 
 export const ImportantInfo = styled.div`

@@ -65,6 +65,10 @@ interface CustomerServiceContextData {
     stateCode,
     cpf,
   }: FindAllContractsProps): Promise<Contract[]>;
+  generateProtocol({
+    operatingCompany,
+    contractAccount,
+  }: GenerateProtocolProps): Promise<void>;
 }
 
 interface GenerateProtocolProps {
@@ -310,11 +314,6 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
           contractAccount: formattedContractAccount,
         });
 
-        await generateProtocol({
-          contractAccount: formattedContractAccount,
-          operatingCompany: stateCode,
-        });
-
         setServiceStarted(true);
       } catch {
         Swal.fire({
@@ -327,7 +326,7 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
         });
       }
     },
-    [fetchServiceData, generateProtocol],
+    [fetchServiceData],
   );
 
   const saveAttendanceLog = useCallback(
@@ -387,6 +386,7 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
         finishService,
         registerServicePerformed,
         findAllContracts,
+        generateProtocol,
       }}
     >
       {children}

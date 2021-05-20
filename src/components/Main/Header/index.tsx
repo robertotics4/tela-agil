@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BiTransfer } from 'react-icons/bi';
+import Spinner from 'react-spinkit';
 
 import {
   Container,
-  Protocol,
+  ProtocolContainer,
+  ProtocolText,
+  LoadingProtocolContainer,
+  LoadingProtocolText,
   ImportantInfo,
   ButtonChangeContract,
 } from './styles';
@@ -13,11 +17,34 @@ import { useCustomerService } from '../../../hooks/customerService';
 import TagInfo from './TagInfo';
 
 const Header: React.FC = () => {
-  const { installation, debits, protocol } = useCustomerService();
+  const {
+    installation,
+    debits,
+    generateProtocol,
+    protocol,
+    operatingCompany,
+    customer,
+  } = useCustomerService();
+
+  useEffect(() => {
+    generateProtocol({
+      contractAccount: customer.contractAccount,
+      operatingCompany,
+    });
+  }, [customer.contractAccount, generateProtocol, operatingCompany]);
 
   return (
     <Container>
-      <Protocol>{`Protocolo: ${protocol}`}</Protocol>
+      <ProtocolContainer>
+        {protocol ? (
+          <ProtocolText>{`Protocolo: ${protocol}`}</ProtocolText>
+        ) : (
+          <LoadingProtocolContainer>
+            <LoadingProtocolText>Carregando protocolo</LoadingProtocolText>
+            <Spinner name="circle" fadeIn="none" color="#000" />
+          </LoadingProtocolContainer>
+        )}
+      </ProtocolContainer>
 
       <ImportantInfo>
         <TagInfo
