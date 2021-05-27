@@ -10,7 +10,7 @@ import Modal from '../../Modal';
 
 import eqtlBarApi from '../../../services/eqtlBarApi';
 
-import addZeroesToContract from '../../../utils/addZeroesToContract';
+import addZeroesToContract from '../../../utils/addZeroesToNumber';
 
 import { ModalContent, OptionsContainer, OptionButton } from './styles';
 

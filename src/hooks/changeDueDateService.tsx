@@ -1,7 +1,7 @@
 import React, { createContext, useCallback, useContext, useState } from 'react';
 import { v4 as uuid } from 'uuid';
 
-import addZeroesToContract from '../utils/addZeroesToContract';
+import addZeroesToNumber from '../utils/addZeroesToNumber';
 import eqtlBarApi from '../services/eqtlBarApi';
 
 interface ChangeDueDateServiceContextData {
@@ -63,7 +63,7 @@ const ChangeDueDateServiceProvider: React.FC = ({ children }) => {
     async ({ contractAccount, stateCode }: GetDueDateListProps) => {
       const response = await eqtlBarApi.get('/servico/v1/dataCerta', {
         params: {
-          contaContrato: addZeroesToContract(contractAccount, 12),
+          contaContrato: addZeroesToNumber(contractAccount, 12),
           empresaOperadora: stateCode,
           flagConsultar: true,
           codigoTransacao: uuid(),
@@ -97,7 +97,7 @@ const ChangeDueDateServiceProvider: React.FC = ({ children }) => {
     async ({ contractAccount, stateCode, requestedDate }: SetDueDateProps) => {
       const response = await eqtlBarApi.get('/servico/v1/dataCerta', {
         params: {
-          contaContrato: addZeroesToContract(contractAccount, 12),
+          contaContrato: addZeroesToNumber(contractAccount, 12),
           empresaOperadora: stateCode,
           flagAlterar: true,
           dataSolicitada: requestedDate,
@@ -117,7 +117,7 @@ const ChangeDueDateServiceProvider: React.FC = ({ children }) => {
     async ({ contractAccount, stateCode }: AbleToChangeDueDateProps) => {
       try {
         await getDueDateList({
-          contractAccount: addZeroesToContract(contractAccount, 12),
+          contractAccount: addZeroesToNumber(contractAccount, 12),
           stateCode,
         });
 

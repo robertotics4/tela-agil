@@ -214,8 +214,6 @@ const QuickMenu: React.FC = () => {
       await getProtocolsList({
         operatingCompany,
         contractAccount: customer.contractAccount,
-        initialDate: '20210101',
-        endDate: '20210401',
       });
     }
 

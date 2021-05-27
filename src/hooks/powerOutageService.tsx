@@ -4,7 +4,6 @@ import { useLoading } from 'react-use-loading';
 import Swal from 'sweetalert2';
 
 import eqtlBarApi from '../services/eqtlBarApi';
-import addZeroesToContract from '../utils/addZeroesToContract';
 
 import Loading from '../components/Loading';
 

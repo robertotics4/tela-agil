@@ -4,21 +4,19 @@ import { parse } from 'date-fns';
 
 import eqtlBarApi from '../services/eqtlBarApi';
 
+import addZeroesToNumber from '../utils/addZeroesToNumber';
+
 interface MonitoringOfProtocolsContextData {
   protocols: Protocol[];
   getProtocolsList({
     operatingCompany,
     contractAccount,
-    initialDate,
-    endDate,
   }: GetProtocolListProps): Promise<void>;
 }
 
 interface GetProtocolListProps {
   operatingCompany: string;
   contractAccount: string;
-  initialDate: string;
-  endDate: string;
 }
 
 interface ResponseProtocol {
@@ -45,12 +43,21 @@ const MonitoringOfProtocolsProvider: React.FC = ({ children }) => {
   const [protocols, setProtocols] = useState<Protocol[]>([]);
 
   const getProtocolsList = useCallback(
-    async ({
-      operatingCompany,
-      contractAccount,
-      initialDate,
-      endDate,
-    }: GetProtocolListProps) => {
+    async ({ operatingCompany, contractAccount }: GetProtocolListProps) => {
+      const currentDate = new Date();
+      const threeMonthsAgo = currentDate.getMonth() - 2;
+
+      const dateRange = {
+        initialDate: `${currentDate.getFullYear()}${addZeroesToNumber(
+          threeMonthsAgo.toString(),
+          2,
+        )}01`,
+        endDate: `${currentDate.getFullYear()}${addZeroesToNumber(
+          (currentDate.getMonth() + 1).toString(),
+          2,
+        )}${currentDate.getDate()}`,
+      };
+
       const response = await eqtlBarApi.get(
         '/servico/v1/acompanhamentoServico',
         {
@@ -58,8 +65,8 @@ const MonitoringOfProtocolsProvider: React.FC = ({ children }) => {
             codigoTransacao: uuid(),
             empresaOperadora: operatingCompany,
             contaContrato: contractAccount,
-            dataInicio: initialDate,
-            dataFim: endDate,
+            dataInicio: dateRange.initialDate,
+            dataFim: dateRange.endDate,
             canal: 'S',
           },
         },

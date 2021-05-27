@@ -1,5 +1,5 @@
 import React, { createContext, useCallback, useContext } from 'react';
-import { v4 as uuid } from 'uuid';
+
 import yaloApi from '../services/yaloApi';
 
 interface UrlVariationsProps {
