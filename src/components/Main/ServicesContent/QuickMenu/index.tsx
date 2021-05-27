@@ -322,7 +322,9 @@ const QuickMenu: React.FC = () => {
           <MenuItemText>Notas de Serviço</MenuItemText>
         </MenuItem>
 
-        <MenuItem>
+        <MenuItem
+          disabled={!(operatingCompany === '98' || operatingCompany === '95')}
+        >
           <MenuItemButton type="button" onClick={toggleMonitoringOfProtocols}>
             <MdReceipt size={20} />
           </MenuItemButton>
