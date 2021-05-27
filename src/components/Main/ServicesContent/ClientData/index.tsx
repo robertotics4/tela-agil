@@ -8,7 +8,11 @@ const ClientData: React.FC = () => {
   const { customer } = useCustomerService();
 
   const formattedFullName = useMemo(() => {
-    return `${customer.name} ${customer.surname}`;
+    const fullName = customer.surname
+      ? `${customer.name} ${customer.surname}`
+      : customer.name;
+
+    return fullName;
   }, [customer.name, customer.surname]);
 
   const formattedDayOfBirth = useMemo(() => {

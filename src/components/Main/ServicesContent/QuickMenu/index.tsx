@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
 
 import { BsLightningFill } from 'react-icons/bs';
-import { FaPlug, FaDollarSign, FaDivide, FaCalendarAlt } from 'react-icons/fa';
+import {
+  FaPlug,
+  FaDollarSign,
+  FaDivide,
+  FaCalendarAlt,
+  FaListUl,
+} from 'react-icons/fa';
 import { IoDocumentText } from 'react-icons/io5';
 import { IoMdMail } from 'react-icons/io';
 import { MdReceipt } from 'react-icons/md';
@@ -21,7 +27,7 @@ import DebitsConsultationModal from '../../../Services/DebitsConsultationModal';
 import InstallmentPaymentModal from '../../../Services/InstallmentPaymentModal';
 import EmailInvoice from '../../../Services/EmailInvoice';
 import ExpirationChange from '../../../Services/DueDateChange';
-import RequestList from '../../../Services/RequestList';
+import ServiceNotesList from '../../../Services/ServiceNotesList';
 
 import Loading from '../../../Loading';
 
@@ -36,7 +42,7 @@ const QuickMenu: React.FC = () => {
   const [installmentPaymentOpen, setInstallmentPaymentOpen] = useState(false);
   const [emailInvoiceOpen, setEmailInvoiceOpen] = useState(false);
   const [changeDueDateOpen, setChangeDueDateOpen] = useState(false);
-  const [requestListOpen, setRequestListOpen] = useState(false);
+  const [serviceNotesListOpen, SetServiceNotesListOpen] = useState(false);
 
   const {
     serviceNotes,
@@ -180,7 +186,7 @@ const QuickMenu: React.FC = () => {
     }
   }
 
-  function toggleRequestList(): void {
+  function toggleServiceNotesList(): void {
     if (
       !serviceNotes.openServiceNotes.length &&
       !serviceNotes.closedServiceNotes.length
@@ -193,7 +199,7 @@ const QuickMenu: React.FC = () => {
         confirmButtonColor: '#3c1490',
       });
     } else {
-      setRequestListOpen(!requestListOpen);
+      SetServiceNotesListOpen(!serviceNotesListOpen);
     }
   }
 
@@ -263,11 +269,11 @@ const QuickMenu: React.FC = () => {
         </MenuItem>
 
         <MenuItem>
-          <MenuItemButton type="button" onClick={toggleRequestList}>
-            <MdReceipt size={20} />
+          <MenuItemButton type="button" onClick={toggleServiceNotesList}>
+            <FaListUl size={20} />
           </MenuItemButton>
 
-          <MenuItemText>Acompanhamento de protocolos</MenuItemText>
+          <MenuItemText>Notas de Serviço</MenuItemText>
         </MenuItem>
       </Content>
 
@@ -292,7 +298,10 @@ const QuickMenu: React.FC = () => {
         setIsOpen={toggleChangeDueDate}
       />
 
-      <RequestList isOpen={requestListOpen} setIsOpen={toggleRequestList} />
+      <ServiceNotesList
+        isOpen={serviceNotesListOpen}
+        setIsOpen={toggleServiceNotesList}
+      />
 
       {isLoading && (
         <Loading isOpen={isLoading} message={message} setIsOpen={stopLoading} />

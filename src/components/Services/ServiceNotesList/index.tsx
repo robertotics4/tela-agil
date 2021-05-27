@@ -24,7 +24,7 @@ interface Note {
   status: string;
 }
 
-const RequestList: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
+const ServiceNotesList: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
   const { serviceNotes, registerServicePerformed } = useCustomerService();
 
   const columns: Column<Note>[] = useMemo(
@@ -116,7 +116,7 @@ const RequestList: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
   useEffect(() => {
     if (isOpen) {
       registerServicePerformed({
-        serviceName: 'Acompanhamento de protocolos',
+        serviceName: 'Notas de Serviço',
         executionDate: new Date(),
       });
     }
@@ -134,7 +134,7 @@ const RequestList: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
       }}
     >
       <ModalContent>
-        <Title>Acompanhamento de protocolos</Title>
+        <Title>Notas de serviço</Title>
 
         <Table columns={columns} data={data} />
       </ModalContent>
@@ -142,4 +142,4 @@ const RequestList: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
   );
 };
 
-export default RequestList;
+export default ServiceNotesList;
