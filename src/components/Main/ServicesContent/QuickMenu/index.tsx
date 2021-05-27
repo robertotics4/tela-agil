@@ -35,6 +35,7 @@ import { useCustomerService } from '../../../../hooks/customerService';
 import { usePowerReconnectionService } from '../../../../hooks/powerReconnectionService';
 import { usePowerOutageService } from '../../../../hooks/powerOutageService';
 import { useChangeDueDateService } from '../../../../hooks/changeDueDateService';
+import { useMonitoringOfProtocols } from '../../../../hooks/monitoringOfProtocols';
 
 const QuickMenu: React.FC = () => {
   const [outagePowerOpen, setOutagePowerOpen] = useState(false);
@@ -42,7 +43,10 @@ const QuickMenu: React.FC = () => {
   const [installmentPaymentOpen, setInstallmentPaymentOpen] = useState(false);
   const [emailInvoiceOpen, setEmailInvoiceOpen] = useState(false);
   const [changeDueDateOpen, setChangeDueDateOpen] = useState(false);
-  const [serviceNotesListOpen, SetServiceNotesListOpen] = useState(false);
+  const [serviceNotesListOpen, setServiceNotesListOpen] = useState(false);
+  const [monitoringOfProtocolsOpen, setMonitoringOfProtocolsOpen] = useState(
+    false,
+  );
 
   const {
     serviceNotes,
@@ -59,6 +63,8 @@ const QuickMenu: React.FC = () => {
   } = usePowerReconnectionService();
 
   const { ableToChangeDueDate } = useChangeDueDateService();
+
+  const { protocols, getProtocolsList } = useMonitoringOfProtocols();
 
   const [
     { isLoading, message },
@@ -199,8 +205,21 @@ const QuickMenu: React.FC = () => {
         confirmButtonColor: '#3c1490',
       });
     } else {
-      SetServiceNotesListOpen(!serviceNotesListOpen);
+      setServiceNotesListOpen(!serviceNotesListOpen);
     }
+  }
+
+  async function toggleMonitoringOfProtocols(): Promise<void> {
+    if (!protocols.length) {
+      await getProtocolsList({
+        operatingCompany,
+        contractAccount: customer.contractAccount,
+        initialDate: '20210101',
+        endDate: '20210401',
+      });
+    }
+
+    console.log(protocols);
   }
 
   return (
@@ -274,6 +293,14 @@ const QuickMenu: React.FC = () => {
           </MenuItemButton>
 
           <MenuItemText>Notas de Serviço</MenuItemText>
+        </MenuItem>
+
+        <MenuItem>
+          <MenuItemButton type="button" onClick={toggleMonitoringOfProtocols}>
+            <MdReceipt size={20} />
+          </MenuItemButton>
+
+          <MenuItemText>Acompanhamento de Protocolos</MenuItemText>
         </MenuItem>
       </Content>
 

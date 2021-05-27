@@ -8,6 +8,7 @@ import { WhatsappSendingProvider } from './whatsappSending';
 import { PowerOutageServiceProvider } from './powerOutageService';
 import { PowerReconnectionProvider } from './powerReconnectionService';
 import { ChangeDueDateServiceProvider } from './changeDueDateService';
+import { MonitoringOfProtocolsProvider } from './monitoringOfProtocols';
 import { AlertProvider } from './alert';
 import { TimerProvider } from './timer';
 
@@ -21,9 +22,11 @@ const AppProvider: React.FC = ({ children }) => (
               <PowerOutageServiceProvider>
                 <PowerReconnectionProvider>
                   <ChangeDueDateServiceProvider>
-                    <WhatsappSendingProvider>
-                      {children}
-                    </WhatsappSendingProvider>
+                    <MonitoringOfProtocolsProvider>
+                      <WhatsappSendingProvider>
+                        {children}
+                      </WhatsappSendingProvider>
+                    </MonitoringOfProtocolsProvider>
                   </ChangeDueDateServiceProvider>
                 </PowerReconnectionProvider>
               </PowerOutageServiceProvider>
