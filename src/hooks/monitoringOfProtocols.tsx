@@ -6,12 +6,14 @@ import eqtlBarApi from '../services/eqtlBarApi';
 
 import addZeroesToNumber from '../utils/addZeroesToNumber';
 
+import Protocol from '../types/Protocol';
+
 interface MonitoringOfProtocolsContextData {
   protocols: Protocol[];
   getProtocolsList({
     operatingCompany,
     contractAccount,
-  }: GetProtocolListProps): Promise<void>;
+  }: GetProtocolListProps): Promise<Protocol[]>;
 }
 
 interface GetProtocolListProps {
@@ -25,14 +27,6 @@ interface ResponseProtocol {
   dataSolicitacao: string;
   status: string;
   detalhes: string;
-}
-
-interface Protocol {
-  number: string;
-  service: string;
-  requestDate: Date;
-  status: 'open' | 'concluded' | 'canceled';
-  details: string;
 }
 
 const MonitoringOfProtocolsContext = createContext<MonitoringOfProtocolsContextData>(
@@ -80,7 +74,7 @@ const MonitoringOfProtocolsProvider: React.FC = ({ children }) => {
         throw new Error(response.data.data.mensagem);
       }
 
-      if (response.data.data.protocolos) {
+      if (response.data.data.protocolos.length) {
         const responseProtocols: Protocol[] = response.data.data.protocolos.map(
           (responseProtocol: ResponseProtocol) => ({
             number: responseProtocol.numero,
@@ -96,7 +90,10 @@ const MonitoringOfProtocolsProvider: React.FC = ({ children }) => {
         );
 
         setProtocols(responseProtocols);
+
+        return responseProtocols;
       }
+      return [] as Protocol[];
     },
     [],
   );

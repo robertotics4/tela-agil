@@ -28,6 +28,7 @@ import InstallmentPaymentModal from '../../../Services/InstallmentPaymentModal';
 import EmailInvoice from '../../../Services/EmailInvoice';
 import ExpirationChange from '../../../Services/DueDateChange';
 import ServiceNotesList from '../../../Services/ServiceNotesList';
+import MonitoringOfProtocols from '../../../Services/MonitoringOfProtocols';
 
 import Loading from '../../../Loading';
 
@@ -210,14 +211,42 @@ const QuickMenu: React.FC = () => {
   }
 
   async function toggleMonitoringOfProtocols(): Promise<void> {
-    if (!protocols.length) {
-      await getProtocolsList({
-        operatingCompany,
-        contractAccount: customer.contractAccount,
-      });
-    }
+    if (!monitoringOfProtocolsOpen) {
+      try {
+        startLoading('Carregando protocolos ...');
 
-    console.log(protocols);
+        const responseProtocols = await getProtocolsList({
+          operatingCompany,
+          contractAccount: customer.contractAccount,
+        });
+
+        if (!responseProtocols) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Acompnhamento de Protocolos',
+            html: 'O cliente não possui protocolos de atendimento',
+            confirmButtonText: `OK`,
+            confirmButtonColor: '#3c1490',
+          });
+        } else {
+          setMonitoringOfProtocolsOpen(!monitoringOfProtocolsOpen);
+        }
+      } catch (err) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Acompnhamento de Protocolos',
+          html: `<p>${
+            err.message || 'Falha ao carregar os protocolos do cliente'
+          }</p>`,
+          confirmButtonText: `OK`,
+          confirmButtonColor: '#3c1490',
+        });
+      } finally {
+        stopLoading();
+      }
+    } else {
+      setMonitoringOfProtocolsOpen(!monitoringOfProtocolsOpen);
+    }
   }
 
   return (
@@ -326,6 +355,11 @@ const QuickMenu: React.FC = () => {
       <ServiceNotesList
         isOpen={serviceNotesListOpen}
         setIsOpen={toggleServiceNotesList}
+      />
+
+      <MonitoringOfProtocols
+        isOpen={monitoringOfProtocolsOpen}
+        setIsOpen={toggleMonitoringOfProtocols}
       />
 
       {isLoading && (

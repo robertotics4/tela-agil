@@ -5,7 +5,7 @@ import { useCustomerService } from '../../../hooks/customerService';
 
 import Modal from '../../Modal';
 import Table from './ServiceNotesTable';
-import StatusIndicator from './StatusIndicator';
+import StatusIndicator from '../../StatusIndicator';
 
 import { ClosedNote, OpenNote } from '../../../types/ServiceNotes';
 
@@ -30,10 +30,6 @@ const ServiceNotesList: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
   const columns: Column<Note>[] = useMemo(
     () =>
       [
-        {
-          Header: 'Nº do protocolo',
-          accessor: 'protocol',
-        },
         {
           Header: 'Serviço',
           accessor: 'service',
@@ -134,7 +130,7 @@ const ServiceNotesList: React.FC<ModalProps> = ({ isOpen, setIsOpen }) => {
       }}
     >
       <ModalContent>
-        <Title>Notas de serviço</Title>
+        <Title>Notas de Serviço</Title>
 
         <Table columns={columns} data={data} />
       </ModalContent>
