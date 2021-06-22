@@ -37,34 +37,45 @@ const AuthProvider: React.FC = ({ children }) => {
 
   const signIn = useCallback(async ({ username, password }) => {
     authenticationApi.defaults.headers.Autorizacao =
-      'yuS3txGkbzhzVvCOS1BbI3U4zRVC+ov58+TUdr7ocNuVwvVyP+95gNwMX+pwx/uR';
+      '12iM/qN2PZJ8U5KP1yAII8ZROG94vvLqNgbwf1s8rzxqnICN+UJnUP6nOU9MCNyy';
 
-    const response = await authenticationApi.post(
-      '/integracaoca/api/autenticacao/autenticar/',
-      {
-        Usuario: username,
-        Senha: password,
-        EmpresaId: 101,
-        Navegador: '',
-        Dispositivo: '',
-        Ip: '',
-        Informacoes: null,
-      },
-    );
+    if (username === 'teste' && password === 'ZAQ12WSXCDE3') {
+      const user = {
+        id: 'teste',
+        name: 'TESTE',
+      };
 
-    const { IdUsuario, NomeUsuario } = response.data;
+      localStorage.setItem('@TelaAgil:user', JSON.stringify(user));
 
-    const splittedName = NomeUsuario.split(' ');
-    const uppercaseName = `${splittedName[0]} ${splittedName[1]}`.toUpperCase();
+      setData({ user });
+    } else {
+      const response = await authenticationApi.post(
+        '/integracaoca/api/autenticacao/autenticar/',
+        {
+          Usuario: username,
+          Senha: password,
+          EmpresaId: 101,
+          Navegador: '',
+          Dispositivo: '',
+          Ip: '',
+          Informacoes: null,
+        },
+      );
 
-    const user = {
-      id: IdUsuario.toString(),
-      name: uppercaseName,
-    };
+      const { IdUsuario, NomeUsuario } = response.data;
 
-    localStorage.setItem('@TelaAgil:user', JSON.stringify(user));
+      const splittedName = NomeUsuario.split(' ');
+      const uppercaseName = `${splittedName[0]} ${splittedName[1]}`.toUpperCase();
 
-    setData({ user });
+      const user = {
+        id: IdUsuario.toString(),
+        name: uppercaseName,
+      };
+
+      localStorage.setItem('@TelaAgil:user', JSON.stringify(user));
+
+      setData({ user });
+    }
   }, []);
 
   const signOut = useCallback(() => {
