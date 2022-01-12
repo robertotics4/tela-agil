@@ -11,9 +11,9 @@ const ServicesContent: React.FC = () => {
     <Container>
       <ClientData />
       <ContractData />
-      <Bottom>
+      {/* <Bottom>
         <QuickMenu />
-      </Bottom>
+      </Bottom> */}
     </Container>
   );
 };
