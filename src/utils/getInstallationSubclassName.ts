@@ -52,7 +52,11 @@ const subclassVariations: subclassProps = {
 };
 
 function getInstallationSubclassName(acronym: string): string {
-  return subclassVariations[acronym].toUpperCase();
+  if (acronym) {
+    return subclassVariations[acronym].toUpperCase();
+  }
+
+  return '';
 }
 
 export default getInstallationSubclassName;

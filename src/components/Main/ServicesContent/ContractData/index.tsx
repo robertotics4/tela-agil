@@ -20,6 +20,11 @@ const ContractData: React.FC = () => {
       <Content>
         <div>
           <label>
+            CONTA CONTRATO
+            <p>{customer.contractAccount}</p>
+          </label>
+
+          <label>
             INSTALAÇÃO
             <p>{customer.installationNumber}</p>
           </label>

@@ -208,12 +208,21 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
         },
       });
 
+      console.log(response.data);
+
       const {
         customer,
         installation,
         debits,
         serviceNotes,
       } = extractResponseData(response, stateCode);
+
+      console.log({
+        customer,
+        installation,
+        debits,
+        serviceNotes,
+      });
 
       localStorage.setItem(
         '@TelaAgil:customerServiceData',
@@ -315,7 +324,8 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
         });
 
         setServiceStarted(true);
-      } catch {
+      } catch (err) {
+        console.log(err);
         Swal.fire({
           icon: 'error',
           title: 'Erro no atendimento',
