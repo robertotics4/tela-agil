@@ -200,7 +200,7 @@ const QuickMenu: React.FC = () => {
     ) {
       Swal.fire({
         icon: 'warning',
-        title: 'Acompanhamento de protocolos',
+        title: 'Notas de serviço',
         html: '<p>O cliente não possui notas para serem exibidas.</p>',
         confirmButtonText: `OK`,
         confirmButtonColor: '#3c1490',
@@ -231,7 +231,7 @@ const QuickMenu: React.FC = () => {
         } else {
           setMonitoringOfProtocolsOpen(!monitoringOfProtocolsOpen);
         }
-      } catch (err) {
+      } catch (err: any) {
         Swal.fire({
           icon: 'warning',
           title: 'Acompnhamento de Protocolos',
@@ -254,7 +254,7 @@ const QuickMenu: React.FC = () => {
       <h3>Menu rápido</h3>
 
       <Content>
-        <MenuItem>
+        <MenuItem disabled>
           <MenuItemButton type="button" onClick={toggleOutagePower}>
             <BsLightningFill size={20} />
           </MenuItemButton>
@@ -262,7 +262,7 @@ const QuickMenu: React.FC = () => {
           <MenuItemText>Falta de energia</MenuItemText>
         </MenuItem>
 
-        <MenuItem>
+        <MenuItem disabled>
           <MenuItemButton type="button" onClick={togglePowerReconnection}>
             <FaPlug size={20} />
           </MenuItemButton>
@@ -295,7 +295,8 @@ const QuickMenu: React.FC = () => {
         </MenuItem>
 
         <MenuItem
-          disabled={!(operatingCompany === '98' || operatingCompany === '95')}
+          // disabled={!(operatingCompany === '98' || operatingCompany === '95')}
+          disabled
         >
           <MenuItemButton type="button" onClick={toggleEmailInvoice}>
             <IoMdMail size={20} />
@@ -305,7 +306,8 @@ const QuickMenu: React.FC = () => {
         </MenuItem>
 
         <MenuItem
-          disabled={!(operatingCompany === '98' || operatingCompany === '95')}
+          // disabled={!(operatingCompany === '98' || operatingCompany === '95')}
+          disabled
         >
           <MenuItemButton type="button" onClick={toggleChangeDueDate}>
             <FaCalendarAlt size={20} />
@@ -314,7 +316,7 @@ const QuickMenu: React.FC = () => {
           <MenuItemText>Data certa</MenuItemText>
         </MenuItem>
 
-        <MenuItem>
+        <MenuItem disabled>
           <MenuItemButton type="button" onClick={toggleServiceNotesList}>
             <FaListUl size={20} />
           </MenuItemButton>

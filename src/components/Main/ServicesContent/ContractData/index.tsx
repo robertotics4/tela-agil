@@ -54,18 +54,13 @@ const ContractData: React.FC = () => {
           </label>
 
           <label>
-            CONSUMO IRREGULAR
-            <p> </p>
+            LOCALIDADE
+            <p>{installation.technicalData.locality}</p>
           </label>
 
           <label>
             DESLIGAMENTO PROGRAMADO
             <p>{installation.scheduledShutdown ? 'Sim' : 'Não'}</p>
-          </label>
-
-          <label>
-            CONSUMO MÉDIO (12 MESES)
-            <p> </p>
           </label>
         </div>
       </Content>
