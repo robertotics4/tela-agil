@@ -208,21 +208,12 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
         },
       });
 
-      console.log(response.data);
-
       const {
         customer,
         installation,
         debits,
         serviceNotes,
       } = extractResponseData(response, stateCode);
-
-      console.log({
-        customer,
-        installation,
-        debits,
-        serviceNotes,
-      });
 
       localStorage.setItem(
         '@TelaAgil:customerServiceData',
@@ -325,7 +316,6 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
 
         setServiceStarted(true);
       } catch (err) {
-        console.log(err);
         Swal.fire({
           icon: 'error',
           title: 'Erro no atendimento',
@@ -344,12 +334,18 @@ const CustomerServiceProvider: React.FC = ({ children }) => {
       await eqtlBarApi.post('/logs', {
         user_id: user.id,
         username: user.name,
+        operatingCompany: customerServiceData.operatingCompany,
         contractAccount: customerServiceData.customer.contractAccount,
         attendanceTime,
         services: servicesPerformed,
       });
     },
-    [user, customerServiceData.customer, servicesPerformed],
+    [
+      user,
+      customerServiceData.operatingCompany,
+      customerServiceData.customer,
+      servicesPerformed,
+    ],
   );
 
   const finishService = useCallback(
