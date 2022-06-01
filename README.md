@@ -15,7 +15,7 @@
 
 ---
 
-<p align="center"> Um dos meus projetos desenvolvidos enquanto funcionário do Grupo Equatorial energia. Consiste em um frontend de atendimento com o objetivo de unificar em uma única tela os principais serviços gerados pelo atendente no Call Center, utilizando nossas APIs de serviços já construídas para Clara (chatbot) e Site/App.
+<p align="center">Consiste em uma interface de atendimento com o objetivo de unificar em uma única tela os principais serviços gerados pelo atendente no Call Center, utilizando nossas APIs de serviços já construídas para Clara (chatbot) e Site/App.
     <br>
 </p>
 
